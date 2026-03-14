@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset = "UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+  <title>merge</title>
+
+  <link rel='stylesheet' href="merge_style.css">
+</head>
+
+<body>
+	<div class="game-container">
+		<div class="viewport-container">
+			<div class="container-for-panoram">
+				<div class="board-container"></div>
+				<div class="item-container"></div>
+				<div class="gift-container"></div>
+				<div class="effect-container"></div>
+				<div class="fly-container"></div>
+			</div>
+		</div>
+
+		<div class="asset-container">
+			<div class="gold-counter">
+				Gold: <span id="score-gold">0</span>
+			</div>
+		</div>
+
+		<div class="shop-btn">
+			<button id="btn-shop">shop</button>
+		</div>
+
+		<div class="game-options-container">
+			<div class="shop-container">
+				Shop
+				<div class="shop"></div>
+				<div class="shop-item"></div>
+				<button id="btn-back">back</button>
+				<button id="btn-exit-shop">exit</button>
+			</div>
+
+			<div class="info-message">
+				<h4 id="message">Lacks gold</h4>
+				<button id="btn-exit-message">exit</button>
+			</div>
+
+			<div class="info-container">
+				<h4 id="text-for-sale"></h4>
+				<div class="info-btn">	
+					<button id="btn-remove">yes</button>
+					<button id="btn-no">no</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="merge_game_config_array.js"></script>
+	<script src="merge_items_array.js"></script>
+	<script src="merge_board_landscape_array.js"></script>
+	<script src="merge_fog_on_board_array.js"></script>
+
+	<script src="merge_Game_class.js"></script>
+
+	<script src="merge_Board_class.js"></script>
+	<script src="merge_BoardRenderer_class.js"></script>
+
+	<script src="merge_Fog_class.js"></script>
+	<script src="merge_FogRenderer_class.js"></script>
+
+	<script src="merge_ItemManager_class.js"></script>
+	<script src="merge_ItemRegistry_class.js"></script>
+	<script src="merge_ItemPlacer_class.js"></script>
+	<script src="merge_ItemHandler_class.js"></script>
+
+	<script src="merge_Item_class.js"></script>
+	<script src="merge_ItemRenderer_class.js"></script>
+
+	<script src="merge_GiftFromItem_class.js"></script>
+
+	<script src="merge_GiftOnItem_class.js"></script>
+	<script src="merge_GiftOnItemRenderer_class.js"></script>
+
+	<script src="merge_MergeManager_class.js"></script>
+
+	<script src="merge_FlyItemsManager_class.js"></script>
+	<script src="merge_FlyItem_class.js"></script>
+
+	<script src="merge_SaveData_class.js"></script>
+
+	<script src="merge_DragManager_classes.js"></script>
+	<script src="merge_DragStrategy_classes.js"></script>
+
+	<script src="merge_GameOptions_class.js"></script>
+	<script src="merge_Resources_class.js"></script>
+	<script src="merge_ShopManager_class.js"></script>
+	<script src="merge_ShopRenderer_class.js"></script>
+	<script src="merge_ItemInfoPanel_class.js"></script>
+
+</body>
+</html>
