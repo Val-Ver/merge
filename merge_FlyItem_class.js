@@ -5,7 +5,6 @@
 	boardWidth = GAME_CONFIG.BOARD_SIZE.BOARD_WIDTH;
 	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
 
-	containerItem = document.querySelector('.fly-container');
 	centerWidth = (document.querySelector('.viewport-container')).clientWidth/2 -  this.boardWidth/2;
 
 	animatedFlying = null;
@@ -17,6 +16,7 @@
 	}
 
 	createFlyItem(type, top) {
+		const containerItem = document.querySelector('.fly-container');
 		const item = document.createElement('div');
 		item.className = 'fly-item';
 		item.dataset.name = 'fly-item';
@@ -28,7 +28,7 @@
 		item.style.left = '0';
 		item.style.top = `${top}px`;
 
-		this.containerItem.appendChild(item);
+		containerItem.appendChild(item);
 		
 		this.flyingItem(item);
 		this.addListenerClick(item);

@@ -4,7 +4,7 @@
 
 	boardWidth = GAME_CONFIG.BOARD_SIZE.BOARD_WIDTH;
 	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
-	
+
 	itemElementForSave = null;
 	mergeCounter = null;
 

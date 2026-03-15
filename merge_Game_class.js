@@ -28,13 +28,13 @@ class Game {
 		} else {
 			this.startNewGame()		
 		}
-
-		//const count = document.body.querySelectorAll('*').length;
-		//console.log(count); 
+		// 	const count = document.body.querySelectorAll('*').length;
+		// 	console.log(count);
 
 		/*при старте рисует 8712 элементов... очень много (((( 
 		теперь 6704 получше, но все же много( 
 		можно убрать псевдо элемента, они все равно нужны только здесь для красоты
+		псевдо элементы ни на что не влияют
 		*/
 	}
 
