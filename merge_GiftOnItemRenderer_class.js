@@ -27,7 +27,9 @@
 		item.id = `item-${itemId}`;
 		item.dataset.name = 'gift-on-item';
 		item.dataset.id = `${itemId}`;
-		item.textContent = `${pic}`;
+		// item.textContent = `${pic}`;
+
+		item.style.backgroundImage = `url(${pic})`
 
 		const size = GAME_CONFIG.UI.SIZE_GIFT_ON_ITEM_OF_ITEM;
 		item.style.width = `${this.boardWidth/this.cols * size}px`;
@@ -38,9 +40,23 @@
 	}
 
 	createMagicEffect(element) {
-		const effect = document.createElement('div');
+		//const effect = document.createElement('div');
+		const effect = document.createElement('img');
+
 		effect.className = 'magic-effect';
-		effect.textContent = '+';
+		effect.style.width = '100%';
+
+		// effect.textContent = '+';
+
+		effect.src = 'image/effects/magic_way.png';
+		effect.style.backgroundColor = 'transparent';
+		effect.draggable = false;
+
+		effect.style.left = '0';
+		effect.style.top = '0';
+
+		// effect.style.backgroundImage = 'url(image/effects/magic_way.png)'
+
 		element.appendChild(effect);
 
 		this.removeMagicEffect(effect);

@@ -4,7 +4,7 @@
 
 	boardWidth = GAME_CONFIG.BOARD_SIZE.BOARD_WIDTH;
 	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
-	
+
 	itemElementForSave = null;
 	mergeCounter = null;
 
@@ -14,15 +14,15 @@
 	createItem(id, pic) {
 		const containerItem = document.querySelector('.item-container');
 		const item = document.createElement('div');
+
 		item.className = 'item';
 		item.id = `item-${id}`;
 		item.dataset.name = 'item';
 		item.dataset.id = `${id}`;
-		item.textContent = `${pic}`;
-		item.style.setProperty(`--after-content`, `"${pic}"`);
 		item.style.width = `${this.boardWidth/this.cols}px`;
-		containerItem.appendChild(item);
+		item.style.backgroundImage = `url(${pic})`;
 
+		containerItem.appendChild(item);
 		this.itemElementForSave = item;
 	}
 
@@ -104,6 +104,9 @@
 			element.dataset.name = 'magic';
 			element.textContent = "*";
 			element.style.setProperty(`--after-content`, `"*"`);
+			element.dataset.name = 'magic'
+			element.style.backgroundImage = 'url(image/effects/magic_way.png)'
+
 			element.style.border = 'none';
 			element.style.transition = `opacity ${time}s ease-in-out, transform  ${time}s ease-in-out`;
 			element.style.opacity = '0.01'

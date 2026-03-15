@@ -19,7 +19,7 @@
 		fog.style.width = `${this.boardWidth/this.cols}px`;
 		fog.style.left = `${this.boardWidth/this.cols * col}px`;
 		fog.style.top = `${this.boardHeight/this.rows * row}px`;
-
+		fog.style.backgroundImage = 'url(image/effects/fog/fog.jpeg)';
 		let opacity = this.getOpacityFog(layer);
 		fog.style.opacity = `${opacity}`
 
@@ -78,11 +78,18 @@
 	}
 
 	createMagicWayEffect(fromRow, fromCol, row, col) {
-		const magicWay = document.createElement('div');
+		const magicWay = document.createElement('img');
+
 		magicWay.className = 'magic-effect';
-		magicWay.textContent = "*";
-		magicWay.style.left = `${this.boardWidth/this.cols  * fromCol + this.boardWidth/this.cols  * 0.4}px`; //почему центр не в половине???
-		magicWay.style.top  = `${this.boardHeight/this.rows * fromRow + this.boardHeight/this.rows * 0.4}px`;
+		magicWay.style.width = `${this.boardWidth/this.cols}px`;
+
+		magicWay.src = 'image/effects/magic_way.png';
+		magicWay.style.backgroundColor = 'transparent';
+		magicWay.draggable = false
+
+		magicWay.style.left = `${this.boardWidth/this.cols * fromCol}px`;
+		magicWay.style.top = `${this.boardHeight/this.rows * fromRow}px`;
+
 		this.containerEffect.appendChild(magicWay);
 
 		return this.removeMagicWayEffect(magicWay, row, col);
@@ -92,7 +99,7 @@
 		let time = GAME_CONFIG.ANIMATIONS.TIME_REMOVE_MAGIC_WAY_TRANSITION;
 		const distanceX = Number(element.style.left.split('px')[0]) - (this.boardWidth/this.cols  * col + this.boardWidth/this.cols)
 		const distanceY = Number(element.style.top.split('px')[0])  - (this.boardHeight/this.rows * row + this.boardHeight/this.rows)
-		const distance = Math.sqrt(distanceX**2 + distanceY**2);	
+		const distance = Math.sqrt(distanceX**2 + distanceY**2);
 
 		if(distance > GAME_CONFIG.BOARD_SIZE.CELL) {
 			time *= Math.floor(distance / GAME_CONFIG.BOARD_SIZE.CELL)
@@ -109,6 +116,11 @@
 			element.style.top  = `${this.boardHeight/this.rows * row + this.boardHeight/this.rows * 0.4}px`;
 			element.style.opacity = '0.01';
 			element.style.transform = 'scale(5)';
+			element.style.left = `${this.boardWidth/this.cols  * col }px`;
+			element.style.top  = `${this.boardHeight/this.rows * row }px`;
+
+			element.style.opacity = '0.05'
+			element.style.transform = 'scale(2)';
 
 			element.addEventListener('transitionend', (event) => {
 				element.remove(); 

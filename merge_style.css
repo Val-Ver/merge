@@ -166,9 +166,13 @@
 .picture-card {
 	width: 105px;
 	aspect-ratio: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+
+	background-size: cover;
+	background-position: center;
+
+	/*display: flex;*/
+	/*justify-content: center;*/
+	/*align-items: center;*/
 
 	border: 1px solid grey;
 	border-radius: 5px;
@@ -340,42 +344,24 @@ button:hover {
 }
 
 .item, .dragon {
-	border: 1px solid grey;
+	/*border: 1px solid grey;*/
 	aspect-ratio: 1;
+	overflow: hidden;
 	position: absolute;
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 30px;
-	text-shadow: 1px -1px 3px rgba(0, 0, 0, 0.5);
+	background-size: cover;
+	background-position: center;
+
+	/*display: flex;*/
+	/*justify-content: center;*/
+	/*align-items: center;*/
+	/*font-size: 30px;*/
+	/*text-shadow: 1px -1px 3px rgba(0, 0, 0, 0.5);*/
 
 	cursor: grab;
 	cursor: pointer;
 	user-select: none;
 	z-index: 1;
-}
-
-.item::after {
-	content: var(--after-content, "");
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	transform: translate(1px, -1px);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: grey;
-	z-index: -10;
-}
-.item:active {
-	box-shadow:  0px 5px 10px rgba(0, 0, 0, 0.5);
-}
-
-.dragon {
-	box-shadow:  5px 30px 25px rgba(0, 0, 0, 0.5);
-	font-size: 15px;
-	z-index: 100;
 }
 
 .highlight {
@@ -385,6 +371,29 @@ button:hover {
 	box-shadow: inset 0px 0px 10px #c0bb21;
 	/*z-index: 1;*/
 }
+
+/*.item::after {*/
+/*	content: var(--after-content, "");*/
+/*	position: absolute;*/
+/*	width: 100%;*/
+/*	height: 100%;*/
+/*	transform: translate(1px, -1px);*/
+/*	display: flex;*/
+/*	justify-content: center;*/
+/*	align-items: center;*/
+/*	color: grey;*/
+/*	z-index: -10;*/
+/*}*/
+
+.item:active {
+	box-shadow:  0px 5px 10px rgba(0, 0, 0, 0.5);
+}
+.dragon {
+	box-shadow:  5px 30px 25px rgba(0, 0, 0, 0.5);
+	font-size: 15px;
+	z-index: 100;
+}
+
 .fly-item {
 	position: absolute;
 	z-index: 100;
@@ -394,9 +403,12 @@ button:hover {
 .fog {
 	position: absolute;
 	aspect-ratio: 1;
-	border: 1px solid grey;
+	background-size: cover;
+	background-position: center;
+
+	/*border: 1px solid grey;*/
 	/*background: rgba(166, 81, 236, 0.7);*/
-	background: rgba(166, 81, 236, 1);
+	/*background: rgba(166, 81, 236, 1);*/
 	z-index: 1;
 }
 
@@ -437,26 +449,33 @@ button:hover {
 
 .gift-on-item {
 	aspect-ratio: 1;
-	font-size: 6px;
+	position: relative;
+	/*font-size: 6px;*/
+	background-size: cover;
+	background-position: center;
+	/*display: flex;*/
+	/*justify-content: center;*/
+	/*align-items: center;*/
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	border: 1px solid grey;
+	/*border: 1px solid grey;*/
 	/*z-index: 3;*/
 }
 
 .magic-effect {
 	position: absolute;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: rgba(255, 255, 255, 1);
+	aspect-ratio: 1;
+
+	/*background-size: cover;*/
+	/*background-position: center;*/
+
+	/*display: flex;*/
+	/*justify-content: center;*/
+	/*align-items: center;*/
+	/*color: rgba(255, 255, 255, 1);*/
 	z-index: 45;
 }
 
-.gift-on-dragon { 
+.gift-on-dragon {
 	position: absolute;
 	aspect-ratio: 1;
 	font-size: 12px;

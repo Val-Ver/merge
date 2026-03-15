@@ -1,9 +1,9 @@
 ﻿const items = { 
-	flyItem: { 
-		flowers: { pic:  "*" , count: 3 }, 
-		water:	 { pic: "<>" , count: 1 }
+	flyItem: {
+		flowers: { pic:  'image/items/flyItem/flyItem_flower.png', count: 3 },
+		water:   { pic:  'image/items/flyItem/flyItem_water.png',  count: 1 }
 	},
-	
+
 	eggsDragon: { type: "eggsDragon", maxLevel: 1, set: {
 			blackDragon: { pic: '(b)' },
 			redDragon: { pic: '(r)' }
@@ -11,31 +11,36 @@
 	},
 
 	flowers: { type: "flowers", maxLevel: 10, set: {
-			0:  {level:  0, pic: "*" , time: 1 * 60 * 1000 }, 
-			1:  {level:  1, pic: "f1", giftCollect: { type: 'sphere', level: 1 } },
-			2:  {level:  2, pic: "f2", giftCollect: { type: 'sphere', level: 1 } },
-			3:  {level:  3, pic: "f3", giftCollect: { type: 'sphere', level: 2 } },
-			4:  {level:  4, pic: "f4", giftCollect: { type: 'sphere', level: 2 } },
-			5:  {level:  5, pic: "f5",
+			0: { level:  0, pic: 'image/items/flowers/flower_0_level.png', time: 1 * 60 * 1000 },
+			1: { level:  1, pic: 'image/items/flowers/flower_1_level.png' },
+			2: { level:  2, pic: 'image/items/flowers/flower_2_level.png', giftCollect: { type: 'sphere', level: 1 }, },
+			3: { level:  3, pic: 'image/items/flowers/flower_3_level.png', giftCollect: { type: 'sphere', level: 1 }, },
+			4: { level:  4, pic: 'image/items/flowers/flower_4_level.png', giftCollect: { type: 'sphere', level: 2 }, },
+			5:  {level:  5, pic: 'image/items/flowers/flower_5_level.png',
 				giftCollect: { type: 'sphere', level: 2 },
-				giftOnItem:  { type: 'sphere', level: 1, time: 1 * 60 * 1000, count: 1 } 
-			    },
-			6:  {level:  6, pic: "f6",
-				giftOnItem: {type: 'sphere', level: 2, time: 1 * 60 * 1000, count: 1} 
-			    },			
-			7:  {level:  7, pic: "f7",
-				giftOnItem: {type: 'sphere', level: 3, time: 1 * 60 * 1000, count: 1} 
-			    },
-			8:  {level:  8, pic: "f8",
-				giftOnItem: {type: 'sphere', level: 4, time: 1 * 60 * 1000, count: 1} 
-			    },
-			9:  {level:  9, pic: "f9",
-				giftOnItem: {type: 'sphere', level: 5, time: 1 * 60 * 1000, count: 1} 
-			    },
-			10: {level: 10, pic: "f10",
-				giftOnItem: {type: 'sphere', level: 6, time: 1 * 60 * 1000, count: 1} 
-			    }
+				//giftOnItem: {type: 'sphere', level: 1, time: 1 * 60 * 1000, count: 1}
+			},
+			6:  {level:  6, pic: 'image/items/flowers/flower_6_level.png',
+				giftCollect: { type: 'sphere', level: 3 },
+				//giftOnItem: {type: 'sphere', level: 2, time: 1 * 60 * 1000, count: 1}
+			},
+			7:  {level:  7, pic: 'image/items/flowers/flower_7_level.png',
+				giftCollect: { type: 'sphere', level: 4 },
+				//giftOnItem: {type: 'sphere', level: 3, time: 1 * 60 * 1000, count: 1}
+			},
+			8:  {level:  8, pic: 'image/items/flowers/flower_8_level.png',
+				giftCollect: { type: 'sphere', level: 5 },
+				//giftOnItem: {type: 'sphere', level: 4, time: 1 * 60 * 1000, count: 1}
+			},
+			9:  {level:  9, pic: 'image/items/flowers/flower_9_level.png',
+				giftCollect: { type: 'sphere', level: 6 },
+				//giftOnItem: {type: 'sphere', level: 5, time: 1 * 60 * 1000, count: 1}
+			},
+			10: {level: 10, pic: 'image/items/flowers/flower_10_level.png',
+				giftCollect: { type: 'sphere', level: 7 },
+				//giftOnItem: {type: 'sphere', level: 6, time: 1 * 60 * 1000, count: 1}
 			}
+		}
 	},
 	sphere: {type: "sphere", maxLevel: 10, set: {
 			1:  {level:  1, pic:  "(1)", pover:  1 }, 
@@ -50,87 +55,101 @@
 			10: {level: 10, pic: "(10)", pover: 41 }
 			}
 	},
-	water: { type: "water", maxLevel: 10, set: { 		
-			0:  {level:  0, pic: "<>", time: 1 * 60 * 1000 }, //если лужа не объединена, то появляется гриб
-			1:  {level:  1, pic: "w1"}, 
-			2:  {level:  2, pic: "w2"},
-			3:  {level:  3, pic: "w3"},
-			4:  {level:  4, pic: "w4",  gift: {type: 'mushrooms', level: 1, time: 2 * 60 * 1000} },
-			5:  {level:  5, pic: "w5",  gift: {type: 'mushrooms', level: 1, time: 1 * 60 * 1000} },
-			6:  {level:  6, pic: "w6",  gift: {type: 'mushrooms', level: 2, time: 2 * 60 * 1000} },
-			7:  {level:  7, pic: "w7",  gift: {type: 'mushrooms', level: 2, time: 1 * 60 * 1000} },
-			8:  {level:  8, pic: "w8",  gift: {type: 'mushrooms', level: 3, time: 2 * 60 * 1000} },
-			9:  {level:  9, pic: "w9",  gift: {type: 'mushrooms', level: 3, time: 1 * 60 * 1000} },
-			10: {level: 10, pic: "w10", gift: {type: 'mushrooms', level: 4, time: 2 * 60 * 1000} }
+	water: { type: "water", maxLevel: 10, set: {
+			0: { level:  0, pic: 'image/items/water/water_0_level.png', time: 1 * 60 * 1000 }, // если лужа объединена, то появляется вода
+			1: { level:  1, pic: 'image/items/water/water_1_level.png' }, // gift: {type: 'trees', level: 10, time: 0.5 * 60 * 1000 },
+			2: { level:  2, pic: 'image/items/water/water_2_level.png' },
+			3: { level:  3, pic: 'image/items/water/water_3_level.png' },
+			4:  {level:  4, pic: 'image/items/water/water_4_level.png',
+				gift: {type: 'mushrooms', level: 1, time: 2 * 60 * 1000}
+			},
+			5:  {level:  5, pic: 'image/items/water/water_5_level.png',
+				gift: {type: 'mushrooms', level: 1, time: 1 * 60 * 1000}
+			},
+			6:  {level:  6, pic: 'image/items/water/water_6_level.png',
+				gift: {type: 'mushrooms', level: 2, time: 2 * 60 * 1000}
+			},
+			7:  {level:  7, pic: 'image/items/water/water_7_level.png',
+				gift: {type: 'mushrooms', level: 2, time: 1 * 60 * 1000}
+			},
+			8:  {level:  8, pic: 'image/items/water/water_8_level.png',
+				gift: {type: 'mushrooms', level: 3, time: 2 * 60 * 1000}
+			},
+			9:  {level:  9, pic: 'image/items/water/water_9_level.png',
+				gift: {type: 'mushrooms', level: 3, time: 1 * 60 * 1000}
+			},
+			10: {level: 10, pic: 'image/items/water/water_10_level.png',
+				gift: {type: 'mushrooms', level: 4, time: 2 * 60 * 1000}
+			}
 			}
 	},
 	mushrooms: {type: "mushrooms", maxLevel: 10, set: {
-			1:  {level:  1, pic: "m1" }, 
-			2:  {level:  2, pic: "m2" },
-			3:  {level:  3, pic: "m3" },
-			4:  {level:  4, pic: "m4" },
-			5:  {level:  5, pic: "m5" },
-			6:  {level:  6, pic: "m6" },
-			7:  {level:  7, pic: "m7" },
-			8:  {level:  8, pic: "m8" },
-			9:  {level:  9, pic: "m9" },
-			10: {level: 10, pic: "m10"}
+			1: { level:  1, pic: 'image/items/mushrooms/mushroom_1_level.png' },
+			2: { level:  2, pic: 'image/items/mushrooms/mushroom_2_level.png' },
+			3: { level:  3, pic: 'image/items/mushrooms/mushroom_3_level.png' },
+			4: { level:  4, pic: 'image/items/mushrooms/mushroom_4_level.png' },
+			5: { level:  5, pic: 'image/items/mushrooms/mushroom_5_level.png' },
+			6: { level:  6, pic: 'image/items/mushrooms/mushroom_6_level.png' },
+			7: { level:  7, pic: 'image/items/mushrooms/mushroom_7_level.png' },
+			8: { level:  8, pic: 'image/items/mushrooms/mushroom_8_level.png' },
+			9: { level:  9, pic: 'image/items/mushrooms/mushroom_9_level.png' },
+			10:{ level: 10, pic: 'image/items/mushrooms/mushroom_10_level.png'}
 			}
 	},
 	trees: {type: "trees", maxLevel: 10, set: {
-			0:  {level:  0, pic: "$", time: 6 * 60 * 1000 }, 
-			1:  {level:  1, pic: "t1"},
-			2:  {level:  2, pic: "t2"},
-			3:  {level:  3, pic: "t3"}, 
-			4:  {level:  4, pic: "t4",  // с 4го уровня создает плоды на себе, по клику скидывает на поле
-				giftOnItem: {type: 'fruit', level: 1, time: 1 * 60 * 1000, count: 1} 
+			0:  {level:  0, pic: "$", time: 6 * 60 * 1000 }, // а надо ли??
+			1: { level: 1, pic: 'image/items/trees/tree_1_level.png' },
+			2: { level: 2, pic: 'image/items/trees/tree_2_level.png' },
+			3: { level: 3, pic: 'image/items/trees/tree_3_level.png' },
+			4:  {level:  4, pic: 'image/items/trees/tree_4_level.png',  // с 4го уровня создает плоды на себе, по клику скидывает на поле
+					giftOnItem: {type: 'fruit', level: 1, time: 0.17 * 60 * 1000, count: 1}
 			    }, 
-			5:  {level:  5, pic: "t5",  
-				giftOnItem: {type: 'fruit', level: 2, time: 1 * 60 * 1000, count: 1} 
+			5:  {level:  5, pic: 'image/items/trees/tree_5_level.png',
+					giftOnItem: {type: 'fruit', level: 2, time: 1 * 60 * 1000, count: 1}
 			    }, 
-			6:  {level:  6, pic: "t6",
-				gift: {type: 'flowers', level: 1, time: 2 * 60 * 1000 },
-				giftOnItem: {type: 'fruit', level: 3, time: 1 * 60 * 1000, count: 2} 
+			6:  {level:  6, pic: "image/items/trees/tree_6_level.png",
+					gift: {type: 'flowers', level: 1, time: 2 * 60 * 1000 },
+					giftOnItem: {type: 'fruit', level: 3, time: 1 * 60 * 1000, count: 2}
 			    }, 
-			7:  {level:  7, pic: "t7",
-				gift: {type: 'flowers', level: 2, time: 2 * 60 * 1000 },  
-				giftOnItem: {type: 'fruit', level: 4, time: 1 * 60 * 1000, count: 2} 
+			7:  {level:  7, pic: 'image/items/trees/tree_7_level.png',
+					gift: {type: 'flowers', level: 2, time: 2 * 60 * 1000 },
+					giftOnItem: {type: 'fruit', level: 4, time: 1 * 60 * 1000, count: 2}
 			    },
-			8:  {level:  8, pic: "t8",
-				gift: {type: 'flowers', level: 3, time: 2 * 60 * 1000 },  
-				giftOnItem: {type: 'fruit', level: 5, time: 1 * 60 * 1000, count: 3} 
+			8:  {level:  8, pic: 'image/items/trees/tree_8_level.png',
+					gift: {type: 'flowers', level: 3, time: 2 * 60 * 1000 },
+					giftOnItem: {type: 'fruit', level: 5, time: 1 * 60 * 1000, count: 3}
 			    },
-			9:  {level:  9, pic: "t9",
-				gift: {type: 'flowers', level: 4, time: 2 * 60 * 1000 },  
-				giftOnItem: {type: 'fruit', level: 6, time: 1 * 60 * 1000, count: 3} 
+			9:  {level:  9, pic: 'image/items/trees/tree_9_level.png',
+					gift: {type: 'flowers', level: 4, time: 2 * 60 * 1000 },
+					giftOnItem: {type: 'fruit', level: 6, time: 1 * 60 * 1000, count: 3}
 			    },
-			10: {level: 10, pic: "t10",
-				gift: {type: 'flowers', level: 5, time: 2 * 60 * 1000 }, 
-				giftOnItem: {type: 'fruit', level: 7, time: 1 * 60 * 1000, count: 4} 
+			10: {level: 10, pic: 'image/items/trees/tree_10_level.png',
+					gift: {type: 'flowers', level: 5, time: 2 * 60 * 1000 },
+					giftOnItem: {type: 'fruit', level: 7, time: 1 * 60 * 1000, count: 4}
 			    }
 			}
 	},
 	fruit: {type: "fruit", maxLevel: 7, set: { // теперь объединит
-			1:  {level: 1, pic: "fr1"}, // при объединении дает золото до 4го уровня
-			2:  {level: 2, pic: "fr2"},
-			3:  {level: 3, pic: "fr3"},
-			4:  {level: 4, pic: "fr4"},
-			5:  {level: 5, pic: "fr5"},
-			6:  {level: 6, pic: "fr6"},
-			7:  {level: 7, pic: "fr7"}
+			1: { level: 1, pic: 'image/items/fruits/fruit_1_level.png' }, // при объединении дает золото до 4го уровня
+			2: { level: 2, pic: 'image/items/fruits/fruit_2_level.png' },
+			3: { level: 3, pic: 'image/items/fruits/fruit_3_level.png' },
+			4: { level: 4, pic: 'image/items/fruits/fruit_4_level.png' },
+			5: { level: 5, pic: 'image/items/fruits/fruit_5_level.png' },
+			6: { level: 6, pic: 'image/items/fruits/fruit_6_level.png' },
+			7: { level: 7, pic: 'image/items/fruits/fruit_7_level.png' }
 			}
 	},
 	gold: {type: "gold", maxLevel: 10, set: {
-			1:  {level:  1, pic:  "G1"},
-			2:  {level:  2, pic:  "G2"},
-			3:  {level:  3, pic:  "G3"},
-			4:  {level:  4, pic:  "G4"},
-			5:  {level:  5, pic:  "G5"},
-			6:  {level:  6, pic:  "G6"},
-			7:  {level:  7, pic:  "G7"},
-			8:  {level:  8, pic:  "G8"},
-			9:  {level:  9, pic:  "G9"},
-			10: {level: 10, pic: "G10"}
+			 1: { level:  1, pic: 'image/items/gold/gold_1_level.png' },
+			 2: { level:  2, pic: 'image/items/gold/gold_2_level.png' },
+			 3: { level:  3, pic: 'image/items/gold/gold_3_level.png' },
+			 4: { level:  4, pic: 'image/items/gold/gold_4_level.png' },
+			 5: { level:  5, pic: 'image/items/gold/gold_5_level.png' },
+			 6: { level:  6, pic: 'image/items/gold/gold_6_level.png' },
+			 7: { level:  7, pic: 'image/items/gold/gold_7_level.png' },
+			 8: { level:  8, pic: 'image/items/gold/gold_8_level.png' },
+			 9: { level:  9, pic: 'image/items/gold/gold_9_level.png' },
+			10: { level: 10, pic: 'image/items/gold/gold_10_level.png'}
 			}
 	}
 }
