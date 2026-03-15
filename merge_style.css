@@ -166,9 +166,13 @@
 .picture-card {
 	width: 105px;
 	aspect-ratio: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+
+	background-size: cover;
+	background-position: center;
+
+	/*display: flex;*/
+	/*justify-content: center;*/
+	/*align-items: center;*/
 
 	border: 1px solid grey;
 	border-radius: 5px;
@@ -329,16 +333,19 @@ button:hover {
 }
 
 .item {
-	border: 1px solid grey;
+	/*border: 1px solid grey;*/
 	aspect-ratio: 1;
 	overflow: hidden;
 	position: absolute;
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 30px;
-	text-shadow: 1px -1px 3px rgba(0, 0, 0, 0.5);
+	background-size: cover;
+	background-position: center;
+
+	/*display: flex;*/
+	/*justify-content: center;*/
+	/*align-items: center;*/
+	/*font-size: 30px;*/
+	/*text-shadow: 1px -1px 3px rgba(0, 0, 0, 0.5);*/
 
 	cursor: grab;
 	cursor: pointer;
@@ -354,18 +361,18 @@ button:hover {
 	/*z-index: 1;*/
 }
 
-.item::after {
-	content: var(--after-content, "");
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	transform: translate(1px, -1px);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: grey;
-	z-index: -10;
-}
+/*.item::after {*/
+/*	content: var(--after-content, "");*/
+/*	position: absolute;*/
+/*	width: 100%;*/
+/*	height: 100%;*/
+/*	transform: translate(1px, -1px);*/
+/*	display: flex;*/
+/*	justify-content: center;*/
+/*	align-items: center;*/
+/*	color: grey;*/
+/*	z-index: -10;*/
+/*}*/
 
 .fly-item {
 	position: absolute;
@@ -376,9 +383,12 @@ button:hover {
 .fog {
 	position: absolute;
 	aspect-ratio: 1;
-	border: 1px solid grey;
+	background-size: cover;
+	background-position: center;
+
+	/*border: 1px solid grey;*/
 	/*background: rgba(166, 81, 236, 0.7);*/
-	background: rgba(166, 81, 236, 1);
+	/*background: rgba(166, 81, 236, 1);*/
 	z-index: 1;
 }
 
@@ -419,22 +429,29 @@ button:hover {
 
 .gift-on-item {
 	aspect-ratio: 1;
-	font-size: 6px;
+	position: relative;
+	/*font-size: 6px;*/
+	background-size: cover;
+	background-position: center;
+	/*display: flex;*/
+	/*justify-content: center;*/
+	/*align-items: center;*/
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	border: 1px solid grey;
+	/*border: 1px solid grey;*/
 	/*z-index: 3;*/
 }
 
 .magic-effect {
 	position: absolute;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: rgba(255, 255, 255, 1);
+	aspect-ratio: 1;
+
+	/*background-size: cover;*/
+	/*background-position: center;*/
+
+	/*display: flex;*/
+	/*justify-content: center;*/
+	/*align-items: center;*/
+	/*color: rgba(255, 255, 255, 1);*/
 	z-index: 45;
 }
 

@@ -14,13 +14,22 @@
 	createItem(id, pic) {
 		const containerItem = document.querySelector('.item-container');
 		const item = document.createElement('div');
+		// const item = document.createElement('img');
+
 		item.className = 'item';
 		item.id = `item-${id}`;
 		item.dataset.name = 'item';
 		item.dataset.id = `${id}`;
-		item.textContent = `${pic}`;
-		item.style.setProperty(`--after-content`, `"${pic}"`);
+		// item.textContent = `${pic}`;
+		// item.style.setProperty(`--after-content`, `"${pic}"`);
 		item.style.width = `${this.boardWidth/this.cols}px`;
+
+		item.style.backgroundImage = `url(${pic})`
+
+		// item.src = `${pic}`;
+		// item.style.backgroundColor = 'transparent';
+		// item.draggable = false
+
 		containerItem.appendChild(item);
 
 		this.itemElementForSave = item;
@@ -102,8 +111,11 @@
 			const time = 1;
 			element.classList.add('magic-effect');
 			element.dataset.name = 'magic'
-			element.textContent = "*";
-			element.style.setProperty(`--after-content`, `"*"`);
+			// element.textContent = "*";
+			// element.style.setProperty(`--after-content`, `"*"`);
+
+			element.style.backgroundImage = 'url(image/effects/magic_way.png)'
+
 			element.style.border = 'none';
 			element.style.transition = `opacity ${time}s ease-in-out, transform  ${time}s ease-in-out`;
 			element.style.opacity = '0.01'

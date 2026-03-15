@@ -34,7 +34,7 @@
 		} else {
 			document.querySelector('.game-options-container').style.display = 'flex';
 			const message = document.querySelector('.info-message');
-			message.style.display = 'flex';
+			message.style.display = 'flex'
 		}
 	}
 	

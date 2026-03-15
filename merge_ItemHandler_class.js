@@ -9,7 +9,7 @@ class ItemHandler {
 
 	constructor(itemPlacer, mergeManager) {
 		this.itemPlacer = itemPlacer;
-this.mergeManager = mergeManager
+		this.mergeManager = mergeManager
 		this.itemRegistry = itemPlacer.itemRegistry
 		this.dragManager = new DragManagerForGame(this);
 	}
