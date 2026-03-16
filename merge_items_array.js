@@ -43,16 +43,16 @@
 		}
 	},
 	sphere: {type: "sphere", maxLevel: 10, set: {
-			1:  {level:  1, pic:  "(1)", pover:  1 }, 
-			2:  {level:  2, pic:  "(2)", pover:  5 },
-			3:  {level:  3, pic:  "(3)", pover:  9 },
-			4:  {level:  4, pic:  "(4)", pover: 14 },
-			5:  {level:  5, pic:  "(5)", pover: 18 },
-			6:  {level:  6, pic:  "(6)", pover: 23 },
-			7:  {level:  7, pic:  "(7)", pover: 27 },
-			8:  {level:  8, pic:  "(8)", pover: 32 },
-			9:  {level:  9, pic:  "(9)", pover: 36 },
-			10: {level: 10, pic: "(10)", pover: 41 }
+			1:  {level:  1, pic: 'image/items/sphere/sphere_1_level.png',  pover:  1 },
+			2:  {level:  2, pic: 'image/items/sphere/sphere_2_level.png',  pover:  5 },
+			3:  {level:  3, pic: 'image/items/sphere/sphere_3_level.png',  pover:  9 },
+			4:  {level:  4, pic: 'image/items/sphere/sphere_4_level.png',  pover: 14 },
+			5:  {level:  5, pic: 'image/items/sphere/sphere_5_level.png',  pover: 18 },
+			6:  {level:  6, pic: 'image/items/sphere/sphere_6_level.png',  pover: 23 },
+			7:  {level:  7, pic: 'image/items/sphere/sphere_7_level.png',  pover: 27 },
+			8:  {level:  8, pic: 'image/items/sphere/sphere_8_level.png',  pover: 32 },
+			9:  {level:  9, pic: 'image/items/sphere/sphere_9_level.png',  pover: 36 },
+			10: {level: 10, pic: 'image/items/sphere/sphere_10_level.png', pover: 41 }
 			}
 	},
 	water: { type: "water", maxLevel: 10, set: {
@@ -102,7 +102,7 @@
 			2: { level: 2, pic: 'image/items/trees/tree_2_level.png' },
 			3: { level: 3, pic: 'image/items/trees/tree_3_level.png' },
 			4:  {level:  4, pic: 'image/items/trees/tree_4_level.png',  // с 4го уровня создает плоды на себе, по клику скидывает на поле
-					giftOnItem: {type: 'fruit', level: 1, time: 0.17 * 60 * 1000, count: 1}
+					giftOnItem: {type: 'fruit', level: 1, time: 1 * 60 * 1000, count: 1}
 			    }, 
 			5:  {level:  5, pic: 'image/items/trees/tree_5_level.png',
 					giftOnItem: {type: 'fruit', level: 2, time: 1 * 60 * 1000, count: 1}
