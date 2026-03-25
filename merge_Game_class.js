@@ -16,7 +16,7 @@ class Game {
 	constructor() {
 		this.gameOptions = new GameOptions(this);
 		this.startGame(); // это надо
-		//this.saveGame.saveBeforeUnload(this.gameBoard.grid);// это надо
+		this.saveGame.saveBeforeUnload(this.gameBoard.grid);// это надо
 	}
 
 	startGame() {
