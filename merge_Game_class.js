@@ -21,7 +21,7 @@ class EventEmiter {
 			}
 		}
 	}
-	
+
 	emit(event, ...arg) {
 		if(this.listeners[event] == null) { return }
 		this.listeners[event].forEach(fn => { fn(...arg) });
@@ -49,13 +49,13 @@ class Game {
 		//this.dragonManager.createDragon('blackDragon', 1, 29);// это временно
 	}
 
-	
+
 	dragon = this.eventEmiter.subscribe('dragonAppeared', (type, count, row, col) => {
 		for(let i = 0; i < count; i++) {
 			this.dragonManager.createDragon(type, row, col);
 		}
 	})
-	
+
 	itemPutOnBoardFromDragon = this.eventEmiter.subscribe('itemPutOnBoard', (row, col) => {
 		this.itemManager.itemPutOnBoardFromDragon(row, col);
 	})
@@ -64,7 +64,7 @@ class Game {
 		this.dragonManager.directDragonToItem(item)
 	})
 
-	
+
 	startGame() {
 		this.flyItemsManager.startFlyItem();
 		if(this.saveGame.hasSaveVersion()) {
@@ -72,15 +72,15 @@ class Game {
 			this.fogOnBoard.updateGrid(this.saveGame.grid);
 			this.itemManager.updateItemOnBoard(this.saveGame.grid);
 		} else {
-			this.startNewGame();	
+			this.startNewGame();
 		}
-
-		//const count = document.body.querySelectorAll('*').length;
-		//console.log(count); 
+		// 	const count = document.body.querySelectorAll('*').length;
+		// 	console.log(count);
 
 		/*при старте рисует 8712 элементов... очень много (((( 
 		теперь 6704 получше, но все же много( 
 		можно убрать псевдо элемента, они все равно нужны только здесь для красоты
+		псевдо элементы ни на что не влияют
 		*/
 	}
 
@@ -133,7 +133,7 @@ class Game {
 				 }
 				 if(type == 'flowers' || type == 'trees') {
 				 	levelItem = this.getRandomInt(5, 7);
-				 } 
+				 }
 				 if(type == 'water' || type == 'mushrooms') {
 					levelItem = this.getRandomInt(1, 3)
 				 }
@@ -147,7 +147,7 @@ class Game {
 				 }
 				 if(type == 'flowers' || type == 'trees') {
 					levelItem = this.getRandomInt(7, 9); 
-				 }  
+				 }
 				 if(type == 'water' || type == 'mushrooms') {
 					levelItem = this.getRandomInt(3, 5);
 				 }

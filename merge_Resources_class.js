@@ -3,7 +3,7 @@
 	scoreGold = 0;
 
 	constructor() {
-		//this.saveBeforeUnload(); //это надо
+		this.saveBeforeUnload(); //это надо
 		this.updateScoreGolg();
 		this.updateElementScoreGold();
 	}
