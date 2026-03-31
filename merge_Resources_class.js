@@ -35,6 +35,16 @@
 			let gold1 = JSON.stringify(this.scoreGold);
 			localStorage.setItem('merge_gold', gold1);
 		})
+		window.addEventListener('pagehide', () => {
+			let gold1 = JSON.stringify(this.scoreGold);
+			localStorage.setItem('merge_gold', gold1);
+		})
+		document.addEventListener('visibilitychange', () => {
+			if (document.visibilityState === 'hidden') {
+				let gold1 = JSON.stringify(this.scoreGold);
+				localStorage.setItem('merge_gold', gold1);
+			}
+		})
 	}
 
 }
