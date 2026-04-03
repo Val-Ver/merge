@@ -102,8 +102,8 @@
 			const time = 1;
 			element.classList.add('magic-effect');
 			element.dataset.name = 'magic';
-			element.textContent = "*";
-			element.style.setProperty(`--after-content`, `"*"`);
+			// element.textContent = "*";
+			// element.style.setProperty(`--after-content`, `"*"`);
 			element.dataset.name = 'magic'
 			element.style.backgroundImage = 'url(image/effects/magic_way.png)'
 

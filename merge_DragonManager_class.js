@@ -1,17 +1,17 @@
 ﻿const dragons = {
 	blackDragon: { type: 'blackDragon', maxLevel: 4, set: {
-			1: { pic: ')black1(' },
-			2: { pic: ')black2(' },
-			3: { pic: ')black3(' },
-			4: { pic: ')black4(' },
+			1: { pic: 'image/items/dragons/black_dragon/black_dragon_1_level.png' },
+			2: { pic: 'image/items/dragons/black_dragon/black_dragon_2_level.png' },
+			3: { pic: 'image/items/dragons/black_dragon/black_dragon_3_level.png' },
+			4: { pic: 'image/items/dragons/black_dragon/black_dragon_4_level.png' },
 			}	
 	},
 
 	redDragon: { type: 'redDragon', maxLevel: 4, set: {
-			1: { pic: ')red1(' },
-			2: { pic: ')red2(' },
-			3: { pic: ')red3(' },
-			4: { pic: ')red4(' },
+			1: { pic: 'image/items/dragons/red_dragon/red_dragon_1_level.png' },
+			2: { pic: 'image/items/dragons/red_dragon/red_dragon_2_level.png' },
+			3: { pic: 'image/items/dragons/red_dragon/red_dragon_3_level.png' },
+			4: { pic: 'image/items/dragons/red_dragon/red_dragon_4_level.png' },
 			}	
 	}
 
@@ -76,8 +76,11 @@ class DragonRenderer {
 		dragon.id = `dragon-${id}`;
 		dragon.dataset.name = 'dragon';
 		dragon.dataset.id = `${id}`;
-		dragon.textContent = `${pic}`;
-		dragon.style.color = 'white';
+
+		dragon.style.backgroundImage = `url(${pic})`;
+
+		// dragon.textContent = `${pic}`;
+		// dragon.style.color = 'white';
 		dragon.style.width = `${this.cell}px`;
 		const heightDragon = 20;
 		dragon.style.left = `${this.cell * col}px`;
@@ -103,7 +106,10 @@ class DragonRenderer {
 		item.id = `item-${itemId}`;
 		item.dataset.name = 'gift-on-dragon';
 		item.dataset.id = `${itemId}`;
-		item.textContent = `${pic}`;
+
+		item.style.backgroundImage = `url(${pic})`;
+		// item.textContent = `${pic}`;
+
 		const size = GAME_CONFIG.UI.SIZE_GIFT_ON_ITEM_OF_DRAGON;
 		item.style.width = `${this.cell * size}px`;
 		item.style.position = 'absolute';

@@ -60,7 +60,7 @@ class Game {
 		this.itemManager.itemPutOnBoardFromDragon(row, col);
 	})
 
-	itemCollsDragon = this.eventEmiter.subscribe('itemCollsDragon', (item) => {
+	itemCallsDragon = this.eventEmiter.subscribe('itemCallsDragon', (item) => {
 		this.dragonManager.directDragonToItem(item)
 	})
 

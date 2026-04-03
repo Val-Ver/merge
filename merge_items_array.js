@@ -5,8 +5,8 @@
 	},
 
 	eggsDragon: { type: "eggsDragon", maxLevel: 1, set: {
-			blackDragon: { pic: '(b)' },
-			redDragon: { pic: '(r)' }
+			blackDragon: { pic: 'image/items/dragon_eggs/blackDragon_0_level.png' },
+			redDragon: { pic: 'image/items/dragon_eggs/redDragon_0_level.png' }
 			}
 	},
 

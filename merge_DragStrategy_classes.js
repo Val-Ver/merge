@@ -256,12 +256,12 @@ class ItemDblCLickStrategy extends BaseDragStrategy {
 
 	constructor(dragManager) {
 		super(dragManager);
-		this.manager = dragManager.itemHandler; 
+		this.manager = dragManager.itemHandler;
 	}
 
 	end(clientX, clientY, element) {
 		this.manager.stayBackItemOnBoard(element.dataset.id);
-		this.manager.itemCollsDragon(element.dataset.id) //возможно не понадобится 
+		this.manager.itemCallsDragon(element.dataset.id) //возможно не понадобится
 	}
 }
 

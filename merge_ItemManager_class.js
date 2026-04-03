@@ -19,8 +19,8 @@
 		this.itemPlacer.itemPutOnBoardFromDragon(row, col);
 	}
 
-	itemCollsDragon(item) {
-		this.eventEmiter.emit('itemCollsDragon', item);
+	itemCallsDragon(item) {
+		this.eventEmiter.emit('itemCallsDragon', item);
 	}
 //------------------------------------------
 

@@ -99,9 +99,9 @@ class ItemHandler {
 		this.itemPlacer.stayBackItemOnBoard(itemId);
 	}
 
-	itemCollsDragon(itemId) {
+	itemCallsDragon(itemId) {
 		const item = this.itemRegistry.getCurrentItem(itemId);
 		if(!item.giftCollect) { return }
-		this.mergeManager.manager.itemCollsDragon(item)
+		this.mergeManager.manager.itemCallsDragon(item)
 	}
 }
