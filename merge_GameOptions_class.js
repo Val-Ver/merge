@@ -4,10 +4,15 @@
 	infoPanel = null;
 	resources = new Resources();
 
+	gameOptionsContainer = document.querySelector('.game-options-container');
+	shopContainer = document.querySelector('.shop-container');
+	divInfoMessage = document.querySelector('.div-info-message');
+	infoContainer = document.querySelector('.info-container');
+
 	constructor(game) {
 		this.game = game;
 		this.infoPanel = new ItemInfoPanel(this);
-		this.shopManager = new ShopManager(this);
+		this.shopHandler = new ShopManager(this);
 		this.game.itemManager.addOptions(this);
 		this.addBtnInfoMessage();
 		this.clickOnPlaceOnBoard();
@@ -32,25 +37,21 @@
 			this.resources.decreaseGold(price);
 			this.game.itemManager.itemHandler.handleOnShop(type, level);
 		} else {
-			document.querySelector('.game-options-container').style.display = 'flex';
-			const message = document.querySelector('.info-message');
-			message.style.display = 'flex';
+			this.gameOptionsContainer.style.display = 'flex';
+			this.divInfoMessage.style.display = 'flex';
 		}
 	}
 	
 	addBtnInfoMessage() {
 		const btnExit = document.getElementById('btn-exit-message');
 		const clickOnDoc = () => {
-			const message = document.querySelector('.info-message');
-			document.querySelector('.game-options-container').style.display = 'none';
-			message.style.display = 'none';
-			//btnExit.removeEventListener('click', clickOnDoc);
+			this.gameOptionsContainer.style.display = 'none';
+			this.divInfoMessage.style.display = 'none';
 		}
 		btnExit.addEventListener('click', clickOnDoc)
 	}
 
 	clickOnPlaceOnBoard() {
-		const container = document.querySelector('.game-options-container');
 		const clickOnBoard = (e) => {
 //сделать что бы клик дальше не шел
 			const elementsFromPoint = document.elementsFromPoint(e.clientX, e.clientY);
@@ -61,15 +62,15 @@
 					break;
 				}
 				if(element.className == 'game-options-container') { 
-					document.querySelector('.shop-container').style.display = 'none';
-					document.querySelector('.info-message').style.display = 'none';
-					document.querySelector('.info-container').style.display = 'none';
-					container.style.display = 'none';
+					this.shopContainer.style.display = 'none';
+					this.divInfoMessage.style.display = 'none';
+					this.infoContainer.style.display = 'none';
+					this.gameOptionsContainer.style.display = 'none';
 					e.stopPropagation();
 					break;
 				}
 			}
 		}
-		container.addEventListener('click', clickOnBoard)
+		this.gameOptionsContainer.addEventListener('click', clickOnBoard)
 	}
 }

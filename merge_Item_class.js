@@ -14,6 +14,7 @@
 	pover = null;
 	isDraging = false;
 	countHasGiftOnItem = 0;
+	elementHasGiftOnItem = null;
 
 	constructor(type, level, row, col) {
 		this.type = type;
@@ -26,6 +27,7 @@
 		this.pic = items[this.type].set[this.level].pic;
 		this.gift = items[this.type].set[this.level].gift ?? null;
 		this.giftOnItem = items[this.type].set[this.level].giftOnItem ?? null;
+this.giftCollect = items[this.type].set[this.level].giftCollect ?? null;
 		this.pover = items[this.type].set[this.level].pover ?? null;
 	}
 	

@@ -182,7 +182,7 @@
 	}
 }
 
-.name-card {
+.text-card {
 	height: 100%;
 	display: flex;
 	justify-content: center;
@@ -220,15 +220,23 @@
 	align-items: center;
 }
 
+.div-info-message {
+	width: 500px;
+	height: 220px;
+	display: none;
+	justify-content: center;
+	align-items: center;
+/*pointer-events:none;*/
+}
 .info-message {
-	position: absolute;
+	/*position: absolute;
 	left: 175px;
-	top: 230px;
+	top: 230px;*/
 
 	width: 250px;
 	height: 60px;
 
-	display: none;
+	display: flex;
 	justify-content: space-around;
 	align-items: center;
 }
@@ -276,9 +284,9 @@ button:hover {
 
 	border: 1px solid black;
 	border-radius: 12px;
-	box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 1),
-			    0 0 0 3px #c7ced1,
-			    4px 4px 6px rgba(0, 0, 0, 1);
+	box-shadow: 	inset 1px 1px 2px rgba(0, 0, 0, 1),
+			0 0 0 3px #c7ced1,
+			4px 4px 6px rgba(0, 0, 0, 1);
 
 }
 
@@ -297,8 +305,13 @@ button:hover {
 	position: absolute;
 	left: 0;
 	top: 0;
+
 	transform: translate(0, 0);
 	will-change: transform;
+
+	/*transform-style: preserve-3d;
+	transform: rotateX(65deg) rotateY(0deg) rotateZ(50deg);*/
+
 }
 
 .board-container {
@@ -308,8 +321,6 @@ button:hover {
 
 	background: green;
 	box-shadow: 10px 10px 15px 0px rgba(0, 0, 0, 0.5);
-
-	transform-style: preserve-3d;
 }
 
 .cell {
@@ -328,10 +339,9 @@ button:hover {
 	background: grey;
 }
 
-.item {
+.item, .dragon {
 	border: 1px solid grey;
 	aspect-ratio: 1;
-	overflow: hidden;
 	position: absolute;
 
 	display: flex;
@@ -346,14 +356,6 @@ button:hover {
 	z-index: 1;
 }
 
-.highlight {
-	/*box-shadow: inset 1px 1px 10px rgba(255, 255, 255, 1);*/
-	/*box-shadow: inset 1px 1px 10px yellow;*/
-	/*box-shadow: inset 1px 1px 10px #c0bb21;*/
-	box-shadow: inset 0px 0px 10px #c0bb21;
-	/*z-index: 1;*/
-}
-
 .item::after {
 	content: var(--after-content, "");
 	position: absolute;
@@ -366,7 +368,23 @@ button:hover {
 	color: grey;
 	z-index: -10;
 }
+.item:active {
+	box-shadow:  0px 5px 10px rgba(0, 0, 0, 0.5);
+}
 
+.dragon {
+	box-shadow:  5px 30px 25px rgba(0, 0, 0, 0.5);
+	font-size: 15px;
+	z-index: 100;
+}
+
+.highlight {
+	/*box-shadow: inset 1px 1px 10px rgba(255, 255, 255, 1);*/
+	/*box-shadow: inset 1px 1px 10px yellow;*/
+	/*box-shadow: inset 1px 1px 10px #c0bb21;*/
+	box-shadow: inset 0px 0px 10px #c0bb21;
+	/*z-index: 1;*/
+}
 .fly-item {
 	position: absolute;
 	z-index: 100;
@@ -438,3 +456,16 @@ button:hover {
 	z-index: 45;
 }
 
+.gift-on-dragon { 
+	position: absolute;
+	aspect-ratio: 1;
+	font-size: 12px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	border: 1px solid white;
+	box-shadow: inset 0px 0px 5px white;
+	border-radius: 50%
+}

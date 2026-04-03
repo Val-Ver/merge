@@ -7,7 +7,10 @@ class GiftOnItem {
 	}
 
 	generateGiftOnItem(item) {
-		this.renderer.createDivForGifts(item.id, item.giftOnItem.count);
+		this.renderer.createDivForGifts(item.element, item.giftOnItem.count);
+		item.elementHasGiftOnItem = this.renderer.elementForSave;
+		this.renderer.elementForSave = null;
+
 		for(let i = 0; i < item.giftOnItem.count; i++) {
 			setTimeout(() =>{
 			const currentItem = this.manager.itemRegistry.getCurrentItem(item.id)
@@ -19,10 +22,13 @@ class GiftOnItem {
 	}
 
 	updateGiftOnItem(item) {
-		this.renderer.createDivForGifts(item.id, item.giftOnItem.count);
+		this.renderer.createDivForGifts(item.element, item.giftOnItem.count);
+		item.elementHasGiftOnItem = this.renderer.elementForSave;
+		this.renderer.elementForSave = null;
+
 		for(let i = 0; i < item.countHasGiftOnItem; i++) {
 			const itemOnItem = new Item(item.giftOnItem.type, item.giftOnItem.level, item.row, item.col);
-			this.renderer.createGiftOnItem(item.id, itemOnItem.id, itemOnItem.pic);
+			this.renderer.createGiftOnItem(item.elementHasGiftOnItem, itemOnItem.id, itemOnItem.pic);
 		}
 
 		for(let i = item.countHasGiftOnItem; i < item.giftOnItem.count; i++) {
@@ -34,12 +40,12 @@ class GiftOnItem {
 	addGiftOnItem(item) {
 		item.countHasGiftOnItem++
 		const itemOnItem = new Item(item.giftOnItem.type, item.giftOnItem.level, item.row, item.col);
-		this.renderer.createGiftOnItem(item.id, itemOnItem.id, itemOnItem.pic);
+		this.renderer.createGiftOnItem(item.elementHasGiftOnItem, itemOnItem.id, itemOnItem.pic);
 	}
 
 	removeGiftOnItem(item) {
 		item.countHasGiftOnItem--
-		const itemGifts = this.renderer.removeGiftOnItem(item.id);
+		const itemGifts = this.renderer.removeGiftOnItem(item.elementHasGiftOnItem);
 	}
 
 	createGiftOnBoardBeforeClick(item) {

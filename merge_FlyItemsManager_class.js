@@ -67,4 +67,5 @@
 		this.manager.itemPlacer.gameBoard.clearItemInCell(row, col)
 		this.manager.itemPlacer.giftFromItem.createGift(type, level, {row: row, col: col});
 	}
+
 }

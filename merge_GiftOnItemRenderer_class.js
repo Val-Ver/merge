@@ -5,22 +5,23 @@
 	boardWidth = GAME_CONFIG.BOARD_SIZE.BOARD_WIDTH;
 	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
 
+	elementForSave = null;
+
 	constructor() {
 	}
 
-	createDivForGifts(id, count) {
-		const containerGift = document.getElementById(`item-${id}`);
+	createDivForGifts(element, count) {
 		const divForGifts = document.createElement('div');
-		divForGifts.id = `div-for-gift-${id}`;
+		divForGifts.id = `div-for-gift-${element.id}`;
 		divForGifts.className = 'div-for-gift';
 		divForGifts.style.gridTemplateColumns = `repeat(${count}, ${100/count}%)`;
 
-		containerGift.appendChild(divForGifts);
+		element.appendChild(divForGifts);
 		void divForGifts.offsetWidth;
+		this.elementForSave = divForGifts;
 	}
 
-	createGiftOnItem(divId, itemId, pic) {
-		const divForGifts = document.getElementById(`div-for-gift-${divId}`);
+	createGiftOnItem(divForGifts, itemId, pic) {
 		const item = document.createElement('div');
 		item.className = 'gift-on-item';
 		item.id = `item-${itemId}`;
@@ -57,8 +58,7 @@
 		})
 	}
 
-	removeGiftOnItem(id) {
-		const divForGifts = document.getElementById(`div-for-gift-${id}`);
+	removeGiftOnItem(divForGifts) {
 		if(divForGifts) {
 			divForGifts.querySelector('.gift-on-item').remove();
 		}

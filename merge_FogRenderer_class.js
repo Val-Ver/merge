@@ -43,7 +43,7 @@
 		fogCounter.textContent = `${layer-1}`
 		fogCounter.className = 'layer-fog';
 		element.appendChild(fogCounter);
-		return fogCounter
+		return fogCounter;
 	}
 
 	removeFogOnCell(layerFog, element) {
@@ -59,7 +59,7 @@
 		} 
 
 		element.style.transition = `opacity ${time}s ease-in-out`;
-		element.style.opacity = `${opacity}`
+		element.style.opacity = `${opacity}`;
 
 		element.addEventListener('transitionend', (event) => {
 			fogCounter.remove();
@@ -92,7 +92,7 @@
 		let time = GAME_CONFIG.ANIMATIONS.TIME_REMOVE_MAGIC_WAY_TRANSITION;
 		const distanceX = Number(element.style.left.split('px')[0]) - (this.boardWidth/this.cols  * col + this.boardWidth/this.cols)
 		const distanceY = Number(element.style.top.split('px')[0])  - (this.boardHeight/this.rows * row + this.boardHeight/this.rows)
-		const distance = Math.sqrt(distanceX**2 + distanceY**2)		
+		const distance = Math.sqrt(distanceX**2 + distanceY**2);	
 
 		if(distance > GAME_CONFIG.BOARD_SIZE.CELL) {
 			time *= Math.floor(distance / GAME_CONFIG.BOARD_SIZE.CELL)
@@ -103,11 +103,11 @@
 			element.style.transition = `left ${time}s ease-in-out, 
 						    top ${time}s ease-in-out,
 						    opacity ${time}s ease-in-out,
-						    transform  ${time}s ease-in-out`
+						    transform  ${time}s ease-in-out`;
 
 			element.style.left = `${this.boardWidth/this.cols  * col + this.boardWidth/this.cols  * 0.4}px`; 
 			element.style.top  = `${this.boardHeight/this.rows * row + this.boardHeight/this.rows * 0.4}px`;
-			element.style.opacity = '0.01'
+			element.style.opacity = '0.01';
 			element.style.transform = 'scale(5)';
 
 			element.addEventListener('transitionend', (event) => {

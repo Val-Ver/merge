@@ -7,9 +7,6 @@
 
 	centerWidth = (document.querySelector('.viewport-container')).clientWidth/2 -  this.boardWidth/2;
 
-	animatedFlying = null;
-	animatedRemove = null;
-
 	constructor(manager, type, top) {
 		this.manager = manager;
 		this.createFlyItem(type, top);
@@ -40,34 +37,28 @@
 		element.style.transition = `left ${time}s linear`;
 		element.style.left = `${this.boardWidth}px`;
 
-		this.animatedFlying = () => {
-			element.removeEventListener('transitionend', this.animatedFlying)
+		element.addEventListener('transitionend', (event) => {
 			if(element) { element.remove() }
-		}
-		element.addEventListener('transitionend', this.animatedFlying)
+		})
 	}
 
 	removeFlyItem(element, row, col) {
 		return new Promise((resolve, reject) => {
 			const time = GAME_CONFIG.ANIMATIONS.TIME_PUT_FlY_ITEM;
-
 			element.style.transition = `left ${time}s ease-in-out, top ${time}s ease-in-out`
 			element.style.left = `${this.boardWidth/this.cols  * col + this.boardWidth/this.cols * 0.4 /*+ this.centerWidth*/}px`;
 			element.style.top  = `${this.boardHeight/this.rows * row + this.boardHeight/this.rows * 0.4}px`;
 
-			this.animatedRemove = () => {
-				element.removeEventListener('transitionend', this.animatedRemove)
+			element.addEventListener('transitionend', (event) => {
 				element.remove();
 				resolve();
-			}
-			element.addEventListener('transitionend', this.animatedRemove)
+			})
 		})
 	}
 
 	addListenerClick(element) {
 		const clickOnFlyItem = (e) => {
 			element.removeEventListener('pointerdown', clickOnFlyItem);
-			element.removeEventListener('transitionend', this.animatedFlying)
 			const type = element.dataset.type;
 
 			let elementsFromPoint = document.elementsFromPoint(e.clientX, e.clientY);

@@ -1,12 +1,18 @@
 ﻿class ShopRenderer {
+	shop = null;
+	shopItem = null;
 
-	constructor() {}
+	setItemsForSave = {}
+
+	constructor(shop, shopItem) {
+		this.shop = shop;
+		this.shopItem = shopItem;
+	}
 
 	createCellForShop() {
 		const setItems = GAME_CONFIG.SHOP.SET_ITEM_FOR_SHOP;
-		const container = document.querySelector('.shop');
 
-		container.style.gridTemplateColumns = `repeat(${setItems.length}, ${100/setItems.length}%)`;
+		this.shop.style.gridTemplateColumns = `repeat(${setItems.length}, ${100/setItems.length}%)`;
 		for(let i = 0; i < setItems.length; i++) {
 			const cell = document.createElement('div');
 			cell.className = 'cell-for-shop';
@@ -14,33 +20,13 @@
 			cell.dataset.type = `${setItems[i]}`;
 
 			const picture = this.createPictureCard(items[setItems[i]].set[1].pic);
-			const name = this.createNameCard(setItems[i]);
+			const name = this.createTextCard(setItems[i]);
 
-			this.createCellItemForShop(setItems[i])
+			this.createCellItemForShop(setItems[i]);
 			cell.appendChild(picture);
 			cell.appendChild(name);
-			container.appendChild(cell);
+			this.shop.appendChild(cell);
 		}
-	}
-
-	createNameCard(type) {
-		const name = document.createElement('div');
-		name.textContent = `${type}`//, level 1 ${GAME_CONFIG.SHOP.PRICE_ITEM} gold`;
-		name.className = 'name-card';
-		return name;
-	}
-
-	createLevelCard(level) {
-		const levelItem = document.createElement('div');
-		levelItem.textContent = `level ${level}`;
-		levelItem.className = 'name-card';
-		return levelItem;
-	}
-	createPriceCard(price) {
-		const priceItem = document.createElement('div');
-		priceItem.textContent = `${price} gold`;
-		priceItem.className = 'name-card';
-		return price;
 	}
 
 	createPictureCard(pic) {
@@ -50,9 +36,15 @@
 		return picture;
 	}
 
+	createTextCard(type) {
+		const name = document.createElement('div');
+		name.textContent = `${type}`;
+		name.className = 'text-card';
+		return name;
+	}
+
 	createCellItemForShop(type) {
-		const setItems = items[type]
-		const container = document.querySelector('.shop-item');
+		const setItems = items[type];
 
 		const containerType = document.createElement('div');
 		containerType.className = 'shop-item-type';
@@ -71,9 +63,9 @@
 			const picture = this.createPictureCard(setItems.set[i].pic);
 
 			const text = document.createElement('div');
-			const name = this.createNameCard(setItems.type);
-			const level = this.createNameCard(`level ${i}`);
-			const price = this.createNameCard(`${priceItem} gold`);
+			const name = this.createTextCard(setItems.type);
+			const level = this.createTextCard(`level ${i}`);
+			const price = this.createTextCard(`${priceItem} gold`);
 
 			text.appendChild(name);
 			text.appendChild(level);
@@ -83,6 +75,7 @@
 			cell.appendChild(text);
 			containerType.appendChild(cell);
 		}
-		container.appendChild(containerType);
+		this.shopItem.appendChild(containerType);
+		this.setItemsForSave[type] = containerType;
 	}
 }

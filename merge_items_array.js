@@ -3,14 +3,22 @@
 		flowers: { pic:  "*" , count: 3 }, 
 		water:	 { pic: "<>" , count: 1 }
 	},
+	
+	eggsDragon: { type: "eggsDragon", maxLevel: 1, set: {
+			blackDragon: { pic: '(b)' },
+			redDragon: { pic: '(r)' }
+			}
+	},
+
 	flowers: { type: "flowers", maxLevel: 10, set: {
 			0:  {level:  0, pic: "*" , time: 1 * 60 * 1000 }, 
-			1:  {level:  1, pic: "f1"},
-			2:  {level:  2, pic: "f2"},
-			3:  {level:  3, pic: "f3"},
-			4:  {level:  4, pic: "f4"},
+			1:  {level:  1, pic: "f1", giftCollect: { type: 'sphere', level: 1 } },
+			2:  {level:  2, pic: "f2", giftCollect: { type: 'sphere', level: 1 } },
+			3:  {level:  3, pic: "f3", giftCollect: { type: 'sphere', level: 2 } },
+			4:  {level:  4, pic: "f4", giftCollect: { type: 'sphere', level: 2 } },
 			5:  {level:  5, pic: "f5",
-				giftOnItem: {type: 'sphere', level: 1, time: 1 * 60 * 1000, count: 1} 
+				giftCollect: { type: 'sphere', level: 2 },
+				giftOnItem:  { type: 'sphere', level: 1, time: 1 * 60 * 1000, count: 1 } 
 			    },
 			6:  {level:  6, pic: "f6",
 				giftOnItem: {type: 'sphere', level: 2, time: 1 * 60 * 1000, count: 1} 
@@ -102,7 +110,7 @@
 			    }
 			}
 	},
-	fruit: {type: "fruit", maxLevel: 8, set: { // иначе не объединит 7 уровень
+	fruit: {type: "fruit", maxLevel: 7, set: { // теперь объединит
 			1:  {level: 1, pic: "fr1"}, // при объединении дает золото до 4го уровня
 			2:  {level: 2, pic: "fr2"},
 			3:  {level: 3, pic: "fr3"},

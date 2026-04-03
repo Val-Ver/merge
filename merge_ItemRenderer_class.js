@@ -4,7 +4,7 @@
 
 	boardWidth = GAME_CONFIG.BOARD_SIZE.BOARD_WIDTH;
 	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
-
+	
 	itemElementForSave = null;
 	mergeCounter = null;
 
@@ -101,7 +101,7 @@
 		if(element) { 
 			const time = 1;
 			element.classList.add('magic-effect');
-			element.dataset.name = 'magic'
+			element.dataset.name = 'magic';
 			element.textContent = "*";
 			element.style.setProperty(`--after-content`, `"*"`);
 			element.style.border = 'none';

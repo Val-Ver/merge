@@ -36,8 +36,9 @@
 }
 
 class DragManagerForGame extends BaseDragManager {
-	manager = null;
-	//baseStrategy = new ClickOnViewportStrategy();
+	itemManager = null;
+	dragonManager = null;
+
 	strategies = null;
 	strategyInfo = null;
 	currentStrategy = null;
@@ -48,16 +49,20 @@ class DragManagerForGame extends BaseDragManager {
 	viewport = document.querySelector('.viewport-container');
 	gamePlace = document.querySelector('.game-container');
 
-	constructor(manager) {
-		super(manager);
-		this.manager = manager;
+	constructor(managerItem, managerDragon) {
+		super(managerItem, managerDragon);
+		this.itemManager = managerItem;
+		this.dragonManager = managerDragon;
+
 		this.addListenerMouseAndTouct();
 		this.strategies = {
-			item:          new ItemDragStrategy(this),
-			itemClick:     new ItemCLickStrategy(this),
-			//itemDblClick:  new ItemDblCLickStrategy(this), //это нужно, просто сейчас не используется
-			itemLongClick: new ItemLongCLickStrategy(this),
-			board:         new BoardPanoramaStrategy(this)
+			item:          new ItemDragStrategy(this.itemManager),
+			itemClick:     new ItemCLickStrategy(this.itemManager),
+			itemDblClick:  new ItemDblCLickStrategy(this.itemManager), //это нужно, просто сейчас не используется
+			itemLongClick: new ItemLongCLickStrategy(this.itemManager),
+			board:         new BoardPanoramaStrategy(this.itemManager),
+			dragon:	       new DragonDragStrategy(this.dragonManager), // из-за этого надо делать класс общим в игре
+			dragonClick:   new DragonCLickStrategy(this.dragonManager)
 		}
 	}
 
@@ -71,6 +76,17 @@ class DragManagerForGame extends BaseDragManager {
 		for(let i = 0; i < elementsFromPoint.length; i++) {
 			let currentElement = elementsFromPoint[i];
 			if(currentElement.dataset.name == 'fly-item') { return null }
+
+			if(currentElement.dataset.name == 'dragon') {
+				return {
+					strategy: this.strategies.dragon,
+					element: currentElement,
+					type: 'dragon',
+					itemStartX: currentElement.getBoundingClientRect().left,
+					itemStartY: currentElement.getBoundingClientRect().top
+				}
+			}
+
 			if(currentElement.dataset.name == 'item') {
 				const delayLongClick = 500;
 				return {
@@ -115,6 +131,20 @@ class DragManagerForGame extends BaseDragManager {
 
 	determineStrategyEnd(clientX, clientY) {
 		if(this.strategyInfo.type === 'board') { return this.strategyInfo }
+		if(this.strategyInfo.type === 'dragon') { 
+			const minDistance = 1;
+			const distance = Math.floor(Math.sqrt(
+					(this.strategyInfo.itemStartX - this.strategyInfo.element.getBoundingClientRect().left)**2 + 
+					(this.strategyInfo.itemStartY - this.strategyInfo.element.getBoundingClientRect().top)**2));
+
+			if(distance > minDistance) { return this.strategyInfo }
+
+			return {
+				strategy: this.strategies.dragonClick,
+				element:  this.strategyInfo.element,
+				type: 'dragon-Click'
+			}
+		 }
 
 		const minDistance = 1;
 		const distance = Math.floor(Math.sqrt(
@@ -123,7 +153,7 @@ class DragManagerForGame extends BaseDragManager {
 
 		if(distance > minDistance) { return this.strategyInfo }
 
-		/*const delayDblClick = 300; //это нужно, просто сейчас не используется
+		const delayDblClick = 300; //это нужно, просто сейчас не используется
 		if(this.timerDblClick) {
 			clearTimeout(this.timerDblClick);
 			this.timerDblClick = null;
@@ -136,7 +166,7 @@ class DragManagerForGame extends BaseDragManager {
 			this.timerDblClick = setTimeout(() => {
 				this.timerDblClick = null;
 			}, delayDblClick)
-		}*/
+		}
 
 		const delayLongClick = 500;
 		const timePeriod = Date.now() - this.strategyInfo.timeStart;
@@ -246,7 +276,7 @@ class DragManagerForShop extends BaseDragManager {
 	}
 
 	onMouseUp = (e) => {
-		this.strategy.end(e.clientX, e.clientY);
+		this.strategy.end(e, e.clientX, e.clientY);
 		this.elementHasListener.removeEventListener('mousemove', this.onMouseMove);
 		this.elementHasListener.removeEventListener('mouseup', this.onMouseUp)
 	}
@@ -272,7 +302,7 @@ class DragManagerForShop extends BaseDragManager {
 		e.preventDefault();
 		let clientX = e.changedTouches[0].clientX
 		let clientY = e.changedTouches[0].clientY
-		this.strategy.end(clientX, clientY);
+		this.strategy.end(e, clientX, clientY);
 		this.elementHasListener.removeEventListener('touchmove', this.onTouchMove);
 		this.elementHasListener.removeEventListener('touchend', this.onTouchEnd);
 		this.elementHasListener.removeEventListener('touchcancel', this.onTouchEnd);

@@ -8,34 +8,34 @@
 	}
 
 	preformHighlightingItems(curretnItemId, itemId) {
-		const currentItem = this.manager.itemRegistry.getCurrentItem(curretnItemId);
-		const findItem = this.manager.itemRegistry.getCurrentItem(itemId);
+		const currentItem = this.manager.getCurrentItem(curretnItemId);
+		const findItem = this.manager.getCurrentItem(itemId);
 		let itemsPref = [];
 		itemsPref = this.findNeighborCells(currentItem, findItem.row, findItem.col);
 		if(itemsPref.length > 1) {
 			itemsPref.push(currentItem);
-			this.manager.itemHandler.addHighlightingItems(itemsPref);
+			this.manager.addHighlightingItems(itemsPref);
 		} 
 		return itemsPref
 	}
 
 	canMargeItem(curretnItemId, itemId) {
-		const currentItem = this.manager.itemRegistry.getCurrentItem(curretnItemId);
-		const findItem = this.manager.itemRegistry.getCurrentItem(itemId);
+		const currentItem = this.manager.getCurrentItem(curretnItemId);
+		const findItem = this.manager.getCurrentItem(itemId);
 
 		this.itemsForMerge = this.findNeighborCells(currentItem, findItem.row, findItem.col);
 		if(this.itemsForMerge.length > 1) {
 			this.centerMerge = {row: findItem.row, col: findItem.col};
 			this.itemsForMerge.push(currentItem);
-			this.manager.itemHandler.addHighlightingItems(this.itemsForMerge)
+			this.manager.addHighlightingItems(this.itemsForMerge)
 			return true;
 		} 
 		return false;
 	}
 
 	findNeighborCells(currentItem, row, col, grup = [], isVisitCells = []) {
-		const grid = this.manager.itemPlacer.gameBoard.grid;
-		
+		const grid = this.manager.getGameBoard()
+
 		const key = `${row}-${col}`;
 		if(isVisitCells.some(i => i == key)) { return grup }
 
@@ -46,7 +46,7 @@
 
 		if(!findItem || currentItem.type != findItem.type
 		|| currentItem.level != findItem.level
-		|| currentItem.level == currentItem.maxLevel)  { return grup }
+		|| (currentItem.level == currentItem.maxLevel && currentItem.type != 'fruit'))  { return grup }
 
 		isVisitCells.push(key);
 		grup.push(findItem);
@@ -67,7 +67,7 @@
 	}
 
 	async createNewLevelItem() { 
-		await this.removeItemForMutable();
+		await this.manager.removeItemForMutable(this.itemsForMerge, this.centerMerge);
 
 		let numberNewItems = 0;
 		let numberItemsKeepOriginal = 0;
@@ -88,56 +88,32 @@
 		let type = this.itemsForMerge[0].type;
 		let level = this.itemsForMerge[0].level;
 		
+
+
 		if(type == 'fruit') {
 			type = 'gold';
 			level = this.getLevelForGold(this.itemsForMerge[0].level) - 1;
 		}
 
-		this.createItemForPlace(type, level + 1, numberNewItems);
+
+		if(type == 'eggsDragon') {
+			const typeDragon = level;
+			this.manager.createDragon(typeDragon, numberNewItems, this.itemsForMerge[0].row, this.itemsForMerge[0].col);
+		} else {
+			this.manager.createItemForPlaceAfterMerge(type, level + 1, numberNewItems, this.centerMerge);
+		}
 
 		if(numberItemsKeepOriginal > 0) {
-			this.createItemForPlace(this.itemsForMerge[0].type, this.itemsForMerge[0].level, numberItemsKeepOriginal);
+			this.manager.createItemForPlaceAfterMerge(this.itemsForMerge[0].type, this.itemsForMerge[0].level, numberItemsKeepOriginal, this.centerMerge);
 		}
 
 		if(type == 'flowers' || type == 'sphere' ) {
-			this.manager.itemPlacer.fogOnBoard.clearFogBeforeMerge(this.centerMerge, this.itemsForMerge[0].level, numberNewItems, this.manager.giftFromItem, this.manager.giftOnItem);
+			this.manager.clearFogBeforeMerge(this.centerMerge, this.itemsForMerge[0].level, numberNewItems, this.manager.giftFromItem, this.manager.giftOnItem);
 		}
 	}
 
-	createItemForPlace(type, level, numberItems = 1) {
-		const clearCellsCoordNearby = this.manager.itemPlacer.gameBoard.findCoordClearCellsNearbyAll(this.centerMerge.row, this.centerMerge.col, numberItems);
-
-		for(let i = 0; i < numberItems; i++) {
-			let row = clearCellsCoordNearby[i].row;
-			let col = clearCellsCoordNearby[i].col;
-
-			if(this.manager.itemPlacer.gameBoard.canAddItem(row, col)) {
-				const itemGame = this.manager.itemPlacer.addItemOnBoard(type, level, row, col);
-				this.manager.itemPlacer.renderer.showPutItemOnBoardAfterMerge(itemGame.element, this.centerMerge.row, this.centerMerge.col, row, col);
-			}
-		}
-	}
 	
-	removeItemForMutable() { //async можно поставить перед методом, здесь работает и так, а вообще надо
-		this.itemsForMerge.forEach(item => {
-			this.manager.itemPlacer.gameBoard.clearItemInCell(item.row, item.col);
-			this.manager.itemRegistry.removeItem(item.id);
 
-			if(this.manager.itemPlacer.fogOnBoard.isFogOnCell(item.row, item.col)) {
-				this.manager.itemPlacer.fogOnBoard.removeAllFog(item.row, item.col);
-			}
-
-			if(item.gift) {
-				this.manager.itemPlacer.giftFromItem.clearIntervalCreateGift(item.id);
-			}
-
-		})
- 		const promises = this.itemsForMerge 
-			.map((item) => {
-				return this.manager.itemPlacer.renderer.showBeforeRemoveItem(this.centerMerge, item.element);
-			})
-		return Promise.all(promises);
-	}
 
 	getLevelForGold(levelItem) {
 		switch(levelItem) {

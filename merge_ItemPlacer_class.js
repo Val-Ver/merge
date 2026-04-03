@@ -4,14 +4,13 @@
 
 	giftOnItem = null;
 	giftFromItem = null;
+
 	renderer = new ItemRenderer();
+	itemRegistry = new ItemRegistry();
 
-	itemRegistry = null;
-
-	constructor(board, fogOnBoard, registry) {
+	constructor(board, fogOnBoard) {
 		this.gameBoard = board;
 		this.fogOnBoard = fogOnBoard;
-		this.itemRegistry = registry; //кажется нужен единственный экземпляр
 		this.giftOnItem = new GiftOnItem(this);
 		this.giftFromItem = new GiftFromItem(this);
 	}
@@ -76,6 +75,26 @@
 		}
 	}
 
+
+	itemPutOnBoardFromDragon(row, col) {
+		const itemGame = this.gameBoard.grid[row][col].item;
+		this.renderer.createItem(itemGame.id, itemGame.pic);
+		itemGame.element = this.renderer.itemElementForSave;
+		this.renderer.itemElementForSave = null;
+		this.renderer.placeItemOnBoardForBeginGame(itemGame.element, row, col)
+
+		this.itemRegistry.addItem(itemGame);
+
+		if(itemGame.gift
+		&& !this.fogOnBoard.isFogOnCell(row, col)) {
+			this.giftFromItem.generateGiftFromItem(itemGame);
+		}
+		if(itemGame.giftOnItem 
+		&& !this.fogOnBoard.isFogOnCell(row, col)) {
+			this.giftOnItem.generateGiftOnItem(itemGame);
+		}
+	}
+
 	addItemOnBoard(type, level, row, col) {
 		if(this.itemRegistry.itemOnBoard.length == this.gameBoard.rows * this.gameBoard.cols) { 
 			console.log('нет места');
@@ -86,6 +105,7 @@
 		this.renderer.createItem(itemGame.id, itemGame.pic);
 		itemGame.element = this.renderer.itemElementForSave;
 		this.renderer.itemElementForSave = null;
+
 
 		this.gameBoard.addItemInCell(itemGame);
 		this.itemRegistry.addItem(itemGame);
@@ -100,9 +120,57 @@
 		}
 		return itemGame;
 	}
+
+	createItemForPlaceAfterMerge(type, level, numberItems = 1, centerMerge) {
+		const clearCellsCoordNearby = this.gameBoard.findCoordClearCellsNearbyAll(centerMerge.row, centerMerge.col, numberItems);
+
+		for(let i = 0; i < numberItems; i++) {
+			let row = clearCellsCoordNearby[i].row;
+			let col = clearCellsCoordNearby[i].col;
+
+			if(this.gameBoard.canAddItem(row, col)) {
+				const itemGame = this.addItemOnBoard(type, level, row, col);
+				this.renderer.showPutItemOnBoardAfterMerge(itemGame.element, centerMerge.row, centerMerge.col, row, col);
+			}
+		}
+	}
+
+	removeItemForMutable(itemsForMerge, centerMerge) { //async можно поставить перед методом, здесь работает и так, а вообще надо
+		itemsForMerge.forEach(item => {
+			this.gameBoard.clearItemInCell(item.row, item.col);
+			this.itemRegistry.removeItem(item.id);
+
+			if(this.fogOnBoard.isFogOnCell(item.row, item.col)) {
+				this.fogOnBoard.removeAllFog(item.row, item.col);
+			}
+
+			if(item.gift) {
+				this.giftFromItem.clearIntervalCreateGift(item.id);
+			}
+
+		})
+ 		const promises = itemsForMerge 
+			.map((item) => {
+				return this.renderer.showBeforeRemoveItem(centerMerge, item.element);
+			})
+		return Promise.all(promises);
+	}
+
 	removeItemFromGame(item) {
 		this.itemRegistry.removeItem(item.id);
 		this.gameBoard.clearItemInCell(item.row, item.col);
 		this.renderer.removeItem(item.element);
+	}
+
+	addHighlightingItems(arrItems) {
+		arrItems.forEach(item => {
+			this.renderer.addHighlightingItems(item.id);
+		})
+	}
+
+	removeHighlightingItems(arrItems) {
+		arrItems.forEach(item => {
+			this.renderer.removeHighlightingItems(item.id);
+		})
 	}
 }
