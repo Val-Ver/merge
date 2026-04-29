@@ -45,14 +45,15 @@
 
 	createCellItemForShop(type) {
 		const setItems = items[type];
-		setItems.maxLevel = GAME_CONFIG.SHOP.MAX_LEVEL_ITEM_FOR_SHOP;
-
+		//setItems.maxLevel = GAME_CONFIG.SHOP.MAX_LEVEL_ITEM_FOR_SHOP;
+		const maxLevel = GAME_CONFIG.SHOP.MAX_LEVEL_ITEM_FOR_SHOP;
+		
 		const containerType = document.createElement('div');
 		containerType.className = 'shop-item-type';
 		containerType.id = `shop-item-${type}`;
 		containerType.style.gridTemplateColumns = `repeat(${setItems.maxLevel-1}, ${100/(setItems.maxLevel-1)}%)`;
 
-		for(let i = 1; i < setItems.maxLevel; i++) {
+		for(let i = 1; i < maxLevel; i++) {
 			const cell = document.createElement('div');
 			cell.className = 'cell-for-shop';
 			cell.dataset.name = 'item';
