@@ -47,7 +47,7 @@
 		const setItems = items[type];
 		//setItems.maxLevel = GAME_CONFIG.SHOP.MAX_LEVEL_ITEM_FOR_SHOP;
 		const maxLevel = GAME_CONFIG.SHOP.MAX_LEVEL_ITEM_FOR_SHOP;
-		
+
 		const containerType = document.createElement('div');
 		containerType.className = 'shop-item-type';
 		containerType.id = `shop-item-${type}`;
