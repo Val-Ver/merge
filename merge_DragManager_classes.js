@@ -49,20 +49,20 @@ class DragManagerForGame extends BaseDragManager {
 	viewport = document.querySelector('.viewport-container');
 	gamePlace = document.querySelector('.game-container');
 
-	constructor(managerItem, managerDragon) {
-		super(managerItem, managerDragon);
-		this.itemManager = managerItem;
-		this.dragonManager = managerDragon;
+	constructor(itemHandler, managerFlyer) {
+		super(itemHandler, managerFlyer);
+		this.itemHandler = itemHandler;
+		this.flyerManager = managerFlyer;
 
 		this.addListenerMouseAndTouct();
 		this.strategies = {
-			item:          new ItemDragStrategy(this.itemManager),
-			itemClick:     new ItemCLickStrategy(this.itemManager),
-			itemDblClick:  new ItemDblCLickStrategy(this.itemManager), //это нужно, просто сейчас не используется
-			itemLongClick: new ItemLongCLickStrategy(this.itemManager),
-			board:         new BoardPanoramaStrategy(this.itemManager),
-			dragon:	       new DragonDragStrategy(this.dragonManager), // из-за этого надо делать класс общим в игре
-			dragonClick:   new DragonCLickStrategy(this.dragonManager)
+			item:          new ItemDragStrategy(this.itemHandler),
+			itemClick:     new ItemCLickStrategy(this.itemHandler),
+			itemDblClick:  new ItemDblCLickStrategy(this.itemHandler), 
+			itemLongClick: new ItemLongCLickStrategy(this.itemHandler),
+			board:         new BoardPanoramaStrategy(this.itemHandler),
+			flyer:	       new FlyerDragStrategy(this.flyerManager), // из-за этого надо делать класс общим в игре
+			flyerClick:   new FlyerCLickStrategy(this.flyerManager) // не реализована
 		}
 	}
 
@@ -77,36 +77,74 @@ class DragManagerForGame extends BaseDragManager {
 			let currentElement = elementsFromPoint[i];
 			if(currentElement.dataset.name == 'fly-item') { return null }
 
-			if(currentElement.dataset.name == 'dragon') {
+			if(currentElement.dataset.name == 'flyer') {
 				return {
-					strategy: this.strategies.dragon,
+					strategy: this.strategies.flyer,
 					element: currentElement,
-					type: 'dragon',
+					type: 'flyer',
 					itemStartX: currentElement.getBoundingClientRect().left,
 					itemStartY: currentElement.getBoundingClientRect().top
 				}
 			}
 
-			if(currentElement.dataset.name == 'item') {
-				const delayLongClick = 500;
-				return {
-					strategy: this.strategies.item,
-					element: currentElement,
-					type: 'item',
-					itemStartX: currentElement.getBoundingClientRect().left,
-					itemStartY: currentElement.getBoundingClientRect().top,
-					timeStart: Date.now(),
-				}
-			}
 
-			if(currentElement.dataset.name == 'fog'
-			|| currentElement.dataset.name == 'cell'
-			|| currentElement.dataset.name == 'landscape') {
+			if(currentElement.id == 'board-canvas') {
+				const boardCoord = this.itemHandler.getCoordBoard(currentElement, clientX, clientY)
+				const row = boardCoord.row;
+				const col = boardCoord.col;
+
+				const grid = this.itemHandler.itemPlacer.gameBoard.grid;
+				let name = '';
+
+				if(grid[row][col].landscape) {
+					name = 'landscape';
+				} else if(grid[row][col].fog.layer > 0) {
+					name = 'fog';
+				} else if(grid[row][col].item) { 
+					name = 'item';
+					const fakeElement = {
+						dataset: {
+							name: name,
+							row: row,
+							col: col,
+							id: grid[row][col].item.id,
+						},
+						element: currentElement,
+						grid: grid,
+						coord: grid[row][col].item.coord, 
+						item: grid[row][col].item,
+					}
+
+					const delayLongClick = 500;
+					return {
+						strategy: this.strategies.item,
+						element: fakeElement,
+						type: 'item',
+						itemStartX: grid[row][col].item.coord.x,
+						itemStartY: grid[row][col].item.coord.y,
+						timeStart: Date.now(),
+					}
+
+
+				} else {
+					name = 'cell';
+				}
+
+				const fakeElement = {
+					dataset: {
+						name: name,
+						row: row,
+						col: col,
+					}
+				}
+
 				return {
 					strategy: this.strategies.board,
-					element: currentElement,
-					type: 'board'
+					element: fakeElement,
+					type: 'board',
+					
 				}
+
 			}
 		}
 		return null;
@@ -131,7 +169,7 @@ class DragManagerForGame extends BaseDragManager {
 
 	determineStrategyEnd(clientX, clientY) {
 		if(this.strategyInfo.type === 'board') { return this.strategyInfo }
-		if(this.strategyInfo.type === 'dragon') { 
+		if(this.strategyInfo.type === 'flyer') { 
 			const minDistance = 1;
 			const distance = Math.floor(Math.sqrt(
 					(this.strategyInfo.itemStartX - this.strategyInfo.element.getBoundingClientRect().left)**2 + 
@@ -140,20 +178,20 @@ class DragManagerForGame extends BaseDragManager {
 			if(distance > minDistance) { return this.strategyInfo }
 
 			return {
-				strategy: this.strategies.dragonClick,
+				strategy: this.strategies.flyerClick,
 				element:  this.strategyInfo.element,
-				type: 'dragon-Click'
+				type: 'flyer-Click'
 			}
 		 }
 
 		const minDistance = 1;
 		const distance = Math.floor(Math.sqrt(
-				(this.strategyInfo.itemStartX - this.strategyInfo.element.getBoundingClientRect().left)**2 + 
-				(this.strategyInfo.itemStartY - this.strategyInfo.element.getBoundingClientRect().top)**2));
+				(this.strategyInfo.itemStartX - this.strategyInfo.element.item.coord.x)**2 + 
+				(this.strategyInfo.itemStartY - this.strategyInfo.element.item.coord.y)**2));
 
 		if(distance > minDistance) { return this.strategyInfo }
 
-		const delayDblClick = 300; //это нужно, просто сейчас не используется
+		const delayDblClick = 300; 
 		if(this.timerDblClick) {
 			clearTimeout(this.timerDblClick);
 			this.timerDblClick = null;

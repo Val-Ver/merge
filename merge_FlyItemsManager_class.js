@@ -7,9 +7,10 @@
 
 	manager = null;
 	intervalCreateFlyItems = null;
+	eventBus = EventBus.getInstance();
 
-	constructor(manager) {
-		this.manager = manager;
+	constructor(itemPlacer) {
+		this.itemPlacer = itemPlacer;
 		this.addListenersWindow();
 	}
 
@@ -57,15 +58,16 @@
 	}
 
 	findClearCellForFlyItem(row, col) {
-		const clearCellsCoordNearby = this.manager.itemPlacer.gameBoard.findCoordClearCellsNearbyAll(Number(row), Number(col))
+		const clearCellsCoordNearby = this.itemPlacer.gameBoard.findCoordClearCellsNearbyAll(Number(row), Number(col))
 		if(clearCellsCoordNearby.length == 0) { console.log('нет места'); return []; }
-		this.manager.itemPlacer.gameBoard.addItemInCell({row: clearCellsCoordNearby[0].row, col: clearCellsCoordNearby[0].col})
+		this.itemPlacer.gameBoard.addItemInCell({row: clearCellsCoordNearby[0].row, col: clearCellsCoordNearby[0].col})
 		return clearCellsCoordNearby[0];
 	}
 	
 	createGiftFromFlyItem(type, level, row, col) {
-		this.manager.itemPlacer.gameBoard.clearItemInCell(row, col)
-		this.manager.itemPlacer.giftFromItem.createGift(type, level, {row: row, col: col});
+		this.itemPlacer.gameBoard.clearItemInCell(row, col)
+		this.eventBus.emit(EVENTS.CMD_CREATE_GIFT, type, level, {row: row, col: col});
+		//this.manager.giftFromItem.createGift(type, level, {row: row, col: col});
 	}
 
 }

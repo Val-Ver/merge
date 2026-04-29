@@ -64,10 +64,15 @@
 			let elementsFromPoint = document.elementsFromPoint(e.clientX, e.clientY);
 			for(let i = 0; i < elementsFromPoint.length; i++) {
 				let elementDiv = elementsFromPoint[i];
-				if(elementDiv.dataset.name == 'cell' ||
-				elementDiv.dataset.name == 'landscape') {
 
-					const place = this.manager.findClearCellForFlyItem(elementDiv.dataset.row, elementDiv.dataset.col)//[0];
+				if(elementDiv.id == 'board-canvas') {
+					const boardCoord = this.manager.itemPlacer.getCoordBoard(elementDiv, e.clientX, e.clientY);
+
+				//if(elementDiv.dataset.name == 'cell' ||
+				//elementDiv.dataset.name == 'landscape') {
+					//const place = this.manager.findClearCellForFlyItem(elementDiv.dataset.row, elementDiv.dataset.col)//[0];
+
+					const place = this.manager.findClearCellForFlyItem(boardCoord.row, boardCoord.col);
 					this.removeFlyItem(element, place.row, place.col)
 						.then(() => {
 							this.manager.createGiftFromFlyItem(type, 0, place.row, place.col)

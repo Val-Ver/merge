@@ -2,66 +2,103 @@
 	manager = null;
 	intervalCreateGiftItems = [];
 	itemForTransformation = null;
+	eventBus = EventBus.getInstance();
 
 	constructor(manager) {
 		this.manager = manager;
+		this.subscription();
 	}
 
-	getTimeForTransformation(type) {
-		switch(type) {
-			case 'flowers': return items.flowers.set[0].time;
-			case 'water':   return items.water.set[0].time;
-			case 'trees':   return items.trees.set[0].time;
-		}
+	subscription() {
+		this.eventBus.on(EVENTS.CMD_GENERATE_GIFT, (item) => {
+			this.generateGiftFromItem(item);
+			
+			
+		})
+
+		this.eventBus.on(EVENTS.CMD_UPDATE_GIFT, (item) => {
+			this.generateGiftFromItem(item);
+			this.createTransformItem(item);
+		})
+
+		this.eventBus.on(EVENTS.CMD_CREATE_TRANSFORM_ITEM, (item) => {
+			this.createTransformItemAfterDrag(item)
+		})
+
+		this.eventBus.on(EVENTS.CMD_CLEAR_INTERVAL_CREATE_GIFT, (item) => {
+			this.clearIntervalCreateGift(item);
+		})
+		this.eventBus.on(EVENTS.CMD_CREATE_GIFT, (type, level, cellObj) => {
+			this.createGift(type, level, cellObj);
+		})
 	}
 
 	generateGiftFromItem(item) {
+		if(!item.gift) { return }
 		const intervalCreateGift = setInterval(() => {
-			const currentItem = this.manager.itemRegistry.getCurrentItem(item.id)
+			const currentItem = item;
 			const clearCellsCoordNearby = this.manager.gameBoard.findCoordClearCellsNearby(currentItem.row, currentItem.col);
 
 			if(clearCellsCoordNearby.length == 0) { console.log('нет места'); return; }
-			this.createGift(currentItem.gift.type, currentItem.gift.level, clearCellsCoordNearby[0])
+			this.createGift(currentItem.gift.type, currentItem.gift.level, clearCellsCoordNearby[0]);
 		}, item.gift.time)
 
 		this.intervalCreateGiftItems.push({interval: intervalCreateGift, id: item.id})
 	}
 
+
 	createGift(type, level, cellObj) {
-		const itemGame = this.manager.addItemOnBoard(type, level, cellObj.row, cellObj.col);
-		this.manager.renderer.placeItemOnBoardForBeginGame(itemGame.element, cellObj.row, cellObj.col);
+		const itemGame = this.manager.addItemToGameForBegin(type, level, cellObj.row, cellObj.col);
+		this.transformedItem(itemGame);
+	}
+
+	transformedItem(itemGame) {
+		if(!itemGame.transformed) { return }
+		//const itemGame = this.manager.addItemToGameForBegin(type, level, cellObj.row, cellObj.col);
+		const time = this.getTimeForTransformation(itemGame);
 		
-		const time = this.getTimeForTransformation(type);
-		//const findItem = this.manager.gameBoard.findItemOnBoard(cellObj.row, cellObj.col);
-
-
 		setTimeout(() => {
-			//const itemBeforeTime = this.manager.itemRegistry.getCurrentItem(findItem.id);
-
-			const itemBeforeTime = this.manager.itemRegistry.getCurrentItem(itemGame.id);
-			if(itemBeforeTime && itemBeforeTime.level == 0) {
-				if(itemBeforeTime.isDraging) {
-					this.itemForTransformation = itemBeforeTime;
+			const itemAfterTime = this.manager.itemRegistry.getCurrentItem(itemGame.id);
+			if(itemAfterTime && itemAfterTime.transformed) {
+			//if(itemAfterTime && itemAfterTime.level == 0) {
+				if(itemAfterTime.isDraging) {
+					this.itemForTransformation = itemAfterTime;
 				} else {
-					this.createTransformItem(itemBeforeTime);
+					this.createTransformItem(itemAfterTime);
 				}
 			}
 		}, time)
 	}
-	
-	createTransformItem(item) {
-		const typeItem = item.type == 'water' ? "mushrooms" : item.type;
-		this.manager.gameBoard.clearItemInCell(item.row, item.col);
-		this.manager.itemRegistry.removeItem(item.id);
-		this.manager.renderer.removeItem(item.element); //при обновлении не работает анимация
 
-		const itemGame = this.manager.addItemOnBoard(typeItem, item.level + 1, item.row, item.col);
-		this.manager.renderer.placeItemOnBoardForBeginGame(itemGame.element, item.row, item.col);
+	getTimeForTransformation(item) {
+		//if(!item.transformed) { return }
+		return item.transformed.time;
 	}
-	
-	clearIntervalCreateGift(id) {
-		const findInterval = this.intervalCreateGiftItems.filter(interval => interval.id == id);
 
+	createTransformItem(item) {
+		if(!item.transformed) { return }
+		//if(item.level !== 0) { return }
+		const typeItem = item.transformed.type
+		const level = item.transformed.level
+		//const typeItem = item.type == 'water' ? "mushrooms" : item.type;
+		this.eventBus.emit(EVENTS.CMD_REMOVE_ITEM, item);
+		const itemGame = this.manager.addItemToGameForBegin(typeItem, level, item.row, item.col);
+		//const itemGame = this.manager.addItemToGameForBegin(typeItem, item.level + 1, item.row, item.col);
+	}
+
+	createTransformItemAfterDrag(item) { 
+		if(item.level !== 0 ) { return }
+		if (this.itemForTransformation
+		&& item.id === this.itemForTransformation.id ) { 
+			this.itemForTransformation = null;
+			this.createTransformItem(item);
+		}
+	}
+
+	clearIntervalCreateGift(item) {
+		if(!item.gift) { return }
+		const id = item.id;
+		const findInterval = this.intervalCreateGiftItems.filter(interval => interval.id == id);
 		if(findInterval[0].interval) { 
 			clearInterval(findInterval[0].interval);
 			this.intervalCreateGiftItems = this.intervalCreateGiftItems.filter(interval => interval.id != id)

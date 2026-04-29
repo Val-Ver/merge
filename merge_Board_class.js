@@ -1,12 +1,20 @@
 ﻿class Board {
 	rows = GAME_CONFIG.BOARD_SIZE.ROWS;
 	cols = GAME_CONFIG.BOARD_SIZE.COLS;
+	cell = GAME_CONFIG.BOARD_SIZE.CELL;
+
 	grid = [];
-	renderer = new BoardRenderer(); 
+	//renderer = new BoardRenderer(); 
+	renderer = new BoardRendererCanvas();
+
+	centerCell = {};
+	eventBus = EventBus.getInstance();
 
 	constructor() {
+
 		this.createGameBoard();
-		this.renderer.createGameBoard();
+		this.eventBus.emit(EVENTS.CMD_CREATE_BOARD, this.grid);
+		//this.rendererCanvas.createGameBoard(this.grid);
 	}
 
 	createGameBoard() {
@@ -34,6 +42,15 @@
 		this.grid = grid;
 	}
 
+	findCenterCell() {
+		const style = this.renderer.getCenterCellCoord();
+		const cell = {
+				col: Math.floor(style.left / this.cell),
+				row: Math.floor(style.top  / this.cell)
+			}
+		return cell
+	}
+	
 	findCoordClearCellsNearbyAll(row, col, numberItems = 1) {
 		let radius = 1;
 		let clearCellsCoordNearby = []; 
@@ -42,6 +59,13 @@
 			clearCellsCoordNearby = this.findCoordClearCellsNearby(row, col, radius);
 			radius += 1;
 		}
+
+		clearCellsCoordNearby.forEach((cell) => {
+			cell.distance = Math.sqrt((cell.row - row)**2 + (cell.col - col)**2)
+		})
+
+		clearCellsCoordNearby.sort((a,b) => a.distance - b.distance)
+
 		return clearCellsCoordNearby;
 	}
 

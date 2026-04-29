@@ -1,4 +1,4 @@
-﻿class Resources {
+﻿class ResourcesGold {
 	elementScoreGold = document.getElementById('score-gold');
 	scoreGold = 0;
 
@@ -6,7 +6,21 @@
 		//this.saveBeforeUnload(); //это надо
 		this.updateScoreGolg();
 		this.updateElementScoreGold();
+
+		this.eventBus = EventBus.getInstance();
+		this.subscription();
 	}
+
+	subscription() {
+		this.eventBus.on(EVENTS.CMD_INCREASE_GOLD, (summ) => {
+			this.increaseGold(summ);
+		})
+
+		this.eventBus.on(EVENTS.CMD_DECREASE_GOLD, (summ) => {
+			this.decreaseGold(summ);
+		})
+	}
+
 
 	updateScoreGolg() {
 		let gold2 = localStorage.getItem('merge_gold');

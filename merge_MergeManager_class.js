@@ -3,6 +3,8 @@
 	itemsForMerge = [];
 	centerMerge = null;
 
+	eventBus = EventBus.getInstance();
+
 	constructor(manager) {
 		this.manager = manager;
 	}
@@ -14,7 +16,7 @@
 		itemsPref = this.findNeighborCells(currentItem, findItem.row, findItem.col);
 		if(itemsPref.length > 1) {
 			itemsPref.push(currentItem);
-			this.manager.addHighlightingItems(itemsPref);
+			this.eventBus.emit(EVENTS.CMD_RENDERING_ADD_HIGHLIGHTING_ITEM, itemsPref);
 		} 
 		return itemsPref
 	}
@@ -27,7 +29,8 @@
 		if(this.itemsForMerge.length > 1) {
 			this.centerMerge = {row: findItem.row, col: findItem.col};
 			this.itemsForMerge.push(currentItem);
-			this.manager.addHighlightingItems(this.itemsForMerge)
+// надо нарисовать
+			//this.eventBus.emit(EVENTS.CMD_RENDERING_ADD_HIGHLIGHTING_ITEM, this.itemsForMerge);
 			return true;
 		} 
 		return false;
@@ -45,8 +48,9 @@
 		const findItem = grid[row][col].item;
 
 		if(!findItem || currentItem.type != findItem.type
+		|| currentItem.breed != findItem.breed
 		|| currentItem.level != findItem.level
-		|| (currentItem.level == currentItem.maxLevel && currentItem.type != 'fruit'))  { return grup }
+		|| (currentItem.maxLevel && currentItem.level == currentItem.maxLevel))  { return grup }
 
 		isVisitCells.push(key);
 		grup.push(findItem);
@@ -88,17 +92,14 @@
 		let type = this.itemsForMerge[0].type;
 		let level = this.itemsForMerge[0].level;
 		
-
-
-		if(type == 'fruit') {
-			type = 'gold';
-			level = this.getLevelForGold(this.itemsForMerge[0].level) - 1;
+		if(this.itemsForMerge[0].merge) {
+			type = this.itemsForMerge[0].merge.type;
+			level = this.itemsForMerge[0].merge.level - 1;
 		}
-
-
-		if(type == 'eggsDragon') {
-			const typeDragon = level;
-			this.manager.createDragon(typeDragon, numberNewItems, this.itemsForMerge[0].row, this.itemsForMerge[0].col);
+		
+		if(this.itemsForMerge[0].breed) {
+			const typeFlyer = this.itemsForMerge[0].breed;
+			this.eventBus.emit(EVENTS.CMD_CREATE_FLYER, typeFlyer, numberNewItems, this.itemsForMerge[0].row, this.itemsForMerge[0].col);
 		} else {
 			this.manager.createItemForPlaceAfterMerge(type, level + 1, numberNewItems, this.centerMerge);
 		}
@@ -107,13 +108,18 @@
 			this.manager.createItemForPlaceAfterMerge(this.itemsForMerge[0].type, this.itemsForMerge[0].level, numberItemsKeepOriginal, this.centerMerge);
 		}
 
+		const magicMerge = this.itemsForMerge[0].magicMerge;
+		if(magicMerge) { 
+			const countMagicMerge = Math.random() < GAME_CONFIG.MERGE_RULES.MAGIC_MERGE_CHANCE ? 1 : 0;
+			if(countMagicMerge > 0) {
+				this.manager.createItemForPlaceAfterMerge(magicMerge.type, magicMerge.level, countMagicMerge, this.centerMerge);
+			}
+		}
+
 		if(type == 'flowers' || type == 'sphere' ) {
-			this.manager.clearFogBeforeMerge(this.centerMerge, this.itemsForMerge[0].level, numberNewItems, this.manager.giftFromItem, this.manager.giftOnItem);
+			this.eventBus.emit(EVENTS.CMD_CLEAR_FOG_AFTER_MERGE, this.centerMerge, this.itemsForMerge[0].level, numberNewItems);
 		}
 	}
-
-	
-
 
 	getLevelForGold(levelItem) {
 		switch(levelItem) {

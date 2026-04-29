@@ -1,41 +1,40 @@
 ﻿class GameOptions {
 	game = null;
 	shopManager = null;
-	infoPanel = null;
-	resources = new Resources();
+	infoPanel = new InfoPanel();
+	resourcesGold = new ResourcesGold();
 
 	gameOptionsContainer = document.querySelector('.game-options-container');
 	shopContainer = document.querySelector('.shop-container');
 	divInfoMessage = document.querySelector('.div-info-message');
 	infoContainer = document.querySelector('.info-container');
 
-	constructor(game) {
-		this.game = game;
-		this.infoPanel = new ItemInfoPanel(this);
+	constructor() {
 		this.shopHandler = new ShopManager(this);
-		this.game.itemManager.addOptions(this);
+
 		this.addBtnInfoMessage();
 		this.clickOnPlaceOnBoard();
+
+		this.eventBus = EventBus.getInstance();
 	}
 
+
+//----------------------------------------------------------------------
 	sellItem(summ) {
-		this.resources.increaseGold(summ);
+console.error('сработал sellItem в GameOptions')
+		this.resourcesGold.increaseGold(summ);
 	}
 
 	buyItem(summ) {
-		this.resources.decreaseGold(summ);
+console.error('сработал buyItem в GameOptions')
+		this.resourcesGold.decreaseGold(summ);
 	}
-
-	handleSellItem(item) {
-		const price = item.level * GAME_CONFIG.SHOP.PRICE_ITEM;
-		this.resources.increaseGold(price);
-		this.game.itemManager.itemPlacer.removeItemFromGame(item);
-	}
+//----------------------------------------------------------------------
 
 	handleBuyItem(type, level, price) {
-		if(this.resources.scoreGold >= price) {
-			this.resources.decreaseGold(price);
-			this.game.itemManager.itemHandler.handleOnShop(type, level);
+		if(this.resourcesGold.scoreGold >= price) {
+			this.resourcesGold.decreaseGold(price);
+			this.eventBus.emit(EVENTS.CMD_ADD_ITEM_IN_GAME, type, level);
 		} else {
 			this.gameOptionsContainer.style.display = 'flex';
 			this.divInfoMessage.style.display = 'flex';
@@ -48,7 +47,7 @@
 			this.gameOptionsContainer.style.display = 'none';
 			this.divInfoMessage.style.display = 'none';
 		}
-		btnExit.addEventListener('click', clickOnDoc)
+		btnExit.addEventListener('click', clickOnDoc);
 	}
 
 	clickOnPlaceOnBoard() {

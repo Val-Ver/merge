@@ -1,18 +1,33 @@
 class GiftOnItem {
 	renderer = new GiftOnItemRenderer();
 	manager = null;
+	eventBus = EventBus.getInstance();
 
 	constructor(manager) {
 		this.manager = manager;
+		this.subscription();
+	}
+
+	subscription() {
+		this.eventBus.on(EVENTS.CMD_GENERATE_GIFT, (item) => {
+			this.generateGiftOnItem(item);
+		})
+
+		this.eventBus.on(EVENTS.CMD_UPDATE_GIFT, (item) => {
+			this.updateGiftOnItem(item);
+		})
+
+		this.eventBus.on(EVENTS.CMD_CREATE_GIFT_BEFORE_CLICK, (item) => {
+			this.createGiftOnBoardBeforeClick(item);
+		})
 	}
 
 	generateGiftOnItem(item) {
-		this.renderer.createDivForGifts(item.element, item.giftOnItem.count);
-		item.elementHasGiftOnItem = this.renderer.elementForSave;
-		this.renderer.elementForSave = null;
+		if(!item.giftOnItem) { return }
+		//this.eventBus.emit(EVENTS.CMD_RENDERING_DIV_FOR_GIFTS, item); //не нужен больше
 
 		for(let i = 0; i < item.giftOnItem.count; i++) {
-			setTimeout(() =>{
+			setTimeout(() => {
 			const currentItem = this.manager.itemRegistry.getCurrentItem(item.id)
 				if(currentItem) { 
 					this.addGiftOnItem(currentItem);
@@ -22,13 +37,14 @@ class GiftOnItem {
 	}
 
 	updateGiftOnItem(item) {
-		this.renderer.createDivForGifts(item.element, item.giftOnItem.count);
-		item.elementHasGiftOnItem = this.renderer.elementForSave;
-		this.renderer.elementForSave = null;
+		if(!item.giftOnItem) { return }
+		//this.eventBus.emit(EVENTS.CMD_RENDERING_DIV_FOR_GIFTS, item);
 
 		for(let i = 0; i < item.countHasGiftOnItem; i++) {
 			const itemOnItem = new Item(item.giftOnItem.type, item.giftOnItem.level, item.row, item.col);
-			this.renderer.createGiftOnItem(item.elementHasGiftOnItem, itemOnItem.id, itemOnItem.pic);
+			this.eventBus.emit(EVENTS.CMD_RENDERING_GIFT_ON_ITEM, item);
+			//this.eventBus.emit(EVENTS.CMD_RENDERING_GIFT_ON_ITEM, item.elementHasGiftOnItem, itemOnItem.id, itemOnItem.pic);
+			//this.renderer.createGiftOnItem(item.elementHasGiftOnItem, itemOnItem.id, itemOnItem.pic);
 		}
 
 		for(let i = item.countHasGiftOnItem; i < item.giftOnItem.count; i++) {
@@ -40,12 +56,17 @@ class GiftOnItem {
 	addGiftOnItem(item) {
 		item.countHasGiftOnItem++
 		const itemOnItem = new Item(item.giftOnItem.type, item.giftOnItem.level, item.row, item.col);
-		this.renderer.createGiftOnItem(item.elementHasGiftOnItem, itemOnItem.id, itemOnItem.pic);
+
+		this.eventBus.emit(EVENTS.CMD_RENDERING_GIFT_ON_ITEM, item);
+		//this.eventBus.emit(EVENTS.CMD_RENDERING_GIFT_ON_ITEM, item.elementHasGiftOnItem, itemOnItem.id, itemOnItem.pic);
+		//this.renderer.createGiftOnItem(item.elementHasGiftOnItem, itemOnItem.id, itemOnItem.pic);
 	}
 
 	removeGiftOnItem(item) {
-		item.countHasGiftOnItem--
-		const itemGifts = this.renderer.removeGiftOnItem(item.elementHasGiftOnItem);
+		item.countHasGiftOnItem--;
+		this.eventBus.emit(EVENTS.CMD_RENDERING_REMOVE_GIFT_ON_ITEM, item)
+		//this.eventBus.emit(EVENTS.CMD_RENDERING_REMOVE_GIFT_ON_ITEM, item.elementHasGiftOnItem)
+		//this.renderer.removeGiftOnItem(item.elementHasGiftOnItem);
 	}
 
 	createGiftOnBoardBeforeClick(item) {
@@ -55,8 +76,11 @@ class GiftOnItem {
 		this.removeGiftOnItem(item);
 
 		const gift = item.giftOnItem;
-		const itemGame = this.manager.addItemOnBoard(gift.type, gift.level, clearCellsCoordNearby[0].row, clearCellsCoordNearby[0].col);
-		this.manager.renderer.placeItemOnBoardForBeginGame(itemGame.element, clearCellsCoordNearby[0].row, clearCellsCoordNearby[0].col);
+		const typeGift = gift.type == 'bucket' ? 'water' : gift.type; 
+		//if(gift.type === 'bucket') { gift.type = 'water' } 
+
+		const itemGame = this.manager.addItemToGameForBegin(typeGift, gift.level, clearCellsCoordNearby[0].row, clearCellsCoordNearby[0].col);
+		//this.manager.renderer.placeItemOnBoardForBeginGame(itemGame.element, clearCellsCoordNearby[0].row, clearCellsCoordNearby[0].col);
 
 		const timePeriod = gift.count - item.countHasGiftOnItem;
 		this.generateGiftOnItemBeforeClick(timePeriod, item)

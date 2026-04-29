@@ -18,11 +18,11 @@
 	}	
 }
 
-class DragonDragStrategy extends BaseDragStrategy {
+class FlyerDragStrategy extends BaseDragStrategy {
 	manager = null;
 
 	currentElement = null;
-	currentDragon = null;
+	currentFlyer = null;
 
 	offsetX = 0;
 	offsetY = 0;
@@ -42,8 +42,8 @@ class DragonDragStrategy extends BaseDragStrategy {
 		this.isDraging = true;
 		this.currentElement = element;
 
-		this.currentDragon = this.manager.getCurrentDargon(this.currentElement.dataset.id);
-		if(this.currentDragon.collectGift) { this.manager.putItemOnBoard(this.currentDragon) }
+		this.currentFlyer = this.manager.getCurrentFlyer(this.currentElement.dataset.id);
+		if(this.currentFlyer.collectGift) { this.manager.putItemOnBoard(this.currentFlyer) }
 
 		this.elementStartX = Number(this.currentElement.style.left.split('px')[0]);
 		this.elementStartY = Number(this.currentElement.style.top.split('px')[0]);
@@ -56,33 +56,32 @@ class DragonDragStrategy extends BaseDragStrategy {
 		if(!this.isDraging) { return }
 
 		
-		if(this.currentDragon.mission) { this.currentDragon.mission = false }
-		this.currentDragon.isDraging = true;
+		if(this.currentFlyer.mission) { this.currentFlyer.mission = false }
+		this.currentFlyer.isDraging = true;
 
 		this.currentElement.style.zIndex = '100';
 
 		this.currentElement.style.left = (clientX - this.offsetX) +'px';
 		this.currentElement.style.top = (clientY - this.offsetY) +'px';
 
-		this.currentDragon.route = { x: clientX - this.offsetX, y: clientY - this.offsetY }
+		this.currentFlyer.route = { x: clientX - this.offsetX, y: clientY - this.offsetY }
 
 	}
 
 	end(clientX, clientY) {
 		this.isDraging = false;
 
-		this.currentDragon = this.manager.getCurrentDargon(this.currentElement.dataset.id);
-		this.currentDragon.isDraging = false;
+		this.currentFlyer = this.manager.getCurrentFlyer(this.currentElement.dataset.id);
+		this.currentFlyer.isDraging = false;
 	
 		let elementsFromPoint = document.elementsFromPoint(clientX, clientY);
 
-		const findDragons = elementsFromPoint.filter((element) => {
-			return element.dataset.name == 'dragon';
+		const findFlyers = elementsFromPoint.filter((element) => {
+			return element.dataset.name == 'flyer';
 		})
 
-		if(findDragons.length >= 3) {
-			this.manager.mergeDragons(findDragons);
-
+		if(findFlyers.length >= 3) {
+			this.manager.mergeFlyers(findFlyers);
 			return;
 		}
 
@@ -90,14 +89,15 @@ class DragonDragStrategy extends BaseDragStrategy {
 			let element = elementsFromPoint[i];
 
 			if(element.dataset.name == 'fog'
-			|| element.dataset.name == 'landscape'
-			|| element.dataset.name == 'cell') { 
-				this.manager.startPatrulDragonAfterDraging(this.currentDragon)
+			|| element.id == 'board-canvas') {
+			//|| element.dataset.name == 'landscape'
+			//|| element.dataset.name == 'cell') { 
+				this.manager.startPatrulFlyerAfterDraging(this.currentFlyer)
 				break; 
 			}
 
 			if(element.dataset.name == 'item') {
-				this.manager.collectItemAfterDraging(this.currentDragon)
+				this.manager.collectItemAfterDraging(this.currentFlyer)
 				break;
 			}
 		}
@@ -105,7 +105,7 @@ class DragonDragStrategy extends BaseDragStrategy {
 	}
 }
 
-class DragonCLickStrategy extends BaseDragStrategy {
+class FlyerCLickStrategy extends BaseDragStrategy {
 	manager = null;
 
 	constructor(dragManager) {
@@ -114,8 +114,8 @@ class DragonCLickStrategy extends BaseDragStrategy {
 	}
 
 	end(clientX, clientY, element) {
-		console.log('будет: уронить предмет')
-		//уронить предмет
+		//console.log('будет: уронить предмет')
+		//реализовала на mouseDown
 	}
 }
 
@@ -124,11 +124,9 @@ class DragonCLickStrategy extends BaseDragStrategy {
 
 
 
-
-
-
 class ItemDragStrategy extends BaseDragStrategy {
 	manager = null;
+	eventBus = EventBus.getInstance();
 
 	currentElement = null;
 	offsetX = 0;
@@ -140,20 +138,20 @@ class ItemDragStrategy extends BaseDragStrategy {
 
 	isDragingItem = false;
 
-	constructor(dragManager) {
-		super(dragManager);
-		this.manager = dragManager.itemHandler;
+	constructor(manager) {
+		super(manager);
+		this.manager = manager;
 	}
 
 	start(clientX, clientY, element) {
 		this.isDragingItem = true;
 		this.currentElement = element;
 
-		if(!this.manager.itemRegistry.getCurrentItem(this.currentElement.dataset.id)) { return }
-		this.manager.itemRegistry.getCurrentItem(this.currentElement.dataset.id).isDraging = true;
+		//if(!this.manager.itemRegistry.getCurrentItem(this.currentElement.dataset.id)) { return }
+		//this.manager.itemRegistry.getCurrentItem(this.currentElement.dataset.id).isDraging = true;
 
-		this.elementStartX = Number(this.currentElement.style.left.split('px')[0]);
-		this.elementStartY = Number(this.currentElement.style.top.split('px')[0]);
+		this.elementStartX = this.currentElement.coord.x;
+		this.elementStartY = this.currentElement.coord.y;
 
 		this.offsetX = clientX - this.elementStartX;
 		this.offsetY = clientY - this.elementStartY;
@@ -163,61 +161,58 @@ class ItemDragStrategy extends BaseDragStrategy {
 
 	move(clientX, clientY) {
 		if(!this.isDragingItem) { return }
-		this.currentElement.style.zIndex = '100';
 
-		this.currentElement.style.left = (clientX - this.offsetX) +'px';
-		this.currentElement.style.top = (clientY - this.offsetY) +'px';
+		if(!this.manager.itemRegistry.getCurrentItem(this.currentElement.dataset.id)) { return }
+		this.manager.itemRegistry.getCurrentItem(this.currentElement.dataset.id).isDraging = true;
 
-		let elementsFromPoint = document.elementsFromPoint(clientX, clientY);
-		for(let i = 0; i < elementsFromPoint.length; i++) {
-			let element = elementsFromPoint[i];
+		const x = (clientX - this.offsetX);
+		const y = (clientY - this.offsetY);
 
-			if(element.dataset.name == 'fog') { break; }
-			if(element.dataset.name == 'item' 
-			&& element.dataset.id != this.currentElement.dataset.id) {	
-				this.itemsPref = this.manager.preformHighlightingItems(this.currentElement.dataset.id, element.dataset.id);
-				if(this.itemsPref.length > 1) {
-					//this.manager.itemPlacer.renderer.createMergeCounter(this.currentElement, this.itemsPref.length);
-					this.manager.createMergeCounter(this.currentElement, this.itemsPref.length);
-				}
-				break;
+		this.manager.moveItem(this.currentElement.item, x, y);
+
+		const boardCoord = this.manager.getCoordBoard(this.currentElement.element, clientX, clientY);
+		const row = boardCoord.row;
+		const col = boardCoord.col;
+
+		/*const grid = this.currentElement.grid;
+		if(grid[row][col].fog.layer === 0 && grid[row][col].item) {
+// надо рисовать 
+			this.itemsPref = this.manager.preformHighlightingItems(this.currentElement.dataset.id, grid[row][col].item.id);
+			if(this.itemsPref.length > 1) {
+				this.manager.createMergeCounter(this.currentElement, this.itemsPref.length);
 			}
 			if(this.itemsPref.length > 1) {
 				this.manager.removeMergeCounter();
 				this.manager.removeHighlightingItems(this.itemsPref);
 			}
-		}
+		}*/
 	}
 
 	end(clientX, clientY) {
 		this.isDragingItem = false;
 		this.itemsPref = [];
-
 		if(!this.manager.itemRegistry.getCurrentItem(this.currentElement.dataset.id)) { return }
 		this.manager.itemRegistry.getCurrentItem(this.currentElement.dataset.id).isDraging = false;
 			
-		let elementsFromPoint = document.elementsFromPoint(clientX, clientY);
-		for(let i = 0; i < elementsFromPoint.length; i++) {
-			let element = elementsFromPoint[i];
+		const boardCoord = this.manager.getCoordBoard(this.currentElement.element, clientX, clientY);
+		const row = boardCoord.row;
+		const col = boardCoord.col;
 
-			if(element.dataset.name == 'fog'
-			|| element.dataset.name == 'landscape') { 
-				this.manager.stayBackItemOnBoard(this.currentElement.dataset.id);
-				break; 
-			}
-
-			if(element.dataset.name == 'item' 
-			&& element.dataset.id != this.currentElement.dataset.id) {
-				this.manager.handleAfterDragItem(this.currentElement.dataset.id, element.dataset.id);
-				break;
-			}
-
-			if(element.dataset.name == 'cell') {
-				this.manager.handleCell(this.currentElement.dataset.id, element.dataset.row, element.dataset.col);
-				break;
-			} 
+		const grid = this.currentElement.grid;
+		if(grid[row][col].landscape || grid[row][col].fog.layer > 0) {
+			this.manager.stayBackItemOnBoard(this.currentElement.dataset.id);
+			return;
 		}
-		this.currentElement.style.zIndex = '';		
+
+		if(grid[row][col].item) {
+			this.manager.handleAfterDragItem(this.currentElement.dataset.id, grid[row][col].item.id);
+			return;
+		}
+
+		if(!grid[row][col].landscape && !grid[row][col].fog.layer > 0 && !grid[row][col].item) {
+			this.manager.handleCell(this.currentElement.dataset.id, boardCoord.row, boardCoord.col);
+			return;
+		}
 	}
 }
 
@@ -226,12 +221,11 @@ class ItemCLickStrategy extends BaseDragStrategy {
 
 	constructor(dragManager) {
 		super(dragManager);
-		this.manager = dragManager.itemHandler;
+		this.manager = dragManager;
 	}
 
 	end(clientX, clientY, element) {
-		//this.manager.itemPlacer.stayBackItemOnBoard(element.dataset.id);
-		this.manager.stayBackItemOnBoard(element.dataset.id);
+		this.manager.stayBackItemAfterClick(element.dataset.id);
 		this.manager.handleItem(element.dataset.id);
 	}
 }
@@ -241,13 +235,11 @@ class ItemLongCLickStrategy extends BaseDragStrategy {
 
 	constructor(dragManager) {
 		super(dragManager);
-		this.manager = dragManager.itemHandler;
+		this.manager = dragManager;
 	}
 
 	end(clientX, clientY, element) {
-		const item = this.manager.itemRegistry.getCurrentItem(element.dataset.id);
-		this.manager.itemPlacer.gameBoard.addItemInCell(item);
-		this.manager.infoPanel.showInfoPanel(item);
+		this.manager.showInfoPanel(element.dataset.id);
 	}
 }
 
@@ -256,12 +248,12 @@ class ItemDblCLickStrategy extends BaseDragStrategy {
 
 	constructor(dragManager) {
 		super(dragManager);
-		this.manager = dragManager.itemHandler; 
+		this.manager = dragManager; 
 	}
 
 	end(clientX, clientY, element) {
-		this.manager.stayBackItemOnBoard(element.dataset.id);
-		this.manager.itemCollsDragon(element.dataset.id) //возможно не понадобится 
+		this.manager.stayBackItemAfterClick(element.dataset.id);
+		this.manager.itemCollsFlyer(element.dataset.id); 
 	}
 }
 
@@ -303,6 +295,7 @@ class BoardPanoramaStrategy extends BaseDragStrategy {
 
 		this.boardTranslateX = Math.max(minX, Math.min(coordX, maxX))
 		this.boardTranslateY = Math.max(minY, Math.min(coordY, maxY))
+
 
 		this.container.style.transform = `translate(${this.boardTranslateX}px, ${this.boardTranslateY}px)`;
 	}
@@ -403,18 +396,22 @@ class ShopPanoramaStrategy extends BaseDragStrategy {
 		let elementsFromPoint = document.elementsFromPoint(clientX, clientY);
 		for(let i = 0; i < elementsFromPoint.length; i++) {
 			let element = elementsFromPoint[i];
+
 			if(element.dataset.name == 'item'
 			&& element.dataset.level == this.currentElement.dataset.level) { 
 				const distance = Math.floor(Math.sqrt((this.itemStartX - element.getBoundingClientRect().left)**2 + 
 						(this.itemStartY - element.getBoundingClientRect().top)**2));
 				if(distance == 0) {
-e.stopPropagation();
-					this.manager.manager.handleBuyItem(element.dataset.type, element.dataset.level, Number(element.dataset.price));
+					this.manager.manager.handleBuyItem(element.dataset.type, Number(element.dataset.level), Number(element.dataset.price));
 					this.manager.showStartShop();
 					this.manager.shopContainer.style.display = 'none';
 					break;
 				}	
 			}
 		}
+	}
+
+	findCenterCellOfViewport() {
+		
 	}
 }

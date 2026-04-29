@@ -1,25 +1,46 @@
 ﻿window.addEventListener("load", main);
 
 function main() {
+	//window.MergeGame = window.MergeGAme || {}
+	//window.MergeGame.eventBus = new EventBus();
 	const game = new Game();
 }
 
-class EventEmiter {
+class EventBus {
+	static #instance = null;
 	listeners = {};
 
-	constructor() {}
+	constructor() {
+		if(EventBus.#instance) {
+			return EventBus.#instance;
+		}
+		EventBus.#instance = this;
+	}
 
-	subscribe(event, fn) {
+	static getInstance() {
+		if(!EventBus.#instance) {
+			EventBus.#instance = new EventBus();
+		}
+		return EventBus.#instance
+	}
+
+	on(event, fn) {
 		if(this.listeners[event] == null) {
 			this.listeners[event] = [];
 		}
 		this.listeners[event].push(fn);
+
 		return () => {
 			const index = this.listeners[event].indexOf(fn);
 			if(index !== -1) {
 				this.listeners[event].splice(index, 1);
 			}
 		}
+	}
+	
+	of(event, fn) {
+		if(!this.listeners[event] == null) { return }
+		this.listeners[event] = this.listeners[event].filter(f => f !== fn)
 	}
 	
 	emit(event, ...arg) {
@@ -29,48 +50,38 @@ class EventEmiter {
 }
 
 class Game {
-	eventEmiter = new EventEmiter();
+	eventBus = EventBus.getInstance();
 	gameBoard = new Board();
 	fogOnBoard = new Fog(this.gameBoard.grid);
-	itemManager = new ItemManager(this.gameBoard, this.fogOnBoard, this.eventEmiter);
-	flyItemsManager = new FlyItemsManager(this.itemManager);
-	dragonManager = new DragonManager(this.gameBoard, this.eventEmiter)//, this.fogOnBoard);
 
-	dragManager = new DragManagerForGame(this.itemManager, this.dragonManager);
+	itemPlacer = new ItemPlacer(this.gameBoard, this.fogOnBoard);
+	itemRenderer = new ItemRenderer();
+	itemRendererCanvas = new ItemRendererCanvas();
+	giftFromItem = new GiftFromItem(this.itemPlacer);
+	giftOnItem = new GiftOnItem(this.itemPlacer);
 
-	gameOptions = null;
+	mergeManager = new MergeManager(this.itemPlacer);
+	itemHandler = new ItemHandler(this.itemPlacer, this.mergeManager);
+
+	flyItemsManager = new FlyItemsManager(this.itemPlacer);
+	flyerManager = new FlyerManager(this.gameBoard);
+
+	dragManager = new DragManagerForGame(this.itemHandler, this.flyerManager);
+
+	gameOptions = new GameOptions();
 	saveGame = new SaveData();
 
 	constructor() {
-		this.gameOptions = new GameOptions(this);
 		this.startGame(); // это надо
 		//this.saveGame.saveBeforeUnload(this.gameBoard.grid);// это надо
-
-		//this.dragonManager.createDragon('blackDragon', 1, 29);// это временно
 	}
 
-	
-	dragon = this.eventEmiter.subscribe('dragonAppeared', (type, count, row, col) => {
-		for(let i = 0; i < count; i++) {
-			this.dragonManager.createDragon(type, row, col);
-		}
-	})
-	
-	itemPutOnBoardFromDragon = this.eventEmiter.subscribe('itemPutOnBoard', (row, col) => {
-		this.itemManager.itemPutOnBoardFromDragon(row, col);
-	})
-
-	itemCollsDragon = this.eventEmiter.subscribe('itemCollsDragon', (item) => {
-		this.dragonManager.directDragonToItem(item)
-	})
-
-	
 	startGame() {
 		this.flyItemsManager.startFlyItem();
 		if(this.saveGame.hasSaveVersion()) {
 			this.gameBoard.updateGrid(this.saveGame.grid);
 			this.fogOnBoard.updateGrid(this.saveGame.grid);
-			this.itemManager.updateItemOnBoard(this.saveGame.grid);
+			this.itemPlacer.updateItemOnBoard(this.saveGame.grid);
 		} else {
 			this.startNewGame();	
 		}
@@ -81,6 +92,13 @@ class Game {
 		/*при старте рисует 8712 элементов... очень много (((( 
 		теперь 6704 получше, но все же много( 
 		можно убрать псевдо элемента, они все равно нужны только здесь для красоты
+
+		перенесла поле на канвас -  стало 4254
+		получше, переносим дальше
+
+		перенесла туман стало - 2249
+
+		частично перенесла предметы стало - 237
 		*/
 	}
 
@@ -98,80 +116,81 @@ class Game {
 				}
 			}
 		}
+		this.eventBus.emit(EVENTS.CMD_RENDERING_FOG, this.fogOnBoard.grid);
 	}
 
 	createSetItemsUnderFogLevel(level, row, col) {
 		if(this.gameBoard.grid[row][col].landscape) { return }
+		let propertyItem  = {}
 		let levelItem = 0;
 		let type = '';
+		let breed = null;
 		switch(level) {
 			case  1: 
 			case  2:
-			case  3: type = this.getTypeItemForStartLevel();
-				 levelItem = this.getRandomInt(1, 3);
-				 //type = Math.random() > GAME_CONFIG.GENERATE_RULES.RANDOM_TYPE_CHANCE ? 'flowers' : 'trees';
-				 if(type == 'eggsDragon') {
-					levelItem = Math.random() > GAME_CONFIG.GENERATE_RULES.RANDOM_TYPE_CHANCE ? 'blackDragon' : 'redDragon';
-				 }
+			case  3: propertyItem = this.getPropertyItem(1)
+
+				 levelItem = propertyItem.level;
+				 type = propertyItem.type;
+				 breed = propertyItem.breed;
 				 break;
 			case  4:
 			case  5:
-			case  6:
-			case  7: type = this.getTypeItemForStartLevel();
-				 levelItem = this.getRandomInt(3, 5);
-				 //type = Math.random() > GAME_CONFIG.GENERATE_RULES.RANDOM_TYPE_CHANCE ? 'flowers' : 'trees';
-				 if(type == 'eggsDragon') {
-					levelItem = Math.random() > GAME_CONFIG.GENERATE_RULES.RANDOM_TYPE_CHANCE ? 'blackDragon' : 'redDragon';
-				 }
+			case  6: propertyItem = this.getPropertyItem(2)
+
+				 levelItem = propertyItem.level;
+				 type = propertyItem.type;
+				 breed = propertyItem.breed;
 				 break;
+			case  7:
 			case  8:
-			case  9:
-			case 10:
-			case 11: type = this.getTypeItemForHighLevel();
-				 if(type == 'eggsDragon') {
-					levelItem = Math.random() > GAME_CONFIG.GENERATE_RULES.RANDOM_TYPE_CHANCE ? 'blackDragon' : 'redDragon';
-				 }
-				 if(type == 'flowers' || type == 'trees') {
-				 	levelItem = this.getRandomInt(5, 7);
-				 } 
-				 if(type == 'water' || type == 'mushrooms') {
-					levelItem = this.getRandomInt(1, 3)
-				 }
+			case  9: propertyItem = this.getPropertyItem(3)
+
+				 levelItem = propertyItem.level;
+				 type = propertyItem.type;
+				 breed = propertyItem.breed;
 				 break;
-			case 12:
+			case 10:
+			case 11:
+			case 12: propertyItem = this.getPropertyItem(4)
+
+				 levelItem = propertyItem.level;
+				 type = propertyItem.type;
+				 breed = propertyItem.breed;
+				 break;
 			case 13:
 			case 14:
-			case 15: type = this.getTypeItemForHighLevel();
-				 if(type == 'eggsDragon') {
-					levelItem = Math.random() > GAME_CONFIG.GENERATE_RULES.RANDOM_TYPE_CHANCE ? 'blackDragon' : 'redDragon';
-				 }
-				 if(type == 'flowers' || type == 'trees') {
-					levelItem = this.getRandomInt(7, 9); 
-				 }  
-				 if(type == 'water' || type == 'mushrooms') {
-					levelItem = this.getRandomInt(3, 5);
-				 }
+			case 15: propertyItem = this.getPropertyItem(5)
+
+				 levelItem = propertyItem.level;
+				 type = propertyItem.type;
+				 breed = propertyItem.breed;
 				 break;
 		}
-
-		const itemGame = this.itemManager.itemPlacer.addItemOnBoard(type, levelItem, row, col);
-		this.itemManager.itemPlacer.renderer.placeItemOnBoardForBeginGame(itemGame.element, row, col);
+		const itemGame = this.itemPlacer.addItemToGameForBegin(type, levelItem, row, col, breed);
 	}
 
-	getTypeItemForStartLevel() {
-		let chance = Math.random();
-		if(chance <= 0.5) { return 'flowers' }
-		if(chance >  0.5 && chance <= 0.6) { return 'eggsDragon' }
-		if(chance >  0.6 ) { return 'trees' }
-	}
+	getPropertyItem(value) {
+		const setPropertyItem = SET_ITEM_FOR_START_GAME[value]
+		let propertyItem = {};
+		const chance = Math.random();
 
-	getTypeItemForHighLevel() {
-		let chance = Math.random();
-		if(chance <= 0.2) { return 'water' }
-		if(chance >  0.2 && chance <= 0.5) { return 'flowers' }
-		if(chance >  0.5 && chance <= 0.6) { return 'eggsDragon' }
-		if(chance >  0.6 && chance <= 0.8) { return 'trees' }
-		if(chance >  0.8) { return 'mushrooms' }
+		let chanceSet = 0
+		for(let i = 0; i < setPropertyItem.length; i++) {
+			const set = setPropertyItem[i];
+			chanceSet += set.chance;
+
+			if(chanceSet >= chance) {
+				propertyItem.type = set.type;
+				propertyItem.level = this.getRandomInt(set.levelMin, set.levelMax);
+				propertyItem.breed = null;
+				if(set.breed) {
+					propertyItem.breed = set.breed[this.getRandomInt(0, set.breed.length-1)];
+				}
+				return propertyItem
+			}
+		}
+
 	}
 
 	getRandomInt(min, max) {
@@ -186,11 +205,21 @@ class Game {
 		const type = 'flowers';
 		this.generateItemOnBoard(countItem, level, type, minX, maxX, minY, maxY);
 
-		this.generateItemOnBoard(3, 'blackDragon', 'eggsDragon', minX, maxX, minY, maxY);
-		//this.generateItemOnBoard(3, 'redDragon', 'eggsDragon', minX, maxX, minY, maxY);
+		this.generateItemOnBoard(3, 0, 'eggs', minX, maxX, minY, maxY, 'blackDragon');
+
+//this.generateItemOnBoard(1, 1, 'watermill', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(1, 2, 'watermill', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(1, 4, 'trees', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(1, 6, 'trees', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(1, 8, 'trees', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(1, 10, 'trees', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(2, 6, 'fossil', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(10, 10, 'sphere', minX, maxX, minY, maxY);	
+//this.generateItemOnBoard(3, 6, 'gold', minX, maxX, minY, maxY);		
+//this.generateItemOnBoard(3, 6, 'hills', minX, maxX, minY, maxY);
 	}
 
-	generateItemOnBoard(countItem, level, type, minX, maxX, minY, maxY) {
+	generateItemOnBoard(countItem, level, type, minX, maxX, minY, maxY, breed) {
 		for(let i = 0; i < countItem; i++) {
 			let place = false;
 
@@ -199,13 +228,11 @@ class Game {
 				let col = this.getRandomInt(minX, maxX);
 
 				if(this.gameBoard.canAddItem(row, col)) {
-					const itemGame = this.itemManager.itemPlacer.addItemOnBoard(type, level, row, col);
-					this.itemManager.itemPlacer.renderer.placeItemOnBoardForBeginGame(itemGame.element, row, col);
+					const itemGame = this.itemPlacer.addItemToGameForBegin(type, level, row, col, breed);
 					place = true;	
 				} 
 			}
 		}
 	}
 }
-
 

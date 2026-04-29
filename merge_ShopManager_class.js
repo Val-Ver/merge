@@ -18,6 +18,7 @@
 		this.gameOptionsContainer = manager.gameOptionsContainer;
 		this.shopContainer = manager.shopContainer;
 
+
 		this.renderer.createCellForShop();
 		this.addListenersOnBtnShop();
 		this.addListenersOnProduct();
@@ -75,6 +76,7 @@
 					this.shop.style.display = 'none';
 					this.btnBack.style.display = 'block';
 					this.shopItem.style.display = 'grid';
+
 					this.currentItemsSet = this.renderer.setItemsForSave[cardItem.dataset.type];
 					this.currentItemsSet.style.transform = `translate(0, 0)`;
 					this.currentItemsSet.style.display = 'grid';				

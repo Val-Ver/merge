@@ -6,11 +6,26 @@
 	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
 
 	containerEffect = document.querySelector('.effect-container')
-	fogElementForSave = null;
+	eventBus = EventBus.getInstance();
 
-	constructor() {}
+	constructor() {
+		/*this.eventBus.on(EVENTS.CMD_RENDERING_FOG, (layer, row, col, grid) => {
+			this.createFogDiv(layer, row, col, grid);
+		});*/
 
-	createFogDiv(layer, row, col) {
+		/*this.eventBus.on(EVENTS.CMD_REMOVE_ALL_FOG_ON_CELL, (element) => {
+			this.removeAllFogOnCell(element);
+		});*/
+		/*this.eventBus.on(EVENTS.CMD_REMOVE_FOG_ON_CELL, (layerFog, element) => {
+			this.removeFogOnCell(layerFog, element);
+		});*/
+		this.eventBus.on(EVENTS.CMD_RENDERING_CREATE_MAGIC_WAY_EFFECT, (fromRow, fromCol, row, col, resolve) => {
+			return this.createMagicWayEffect(fromRow, fromCol, row, col, resolve);
+		});
+		
+	}
+
+	createFogDiv(layer, row, col, grid) {
 		const fog = document.createElement('div');
 		fog.className = 'fog';
 		fog.id = `fog-${row}-${col}`;
@@ -24,7 +39,7 @@
 		fog.style.opacity = `${opacity}`
 
 		this.containerEffect.appendChild(fog);
-		this.fogElementForSave = fog;
+		grid[row][col].fog.element = fog;
 	}
 
 	getOpacityFog(layer) {
@@ -37,16 +52,101 @@
 		return opacityMin;
 	}
 
-	createFogCounter(element, layer) {
+	
+	createFogCounter1(element, layer) {
 		const fogCounter = document.createElement('div');
 		fogCounter.id = `layer-${element.id}`;
-		fogCounter.textContent = `${layer-1}`
+		fogCounter.textContent = `${layer}`
 		fogCounter.className = 'layer-fog';
 		element.appendChild(fogCounter);
 		return fogCounter;
 	}
 
 	removeFogOnCell(layerFog, element) {
+		let time = GAME_CONFIG.ANIMATIONS.TIME_REMOVE_FOG_TRANSITION;
+		const fogCounter = this.createFogCounter1(element, layerFog);
+		let opacity = this.getOpacityFog(layerFog);
+
+		if(Number(element.style.opacity) == opacity) {
+			setTimeout(() => {
+				fogCounter.remove();
+			}, time)
+			return;
+		} 
+
+		element.style.transition = `opacity ${time}s ease-in-out`;
+		element.style.opacity = `${opacity}`;
+
+		element.addEventListener('transitionend', (event) => {
+			fogCounter.remove();
+			if(layerFog == 0) { element.remove(); }
+		})
+	}
+
+	removeAllFogOnCell(element) {
+		let time = GAME_CONFIG.ANIMATIONS.TIME_REMOVE_FOG_TRANSITION;
+		element.style.transition = `opacity ${time}s ease-in-out`;
+		element.style.opacity = '0';
+
+		element.addEventListener('transitionend', (event) => {
+			element.remove();
+		})
+	}
+
+	createMagicWayEffect(fromRow, fromCol, row, col, resolve) {
+		const magicWay = document.createElement('div');
+		magicWay.className = 'magic-effect';
+		magicWay.textContent = "*";
+		magicWay.style.left = `${this.boardWidth/this.cols  * fromCol + this.boardWidth/this.cols  * 0.4}px`; //почему центр не в половине???
+		magicWay.style.top  = `${this.boardHeight/this.rows * fromRow + this.boardHeight/this.rows * 0.4}px`;
+		this.containerEffect.appendChild(magicWay);
+
+		return this.removeMagicWayEffect(magicWay, row, col, resolve);
+	}
+
+	removeMagicWayEffect(element, row, col, resolve) {
+		let time = GAME_CONFIG.ANIMATIONS.TIME_REMOVE_MAGIC_WAY_TRANSITION;
+		const distanceX = Number(element.style.left.split('px')[0]) - (this.boardWidth/this.cols  * col + this.boardWidth/this.cols)
+		const distanceY = Number(element.style.top.split('px')[0])  - (this.boardHeight/this.rows * row + this.boardHeight/this.rows)
+		const distance = Math.sqrt(distanceX**2 + distanceY**2);	
+
+		if(distance > GAME_CONFIG.BOARD_SIZE.CELL) {
+			time *= Math.floor(distance / GAME_CONFIG.BOARD_SIZE.CELL)
+		}
+
+		void element.offsetWidth //это ВАЖНО, без этого не работает
+
+		element.style.transition = `left ${time}s ease-in-out, 
+					    top ${time}s ease-in-out,
+					    opacity ${time}s ease-in-out,
+					    transform  ${time}s ease-in-out`;
+
+		element.style.left = `${this.boardWidth/this.cols  * col + this.boardWidth/this.cols  * 0.4}px`; 
+		element.style.top  = `${this.boardHeight/this.rows * row + this.boardHeight/this.rows * 0.4}px`;
+		element.style.opacity = '0.01';
+		element.style.transform = 'scale(5)';
+
+		element.addEventListener('transitionend', (event) => {
+			element.remove(); 
+			return resolve();
+		})
+	}
+}
+
+//------------------------------------------------
+// были такие:
+
+
+	/*createFogCounter(element, layer) {
+		const fogCounter = document.createElement('div');
+		fogCounter.id = `layer-${element.id}`;
+		fogCounter.textContent = `${layer-1}`
+		fogCounter.className = 'layer-fog';
+		element.appendChild(fogCounter);
+		return fogCounter;
+	}*/
+
+	/*removeFogOnCell1(layerFog, element) {
 		let time = GAME_CONFIG.ANIMATIONS.TIME_REMOVE_FOG_TRANSITION;
 		const fogCounter = this.createFogCounter(element, layerFog);
 		let opacity = this.getOpacityFog(layerFog - 1);
@@ -65,55 +165,4 @@
 			fogCounter.remove();
 			if(layerFog - 1 == 0) { element.remove(); }
 		})
-	}
-	
-	removeAllFogOnCell(element) {
-		let time = GAME_CONFIG.ANIMATIONS.TIME_REMOVE_FOG_TRANSITION;
-		element.style.transition = `opacity ${time}s ease-in-out`;
-		element.style.opacity = '0';
-
-		element.addEventListener('transitionend', (event) => {
-			element.remove();
-		})
-	}
-
-	createMagicWayEffect(fromRow, fromCol, row, col) {
-		const magicWay = document.createElement('div');
-		magicWay.className = 'magic-effect';
-		magicWay.textContent = "*";
-		magicWay.style.left = `${this.boardWidth/this.cols  * fromCol + this.boardWidth/this.cols  * 0.4}px`; //почему центр не в половине???
-		magicWay.style.top  = `${this.boardHeight/this.rows * fromRow + this.boardHeight/this.rows * 0.4}px`;
-		this.containerEffect.appendChild(magicWay);
-
-		return this.removeMagicWayEffect(magicWay, row, col);
-	}
-
-	removeMagicWayEffect(element, row, col) {
-		let time = GAME_CONFIG.ANIMATIONS.TIME_REMOVE_MAGIC_WAY_TRANSITION;
-		const distanceX = Number(element.style.left.split('px')[0]) - (this.boardWidth/this.cols  * col + this.boardWidth/this.cols)
-		const distanceY = Number(element.style.top.split('px')[0])  - (this.boardHeight/this.rows * row + this.boardHeight/this.rows)
-		const distance = Math.sqrt(distanceX**2 + distanceY**2);	
-
-		if(distance > GAME_CONFIG.BOARD_SIZE.CELL) {
-			time *= Math.floor(distance / GAME_CONFIG.BOARD_SIZE.CELL)
-		}
-		return new Promise((resolve, reject) => {
-			void element.offsetWidth //это ВАЖНО, без этого не работает
-
-			element.style.transition = `left ${time}s ease-in-out, 
-						    top ${time}s ease-in-out,
-						    opacity ${time}s ease-in-out,
-						    transform  ${time}s ease-in-out`;
-
-			element.style.left = `${this.boardWidth/this.cols  * col + this.boardWidth/this.cols  * 0.4}px`; 
-			element.style.top  = `${this.boardHeight/this.rows * row + this.boardHeight/this.rows * 0.4}px`;
-			element.style.opacity = '0.01';
-			element.style.transform = 'scale(5)';
-
-			element.addEventListener('transitionend', (event) => {
-				element.remove(); 
-				resolve();
-			})
-		})
-	}
-}
+	}*/

@@ -228,6 +228,7 @@
 	align-items: center;
 /*pointer-events:none;*/
 }
+
 .info-message {
 	/*position: absolute;
 	left: 175px;
@@ -314,6 +315,16 @@ button:hover {
 
 }
 
+
+#fog-canvas, #item-canvas,
+#item-draging-canvas {
+	position: absolute;
+	left: 0;
+	top: 0;
+	pointer-events: none;
+	z-index: 1;
+}
+
 .board-container {
 	display: grid;
 	justify-content: center;
@@ -339,7 +350,7 @@ button:hover {
 	background: grey;
 }
 
-.item, .dragon {
+.item, .flyer {
 	border: 1px solid grey;
 	aspect-ratio: 1;
 	position: absolute;
@@ -354,6 +365,7 @@ button:hover {
 	cursor: pointer;
 	user-select: none;
 	z-index: 1;
+	overflow: hidden;
 }
 
 .item::after {
@@ -367,12 +379,13 @@ button:hover {
 	align-items: center;
 	color: grey;
 	z-index: -10;
+	overflow: hidden;
 }
 .item:active {
 	box-shadow:  0px 5px 10px rgba(0, 0, 0, 0.5);
 }
 
-.dragon {
+.flyer {
 	box-shadow:  5px 30px 25px rgba(0, 0, 0, 0.5);
 	font-size: 15px;
 	z-index: 100;
@@ -456,7 +469,7 @@ button:hover {
 	z-index: 45;
 }
 
-.gift-on-dragon { 
+.gift-on-flyer { 
 	position: absolute;
 	aspect-ratio: 1;
 	font-size: 12px;

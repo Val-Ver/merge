@@ -6,19 +6,30 @@
 	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
 
 	elementForSave = null;
+	eventBus = EventBus.getInstance();
 
 	constructor() {
+		/*this.eventBus.on(EVENTS.CMD_RENDERING_DIV_FOR_GIFTS, (item) => {
+			this.createDivForGifts(item);
+		})*/
+		/*this.eventBus.on(EVENTS.CMD_RENDERING_GIFT_ON_ITEM, (divForGifts, itemId, pic) => {
+			this.createGiftOnItem(divForGifts, itemId, pic);
+		})*/
+		/*this.eventBus.on(EVENTS.CMD_RENDERING_REMOVE_GIFT_ON_ITEM, (divForGifts) => {
+			this.removeGiftOnItem(divForGifts);
+		})*/
 	}
 
-	createDivForGifts(element, count) {
+	createDivForGifts(item) {
 		const divForGifts = document.createElement('div');
-		divForGifts.id = `div-for-gift-${element.id}`;
+		divForGifts.id = `div-for-gift-${item.id}`;
 		divForGifts.className = 'div-for-gift';
-		divForGifts.style.gridTemplateColumns = `repeat(${count}, ${100/count}%)`;
+		divForGifts.style.gridTemplateColumns = `repeat(${item.giftOnItem.count}, ${100/item.giftOnItem.count}%)`;
+		item.element.appendChild(divForGifts);
 
-		element.appendChild(divForGifts);
-		void divForGifts.offsetWidth;
-		this.elementForSave = divForGifts;
+		//void divForGifts.offsetWidth;
+		item.elementHasGiftOnItem = divForGifts;
+		//this.elementForSave = divForGifts;
 	}
 
 	createGiftOnItem(divForGifts, itemId, pic) {
@@ -33,7 +44,7 @@
 		item.style.width = `${this.boardWidth/this.cols * size}px`;
 		if(divForGifts) {
 			divForGifts.appendChild(item);
-			this.createMagicEffect(item)
+			this.createMagicEffect(item);
 		}
 	}
 

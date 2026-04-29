@@ -13,10 +13,19 @@
 	<div class="game-container">
 		<div class="viewport-container">
 			<div class="container-for-panoram">
+				<canvas id="board-canvas" width="2400" height="1600"></canvas>
 				<div class="board-container"></div>
+
+				<canvas id="item-canvas" width="2400" height="1600"></canvas>
+	
 				<div class="item-container"></div>
+
+				<canvas id="fog-canvas" width="2400" height="1600"></canvas>
 				<div class="effect-container"></div>
-				<div class="dragon-container"></div>
+
+				<canvas id="item-draging-canvas" width="2400" height="1600"></canvas>
+
+				<div class="flyer-container"></div>
 				<div class="fly-container"></div>
 			</div>
 		</div>
@@ -59,22 +68,26 @@
 	<script src="merge_items_array.js"></script>
 	<script src="merge_board_landscape_array.js"></script>
 	<script src="merge_fog_on_board_array.js"></script>
+	<script src="merge_events_array.js"></script>
+	<script src="merge_set_item_for_new_geme_array.js"></script>
 
 	<script src="merge_Game_class.js"></script>
 
 	<script src="merge_Board_class.js"></script>
 	<script src="merge_BoardRenderer_class.js"></script>
+	<script src="merge_BoardRendererCanvas_class.js"></script>
 
 	<script src="merge_Fog_class.js"></script>
 	<script src="merge_FogRenderer_class.js"></script>
+	<script src="merge_FogRendererCanvas_class.js"></script>
 
-	<script src="merge_ItemManager_class.js"></script>
 	<script src="merge_ItemRegistry_class.js"></script>
 	<script src="merge_ItemPlacer_class.js"></script>
 	<script src="merge_ItemHandler_class.js"></script>
 
 	<script src="merge_Item_class.js"></script>
 	<script src="merge_ItemRenderer_class.js"></script>
+	<script src="merge_ItemRendererCanvas_class.js"></script>
 
 	<script src="merge_GiftFromItem_class.js"></script>
 
@@ -89,7 +102,8 @@
 	<script src="merge_FlyItemsManager_class.js"></script>
 	<script src="merge_FlyItem_class.js"></script>
 
-	<script src="merge_DragonManager_class.js"></script>
+	<script src="merge_FlyerManager_class.js"></script>
+	<script src="merge_Flyer_class.js"></script>
 
 	<script src="merge_SaveData_class.js"></script>
 

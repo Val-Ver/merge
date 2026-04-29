@@ -7,11 +7,19 @@
 	boardWidth = GAME_CONFIG.BOARD_SIZE.BOARD_WIDTH;
 	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
 
+	containerForPanoram = document.querySelector('.container-for-panoram');
+	viewport = document.querySelector('.viewport-container');
+
+	eventBus = EventBus.getInstance();
+
 	constructor() {
+		this.eventBus.on(EVENTS.CMD_CREATE_BOARD, () => {
+			this.createGameBoard();
+		})
 	}
 
 	createGameBoard() {
-		this.positionToCenter(document.querySelector('.container-for-panoram'));
+		this.positionToCenter(this.containerForPanoram);
 
 		const container = document.querySelector('.board-container');
 		container.style.width = `${this.boardWidth}px`;
@@ -35,10 +43,24 @@
 		}
 	}
 
+	getCenterCellCoord() {
+		const text = this.containerForPanoram.style.transform;
+		//const regex = /\d+/g;
+		//const result = text.match(regex);
+		//const resultNumber = result ? result.map(number => Number(number)) : "";
+
+		const regex = /(-\d+|\d+)/g
+		const result = text.match(regex);
+		const resultNumber = result ? result.map(number => Number(number)) : "";
+
+		return { 
+			left: Math.abs(Number(this.containerForPanoram.style.left.split('px')[0])) + this.viewport.clientWidth/2  - (resultNumber[0] ? resultNumber[0] : 0),
+			top:  Math.abs(Number(this.containerForPanoram.style.top.split('px')[0]))  + this.viewport.clientHeight/2 - (resultNumber[1] ? resultNumber[1] : 0)
+			}
+	}
+
 	positionToCenter(element) {
-		const viewport = document.querySelector('.viewport-container');
-		element.style.left = `${viewport.clientWidth/2 -  this.boardWidth/2}px`;
-	
+		element.style.left = `${this.viewport.clientWidth/2 -  this.boardWidth/2}px`;
 	}
 
 	createBoardLandscape(element, row, col) {
