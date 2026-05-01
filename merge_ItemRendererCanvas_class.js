@@ -11,8 +11,8 @@
 	sizeCanvas = this.canvas.getBoundingClientRect();
 	ctx = this.canvas.getContext('2d');
 
-	canvasFofDragingItem = document.getElementById("item-draging-canvas");
-	ctxDrag = this.canvasFofDragingItem.getContext('2d');
+	canvasForDraggingItem = document.getElementById("item-draging-canvas");
+	ctxDrag = this.canvasForDraggingItem.getContext('2d');
 
 	eventBus = EventBus.getInstance();
 
@@ -85,8 +85,7 @@
 	drawMoveItem(item, x, y) {
 		this.ctx.clearRect(item.col * this.cell, item.row * this.cell, this.cell, this.cell); //я бы перенесла
 
-		this.ctxDrag.clearRect(item.coord.x - this.cell, item.coord.y - this.cell, this.cell * 3, this.cell * 3);
-		//this.ctxDrag.clearRect(0, 0, this.boardWidth, this.boardHeight);
+		this.ctxDrag.clearRect(item.coord.x - 5, item.coord.y - 5, this.cell + 10, this.cell + 10);
 		this.createItem(item, x, y, this.ctxDrag);
 	}
 
@@ -111,8 +110,9 @@
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 		ctx.fillText(`${item.pic}`, itemX, itemY);
-		//this.ctx.shadowBlur = 10;
-		//this.ctx.shadowColor = 'rgba(255, 215, 0, 0.5)';
+
+		//ctx.shadowBlur = 10;
+		//ctx.shadowColor = 'rgba(255, 215, 0, 0.5)';
 		
 		ctx.strokeStyle = 'grey';
 		ctx.strokeRect(x, y, this.cell, this.cell);
@@ -152,8 +152,7 @@
 			const currentX = startX + (endX - startX) * progress;
 			const currentY = startY + (endY - startY) * progress;
 
-		
-			this.ctxDrag.clearRect(item.coord.x - 5, item.coord.y - 5, this.cell + 15, this.cell + 15);
+			this.ctxDrag.clearRect(item.coord.x - 5, item.coord.y - 5, this.cell + 10, this.cell + 10);
 			this.createItem(item, currentX, currentY, this.ctxDrag);
 
 			if(progress < 1) {
@@ -163,7 +162,7 @@
 				isAnimation = false;
 				animationId = null;
 
-				this.ctxDrag.clearRect(item.coord.x - 5, item.coord.y - 5, this.cell + 15, this.cell + 15);
+				this.ctxDrag.clearRect(item.coord.x - 5, item.coord.y - 5, this.cell + 10, this.cell + 10);
 				this.createItem(item)
 			}
 		}

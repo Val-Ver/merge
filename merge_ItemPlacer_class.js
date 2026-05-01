@@ -29,8 +29,8 @@
 			for(let col = 0; col < this.gameBoard.cols; col++) {
 				if(grid[row][col].item) {
 					const item = grid[row][col].item;
-					this.gameBoard.addItemInCell(itemGame);
-					this.itemRegistry.addItem(itemGame);
+					this.gameBoard.addItemInCell(item);
+					this.itemRegistry.addItem(item);
 
 					this.eventBus.emit(EVENTS.EVENT_ADD_ITEM_ON_BOARD, itemGame);
 					this.eventBus.emit(EVENTS.CMD_RENDERING_PLACE_ITEM_ON_BOARD, item.element, item.row, item.col);

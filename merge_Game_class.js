@@ -38,7 +38,7 @@ class EventBus {
 		}
 	}
 	
-	of(event, fn) {
+	off(event, fn) {
 		if(!this.listeners[event] == null) { return }
 		this.listeners[event] = this.listeners[event].filter(f => f !== fn)
 	}
