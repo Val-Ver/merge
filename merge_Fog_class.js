@@ -136,23 +136,27 @@
 				if(power >= layerFog) {
 					this.removeFog1(layerFog, cell.row, cell.col);
 					power -= layerFog;
-
 				} else {
 					this.removeFog1(power, cell.row, cell.col);
 					power = 0;
 				}
 
-				const layerFogNew = this.grid[cell.row][cell.col].fog.layer;
-
-				if(layerFogNew === 0) {
-					const item = this.grid[cell.row][cell.col].item;
-					this.eventBus.emit(EVENTS.CMD_GENERATE_GIFT, item);
-				}
+				// const layerFogNew = this.grid[cell.row][cell.col].fog.layer;
+				//
+				// if(layerFogNew === 0) {
+				// 	const item = this.grid[cell.row][cell.col].item;
+				// 	this.eventBus.emit(EVENTS.CMD_GENERATE_GIFT, item);
+				// }
 
 				new Promise((resolve, reject) => {
 					this.eventBus.emit(EVENTS.CMD_RENDERING_CREATE_MAGIC_WAY_EFFECT, row, col, cell.row, cell.col, resolve)
 				})
 				.then(() => {
+					const layerFogNew = this.grid[cell.row][cell.col].fog.layer;
+					if(layerFogNew === 0) {
+						const item = this.grid[cell.row][cell.col].item;
+						this.eventBus.emit(EVENTS.CMD_GENERATE_GIFT, item);
+					}
 					this.eventBus.emit(EVENTS.CMD_REMOVE_FOG_ON_CELL, layerFog, layerFogNew,  cell.row,  cell.col);
 				})
 			}

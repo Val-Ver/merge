@@ -16,7 +16,9 @@
 
 	eventBus = EventBus.getInstance();
 
-	constructor() {
+	constructor(assetManager) {
+		this.assetManager = assetManager;
+
 		this.eventBus.on(EVENTS.CMD_RENDERING_ITEM, (item, x, y) => {
 			this.createItem(item, x, y);
 		})
@@ -104,18 +106,21 @@
 		const itemX = x  + this.cell / 2;
 		const itemY = y  + this.cell / 2;
 
-		ctx.font = "25px Times New Roman, monospace";
-		ctx.fillStyle = 'black';
+		const img = this.assetManager.getImage(item.pic);
+		if (img) {
+			ctx.drawImage(img, x, y, this.cell, this.cell);
+		} else {
+			// fallback: текст или пустота
+			ctx.font = "25px Times New Roman, monospace";
+			ctx.fillStyle = 'black';
 
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillText(`${item.pic}`, itemX, itemY);
+			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
+			ctx.fillText(`${item.pic}`, itemX, itemY);
 
-		//ctx.shadowBlur = 10;
-		//ctx.shadowColor = 'rgba(255, 215, 0, 0.5)';
-		
-		ctx.strokeStyle = 'grey';
-		ctx.strokeRect(x, y, this.cell, this.cell);
+			ctx.strokeStyle = 'grey';
+			ctx.strokeRect(x, y, this.cell, this.cell);
+		}
 
 		if(item.countHasGiftOnItem > 0) {
 			let count = item.countHasGiftOnItem;

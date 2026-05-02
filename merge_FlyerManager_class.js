@@ -1,18 +1,18 @@
 ﻿const flyers = {
 	blackDragon: { type: 'blackDragon', maxLevel: 4, set: {
-			1: { pic: ')black1(' },
-			2: { pic: ')black2(' },
-			3: { pic: ')black3(' },
-			4: { pic: ')black4(' },
-			}	
+			1: { pic: 'image/items/dragons/black_dragon/black_dragon_1_level.png' },
+			2: { pic: 'image/items/dragons/black_dragon/black_dragon_2_level.png' },
+			3: { pic: 'image/items/dragons/black_dragon/black_dragon_3_level.png' },
+			4: { pic: 'image/items/dragons/black_dragon/black_dragon_4_level.png' },
+		}
 	},
 
 	redDragon: { type: 'redDragon', maxLevel: 4, set: {
-			1: { pic: ')red1(' },
-			2: { pic: ')red2(' },
-			3: { pic: ')red3(' },
-			4: { pic: ')red4(' },
-			}	
+			1: { pic: 'image/items/dragons/red_dragon/red_dragon_1_level.png' },
+			2: { pic: 'image/items/dragons/red_dragon/red_dragon_2_level.png' },
+			3: { pic: 'image/items/dragons/red_dragon/red_dragon_3_level.png' },
+			4: { pic: 'image/items/dragons/red_dragon/red_dragon_4_level.png' },
+		}
 	}
 }
 
@@ -49,8 +49,9 @@ class FlyerRenderer {
 		flyer.id = `dragon-${flyerGame.id}`;
 		flyer.dataset.name = 'flyer';
 		flyer.dataset.id = `${flyerGame.id}`;
-		flyer.textContent = `${flyerGame.pic}`;
-		flyer.style.color = 'white';
+		flyer.style.backgroundImage = `url(${flyerGame.pic})`;
+		// flyer.textContent = `${flyerGame.pic}`;
+		// flyer.style.color = 'white';
 		flyer.style.width = `${this.cell}px`;
 		const heightDragon = 20;
 		flyer.style.left = `${this.cell * col}px`;
@@ -78,7 +79,13 @@ class FlyerRenderer {
 		item.id = `item-${giftOnFlyer.id}`;
 		item.dataset.name = 'gift-on-flyer';
 		item.dataset.id = `${giftOnFlyer.id}`;
-		item.textContent = `${giftOnFlyer.pic}`;
+		if(giftOnFlyer.pic.endsWith('.png')) {
+			item.style.backgroundImage = `url(${giftOnFlyer.pic})`;
+		} else {
+			item.textContent = `${giftOnFlyer.pic}`;
+			item.style.color = 'white';
+		}
+
 		const size = GAME_CONFIG.UI.SIZE_GIFT_ON_ITEM_OF_FLYER;
 		item.style.width = `${this.cell * size}px`;
 		item.style.position = 'absolute';

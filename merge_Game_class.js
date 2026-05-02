@@ -56,7 +56,8 @@ class Game {
 
 	itemPlacer = new ItemPlacer(this.gameBoard, this.fogOnBoard);
 	itemRenderer = new ItemRenderer();
-	itemRendererCanvas = new ItemRendererCanvas();
+	assetManager = new AssetManager(items);
+	itemRendererCanvas = new ItemRendererCanvas(this.assetManager);
 	giftFromItem = new GiftFromItem(this.itemPlacer);
 	giftOnItem = new GiftOnItem(this.itemPlacer);
 
@@ -76,7 +77,8 @@ class Game {
 		//this.saveGame.saveBeforeUnload(this.gameBoard.grid);// это надо
 	}
 
-	startGame() {
+	async startGame() {
+		await this.assetManager.loadAll();
 		this.flyItemsManager.startFlyItem();
 		if(this.saveGame.hasSaveVersion()) {
 			this.gameBoard.updateGrid(this.saveGame.grid);

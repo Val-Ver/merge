@@ -94,11 +94,18 @@
 	}
 
 	createMagicWayEffect(fromRow, fromCol, row, col, resolve) {
-		const magicWay = document.createElement('div');
+		const magicWay = document.createElement('img');
+
 		magicWay.className = 'magic-effect';
-		magicWay.textContent = "*";
-		magicWay.style.left = `${this.boardWidth/this.cols  * fromCol + this.boardWidth/this.cols  * 0.4}px`; //почему центр не в половине???
-		magicWay.style.top  = `${this.boardHeight/this.rows * fromRow + this.boardHeight/this.rows * 0.4}px`;
+		magicWay.style.width = `${this.boardWidth/this.cols}px`;
+
+		magicWay.src = 'image/effects/magic_way.png';
+		magicWay.style.backgroundColor = 'transparent';
+		magicWay.draggable = false
+
+		magicWay.style.left = `${this.boardWidth/this.cols * fromCol}px`;
+		magicWay.style.top = `${this.boardHeight/this.rows * fromRow}px`;
+
 		this.containerEffect.appendChild(magicWay);
 
 		return this.removeMagicWayEffect(magicWay, row, col, resolve);
@@ -116,15 +123,16 @@
 
 		void element.offsetWidth //это ВАЖНО, без этого не работает
 
-		element.style.transition = `left ${time}s ease-in-out, 
-					    top ${time}s ease-in-out,
-					    opacity ${time}s ease-in-out,
-					    transform  ${time}s ease-in-out`;
+			element.style.transition = `left ${time}s ease-in-out, 
+						    top ${time}s ease-in-out,
+						    opacity ${time}s ease-in-out,
+						    transform  ${time}s ease-in-out`
 
-		element.style.left = `${this.boardWidth/this.cols  * col + this.boardWidth/this.cols  * 0.4}px`; 
-		element.style.top  = `${this.boardHeight/this.rows * row + this.boardHeight/this.rows * 0.4}px`;
-		element.style.opacity = '0.01';
-		element.style.transform = 'scale(5)';
+			element.style.left = `${this.boardWidth/this.cols  * col }px`;
+			element.style.top  = `${this.boardHeight/this.rows * row }px`;
+
+			element.style.opacity = '0.05'
+			element.style.transform = 'scale(2)';
 
 		element.addEventListener('transitionend', (event) => {
 			element.remove(); 

@@ -12,8 +12,7 @@
 	subscription() {
 		this.eventBus.on(EVENTS.CMD_GENERATE_GIFT, (item) => {
 			this.generateGiftFromItem(item);
-			
-			
+			this.transformedItem(item);
 		})
 
 		this.eventBus.on(EVENTS.CMD_UPDATE_GIFT, (item) => {
