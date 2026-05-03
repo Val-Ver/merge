@@ -1,17 +1,17 @@
 ﻿const flyers = {
 	blackDragon: { type: 'blackDragon', maxLevel: 4, set: {
-			1: { pic: 'image/items/dragons/black_dragon/black_dragon_1_level.png' },
-			2: { pic: 'image/items/dragons/black_dragon/black_dragon_2_level.png' },
-			3: { pic: 'image/items/dragons/black_dragon/black_dragon_3_level.png' },
-			4: { pic: 'image/items/dragons/black_dragon/black_dragon_4_level.png' },
+			1: { pic: 'image/flyers/black_dragon/black_dragon_1_level.png' },
+			2: { pic: 'image/flyers/black_dragon/black_dragon_2_level.png' },
+			3: { pic: 'image/flyers/black_dragon/black_dragon_3_level.png' },
+			4: { pic: 'image/flyers/black_dragon/black_dragon_4_level.png' },
 		}
 	},
 
 	redDragon: { type: 'redDragon', maxLevel: 4, set: {
-			1: { pic: 'image/items/dragons/red_dragon/red_dragon_1_level.png' },
-			2: { pic: 'image/items/dragons/red_dragon/red_dragon_2_level.png' },
-			3: { pic: 'image/items/dragons/red_dragon/red_dragon_3_level.png' },
-			4: { pic: 'image/items/dragons/red_dragon/red_dragon_4_level.png' },
+			1: { pic: 'image/flyers/red_dragon/red_dragon_1_level.png' },
+			2: { pic: 'image/flyers/red_dragon/red_dragon_2_level.png' },
+			3: { pic: 'image/flyers/red_dragon/red_dragon_3_level.png' },
+			4: { pic: 'image/flyers/red_dragon/red_dragon_4_level.png' },
 		}
 	}
 }

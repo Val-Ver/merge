@@ -66,17 +66,21 @@
 		const itemY = y + sizeGift / 2;
 
 		const pic = items[item.giftOnItem.type].set[item.giftOnItem.level].pic
+		const img = this.assetManager.getImage(pic);
+		if (img) {
+			ctx.drawImage(img, x, y, sizeGift, sizeGift);
+		} else {
+			ctx.font = "5px Times New Roman, monospace";
+			ctx.fillStyle = 'black';
 
-		ctx.font = "5px Times New Roman, monospace";
-		ctx.fillStyle = 'black';
+			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
 
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-
-		ctx.fillText(`${pic}`, itemX, itemY);
-		
-		ctx.strokeStyle = 'grey';
-		ctx.strokeRect(x, y, sizeGift, sizeGift);
+			ctx.fillText(`${pic}`, itemX, itemY);
+			
+			ctx.strokeStyle = 'grey';
+			ctx.strokeRect(x, y, sizeGift, sizeGift);
+		}
 	}
 
 	removeGiftOnItem(item) {

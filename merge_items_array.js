@@ -5,8 +5,8 @@
 	},
 
 	eggs: { type: "eggs", maxLevel: null, set: {
-			0: { blackDragon: { pic: 'image/items/dragon_eggs/blackDragon_0_level.png' },
-			     redDragon:   { pic: 'image/items/dragon_eggs/redDragon_0_level.png' }
+			0: { blackDragon: { pic: 'image/items/eggs/blackDragon_0_level.png' },
+			     redDragon:   { pic: 'image/items/eggs/redDragon_0_level.png' }
 			    }
 			}
 	},
@@ -124,45 +124,46 @@
 	},
 	
 	hills: { type: "hills", maxLevel: 10, set: { //холмы
-			 1: {level:  1, pic:  "h1" },
-			 2: {level:  2, pic:  "h2" },
-			 3: {level:  3, pic:  "h3", giftCollect: { type: 'hills', level: 1 } },
-			 4: {level:  4, pic:  "h4", giftCollect: { type: 'hills', level: 1 } },
-			 5: {level:  5, pic:  "h5",
+			 0: {level:  0, pic:  'image/items/hills/hill_0_level.png' },
+			 1: {level:  1, pic:  'image/items/hills/hill_1_level.png' },
+			 2: {level:  2, pic:  'image/items/hills/hill_2_level.png' },
+			 3: {level:  3, pic:  'image/items/hills/hill_3_level.png', giftCollect: { type: 'hills', level: 1 } },
+			 4: {level:  4, pic:  'image/items/hills/hill_4_level.png', giftCollect: { type: 'hills', level: 1 } },
+			 5: {level:  5, pic:  'image/items/hills/hill_5_level.png',
 					magicCollect: { // думаю лучше сделать массив - для простоты расширения
 						0: { type: 'hills', level: 1 },
 						1: { type: 'hazel', level: 0 }
 					}
 			    },
-			 6: {level:  6, pic:  "h6",
+			 6: {level:  6, pic:  'image/items/hills/hill_6_level.png',
 					magicCollect: {  
 						0: { type: 'hills', level: 1 },
 						1: { type: 'hazel', level: 0 }
 					},
 					magicMerge: { type: 'watermill', level: 1 } //случайность при merge 
 			    },
-			 7: {level:  7, pic:  "h7",
+			 7: {level:  7, pic:  'image/items/hills/hill_7_level.png',
 					magicCollect: { 
 						0: { type: 'hills', level: 1 },
 						1: { type: 'hazel', level: 1 }
 					},
 					magicMerge: { type: 'watermill', level: 1 } 
 			    },
-			 8: { level:  8, pic:  "h8",
+			 8: { level:  8, pic:  'image/items/hills/hill_8_level.png',
 					magicCollect: { 
 						0: { type: 'hills', level: 1 },
 						1: { type: 'hazel', level: 1 }
 					},
 					magicMerge: { type: 'watermill', level: 2 } 
 			    },
-			 9: {level:  9, pic:  "h9",
+			 9: {level:  9, pic:  'image/items/hills/hill_9_level.png',
 					magicCollect: { 
 						0: { type: 'hills', level: 1 },
 						1: { type: 'hazel', level: 1 }
 					},
 					magicMerge: { type: 'watermill', level: 2 } 
 			    }, 
-			10: {level: 10, pic: "h10",
+			10: {level: 10, pic: 'image/items/hills/hill_10_level.png',
 					magicCollect: { 
 						0: { type: 'hills', level: 1 },
 						1: { type: 'hazel', level: 1 }
@@ -172,32 +173,32 @@
 	},
 	
 	hazel: { type: "hazel", maxLevel: 10, set: { //орешник
-			 0: {level:  0, pic:  "hz0", transformed: { type: 'hazel', level: 1, time: 1 * 60 * 1000 } },
-			 1: {level:  1, pic:  "hz1" },
-			 2: {level:  2, pic:  "hz2" },
-			 3: {level:  3, pic:  "hz3" , giftCollect: { type: 'hazel', level: 0 } },
-			 4: {level:  4, pic:  "hz4" , giftCollect: { type: 'hazel', level: 0 } },
-			 5: {level:  5, pic:  "hz5" , 
+			 0: {level:  0, pic:  'image/items/hazel/hazel_0_level.png', transformed: { type: 'hazel', level: 1, time: 1 * 60 * 1000 } },
+			 1: {level:  1, pic:  'image/items/hazel/hazel_1_level.png' },
+			 2: {level:  2, pic:  'image/items/hazel/hazel_2_level.png' },
+			 3: {level:  3, pic:  'image/items/hazel/hazel_3_level.png' , giftCollect: { type: 'hazel', level: 0 } },
+			 4: {level:  4, pic:  'image/items/hazel/hazel_4_level.png' , giftCollect: { type: 'hazel', level: 0 } },
+			 5: {level:  5, pic:  'image/items/hazel/hazel_5_level.png' ,
 					giftCollect: { type: 'hazel', level: 1 }, 
 					magicMerge: { type: 'fir', level: 1 }
 			    },
-			 6: {level:  6, pic:  "hz6" , 
+			 6: {level:  6, pic:  'image/items/hazel/hazel_6_level.png' ,
 					giftCollect: { type: 'hazel', level: 1 }, 
 					magicMerge: { type: 'fir', level: 1 }
 			     },
-			 7: {level:  7, pic:  "hz7" ,  
+			 7: {level:  7, pic:  'image/items/hazel/hazel_7_level.png' ,
 					giftCollect: { type: 'hazel', level: 1 }, 
 					magicMerge: { type: 'fir', level: 1 }
 			     },
-			 8: {level:  8, pic:  "hz8" ,  
+			 8: {level:  8, pic:  'image/items/hazel/hazel_8_level.png' ,
 					giftCollect: { type: 'hazel', level: 2 }, 
 					magicMerge: { type: 'fir', level: 1 }
 			     },
-			 9: {level:  9, pic:  "hz9" ,  
+			 9: {level:  9, pic:  'image/items/hazel/hazel_9_level.png' ,
 					giftCollect: { type: 'hazel', level: 2 }, 
 					magicMerge: { type: 'fir', level: 2 }
 			     },
-			10: {level: 10, pic: "hz10" , giftCollect: { type: 'hazel', level: 3 } }
+			10: {level: 10, pic: 'image/items/hazel/hazel_10_level.png' , giftCollect: { type: 'hazel', level: 3 } }
 			}
 	},  
 
@@ -305,11 +306,11 @@
 	},
 	
 	watermill: { type: "watermill", maxLevel: 2, set: {
-			 1: { level:  1, pic:  "wm1", 
+			 1: { level:  1, pic:  'image/items/watermill/watermill_1_level.png', 
 					gift: { type: "water", level: 0, time: 1 * 60 * 1000 },
 					giftOnItem: { type: 'bucket', level: 0, time: 1 * 60 * 1000, count: 2 } //подумать над количеством
 			    },
-			 2: { level:  2, pic:  "wm2",  
+			 2: { level:  2, pic:  'image/items/watermill/watermill_2_level.png',  
 					gift: { type: "water", level:  0, time: 1 * 60 * 1000 },
 					giftOnItem: { type: 'bucket', level: 0, time: 1 * 60 * 1000, count: 4 }
 			    },
@@ -317,7 +318,7 @@
 	},
 
 	bucket: { type: "bucket", maxLevel: 0, set: {
-			 0: { level: 0, pic: "b1" , transformed: { type: 'water', level: 0, time: 0 * 60 * 1000 } } 
+			 0: { level: 0, pic: 'image/items/bucket/bucket_1_level.png' , transformed: { type: 'water', level: 0, time: 0 * 60 * 1000 } } 
 			 //1: { level: 1, pic: "b1" , setItems: { type: 'water', level: 0, count: 4 } } //на подумать: клик по ведру - сразу 4 лужи - так быстрее собрать
 		}	
 	},

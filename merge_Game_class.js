@@ -209,8 +209,8 @@ class Game {
 
 		this.generateItemOnBoard(3, 0, 'eggs', minX, maxX, minY, maxY, 'blackDragon');
 
-//this.generateItemOnBoard(1, 1, 'watermill', minX, maxX, minY, maxY);
-//this.generateItemOnBoard(1, 2, 'watermill', minX, maxX, minY, maxY);
+this.generateItemOnBoard(1, 1, 'watermill', minX, maxX, minY, maxY);
+this.generateItemOnBoard(1, 2, 'watermill', minX, maxX, minY, maxY);
 //this.generateItemOnBoard(1, 4, 'trees', minX, maxX, minY, maxY);
 //this.generateItemOnBoard(1, 6, 'trees', minX, maxX, minY, maxY);
 //this.generateItemOnBoard(1, 8, 'trees', minX, maxX, minY, maxY);
