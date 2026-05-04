@@ -155,7 +155,9 @@
 					const layerFogNew = this.grid[cell.row][cell.col].fog.layer;
 					if(layerFogNew === 0) {
 						const item = this.grid[cell.row][cell.col].item;
-						this.eventBus.emit(EVENTS.CMD_GENERATE_GIFT, item);
+						if(item) {
+							this.eventBus.emit(EVENTS.CMD_GENERATE_GIFT, item);
+						}
 					}
 					this.eventBus.emit(EVENTS.CMD_REMOVE_FOG_ON_CELL, layerFog, layerFogNew,  cell.row,  cell.col);
 				})

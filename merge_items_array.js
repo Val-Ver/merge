@@ -23,16 +23,16 @@
 			8:  { level:  8, pic:  'image/items/flowers/flower_8_level.png', giftCollect: { type: 'sphere', level: 3 } },
 			9:  { level:  9, pic:  'image/items/flowers/flower_9_level.png', giftCollect: { type: 'sphere', level: 3 } },
 			10: { level: 10, pic: 'image/items/flowers/flower_10_level.png', giftCollect: { type: 'sphere', level: 3 } },
-			11: { level: 11, pic: "f11", giftCollect: { type: 'sphere', level: 4 } },
-			12: { level: 12, pic: "f12", giftCollect: { type: 'sphere', level: 4 } },
-			13: { level: 13, pic: "f13", giftCollect: { type: 'sphere', level: 4 } },
-			14: { level: 14, pic: "f14", giftCollect: { type: 'sphere', level: 5 } },
-			15: { level: 15, pic: "f15", giftCollect: { type: 'sphere', level: 5 } },
-			16: { level: 16, pic: "f16", giftCollect: { type: 'sphere', level: 5 } },
-			17: { level: 17, pic: "f17", giftCollect: { type: 'sphere', level: 6 } },
-			18: { level: 18, pic: "f18", giftCollect: { type: 'sphere', level: 6 } },
-			19: { level: 19, pic: "f19", giftCollect: { type: 'sphere', level: 6 } },
-			20: { level: 20, pic: "f20", giftCollect: { type: 'sphere', level: 7 } } //тут надо что-то крутое генерить
+			11: { level: 11, pic: 'image/items/flowers/flower_11_level.png', giftCollect: { type: 'sphere', level: 4 } },
+			12: { level: 12, pic: 'image/items/flowers/flower_12_level.png', giftCollect: { type: 'sphere', level: 4 } },
+			13: { level: 13, pic: 'image/items/flowers/flower_13_level.png', giftCollect: { type: 'sphere', level: 4 } },
+			14: { level: 14, pic: 'image/items/flowers/flower_14_level.png', giftCollect: { type: 'sphere', level: 5 } },
+			15: { level: 15, pic: 'image/items/flowers/flower_15_level.png', giftCollect: { type: 'sphere', level: 5 } },
+			16: { level: 16, pic: 'image/items/flowers/flower_16_level.png', giftCollect: { type: 'sphere', level: 5 } },
+			17: { level: 17, pic: 'image/items/flowers/flower_17_level.png', giftCollect: { type: 'sphere', level: 6 } },
+			18: { level: 18, pic: 'image/items/flowers/flower_18_level.png', giftCollect: { type: 'sphere', level: 6 } },
+			19: { level: 19, pic: 'image/items/flowers/flower_19_level.png', giftCollect: { type: 'sphere', level: 6 } },
+			20: { level: 20, pic: 'image/items/flowers/flower_20_level.png', giftCollect: { type: 'sphere', level: 7 } } //тут надо что-то крутое генерить
 			}
 	},
 
@@ -80,17 +80,17 @@
 	},
 
 	reed: { type: "reed", maxLevel: 10, set: { //камыш, из него начинаются дубы
-			 0: {level:  0, pic:  "r0", transformed: { type: 'reed', level: 1, time: 1 * 60 * 1000 } }, //фантазия: если не объединена, то появляется грязь
-			 1: {level:  1, pic:  "r1" },
-			 2: {level:  2, pic:  "r2" },
-			 3: {level:  3, pic:  "r3" },
-			 4: {level:  4, pic:  "r4", giftCollect: { type: 'oak', level: 0 } },
-			 5: {level:  5, pic:  "r5", giftCollect: { type: 'oak', level: 0 } },
-			 6: {level:  6, pic:  "r6", giftCollect: { type: 'oak', level: 1 } },
-			 7: {level:  7, pic:  "r7", giftCollect: { type: 'oak', level: 1 } },
-			 8: {level:  8, pic:  "r8", giftCollect: { type: 'oak', level: 2 } },
-			 9: {level:  9, pic:  "r9", giftCollect: { type: 'oak', level: 2 } },
-			10: {level: 10, pic: "r10", giftCollect: { type: 'oak', level: 3 } },
+			 0: {level:  0, pic:  'image/items/reed/reed_0_level.png', transformed: { type: 'reed', level: 1, time: 1 * 60 * 1000 } }, //фантазия: если не объединена, то появляется грязь
+			 1: {level:  1, pic:  'image/items/reed/reed_1_level.png' },
+			 2: {level:  2, pic:  'image/items/reed/reed_2_level.png' },
+			 3: {level:  3, pic:  'image/items/reed/reed_3_level.png' },
+			 4: {level:  4, pic:  'image/items/reed/reed_4_level.png', giftCollect: { type: 'oak', level: 0 } },
+			 5: {level:  5, pic:  'image/items/reed/reed_5_level.png', giftCollect: { type: 'oak', level: 0 } },
+			 6: {level:  6, pic:  'image/items/reed/reed_6_level.png', giftCollect: { type: 'oak', level: 1 } },
+			 7: {level:  7, pic:  'image/items/reed/reed_7_level.png', giftCollect: { type: 'oak', level: 1 } },
+			 8: {level:  8, pic:  'image/items/reed/reed_8_level.png', giftCollect: { type: 'oak', level: 2 } },
+			 9: {level:  9, pic:  'image/items/reed/reed_9_level.png', giftCollect: { type: 'oak', level: 2 } },
+			10: {level: 10, pic: 'image/items/reed/reed_10_level.png', giftCollect: { type: 'oak', level: 3 } },
 			}
 	},
 
