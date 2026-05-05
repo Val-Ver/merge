@@ -95,17 +95,17 @@
 	},
 
 	oak: { type: "oak", maxLevel: 10, set: { //дуб, из него начинается древесина (ресурс)
-			  0: {level:  0, pic:  "oak0", transformed: { type: 'oak', level: 1, time: 1 * 60 * 1000 } },
-			  1: {level:  1, pic:  "oak1" },
-			  2: {level:  2, pic:  "oak2" },
-			  3: {level:  3, pic:  "oak3", giftCollect: { type: 'wood', level: 1 } },
-			  4: {level:  4, pic:  "oak4", giftCollect: { type: 'wood', level: 1 } },
-			  5: {level:  5, pic:  "oak5", giftCollect: { type: 'wood', level: 2 } },
-			  6: {level:  6, pic:  "oak6", giftCollect: { type: 'wood', level: 2 } },
-			  7: {level:  7, pic:  "oak7", giftCollect: { type: 'wood', level: 3 } },
-			  8: {level:  8, pic:  "oak8", giftCollect: { type: 'wood', level: 3 } },
-			  9: {level:  9, pic:  "oak9", giftCollect: { type: 'wood', level: 4 } },
-			 10: {level: 10, pic: "oak10", giftCollect: { type: 'wood', level: 4 } }
+			  0: {level:  0, pic:  'image/items/oak/oak_0_level.png', transformed: { type: 'oak', level: 1, time: 1 * 60 * 1000 } },
+			  1: {level:  1, pic:  'image/items/oak/oak_1_level.png' },
+			  2: {level:  2, pic:  'image/items/oak/oak_2_level.png' },
+			  3: {level:  3, pic:  'image/items/oak/oak_3_level.png', giftCollect: { type: 'wood', level: 1 } },
+			  4: {level:  4, pic:  'image/items/oak/oak_4_level.png', giftCollect: { type: 'wood', level: 1 } },
+			  5: {level:  5, pic:  'image/items/oak/oak_5_level.png', giftCollect: { type: 'wood', level: 2 } },
+			  6: {level:  6, pic:  'image/items/oak/oak_6_level.png', giftCollect: { type: 'wood', level: 2 } },
+			  7: {level:  7, pic:  'image/items/oak/oak_7_level.png', giftCollect: { type: 'wood', level: 3 } },
+			  8: {level:  8, pic:  'image/items/oak/oak_8_level.png', giftCollect: { type: 'wood', level: 3 } },
+			  9: {level:  9, pic:  'image/items/oak/oak_9_level.png', giftCollect: { type: 'wood', level: 4 } },
+			 10: {level: 10, pic: 'image/items/oak/oak_10_level.png', giftCollect: { type: 'wood', level: 4 } }
 			 }
 	},
 
