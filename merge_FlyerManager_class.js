@@ -163,6 +163,13 @@ class FlyerManager {
 		})
 	}
 
+	updateFlyers(flyers) {
+		this.flyers = [];
+		flyers.forEach((flyer) => {
+			this.createFlyer(flyer.type, flyer.row, flyer.col, flyer.level);
+		})
+	}
+
 	createFlyer(typeFlyer, row, col, level = 1) {
 		const flyer = new Flyer(this, typeFlyer, level);
 		this.flyers.push(flyer);
@@ -172,14 +179,14 @@ class FlyerManager {
 	}
 	
 	deleteFlyer(currentFlyer) {
-		this.flyers = this.flyers.filter((flyer) => flyer.id != currentFlyer.id);
+		this.flyers = this.flyers.filter((flyer) => flyer.id !== currentFlyer.id);
 		currentFlyer.stopPatrol();
 		this.eventBus.emit(EVENTS.CMD_RENDERING_REMOVE_FLYER, currentFlyer.element);
 	}
 
 	findClearCellForGiftItem(row, col) { 
 		const clearCellsCoordNearby = this.gameBoard.findCoordClearCellsNearbyAll(Number(row), Number(col));
-		if(clearCellsCoordNearby.length == 0) { console.log('нет места'); return null; }
+		if(clearCellsCoordNearby.length === 0) { console.log('нет места'); return null; }
 		
 		return clearCellsCoordNearby[0];
 	}
@@ -199,7 +206,7 @@ class FlyerManager {
 			let col = cordBoard.col;
 			let row = cordBoard.row;
 
-			if(this.gameBoard.grid[row][col].fog.layer == 0
+			if(this.gameBoard.grid[row][col].fog.layer === 0
 			&& !this.gameBoard.grid[row][col].landscape) {
 				newCoord.x = Math.floor(coordXnew)
 				newCoord.y = Math.floor(coordYnew)
@@ -267,7 +274,7 @@ class FlyerManager {
 	}
 
 	directFlyerToItem(item) {
-		if(this.flyers.length == 0) { return }
+		if(this.flyers.length === 0) { return }
 
 		const currentFlyer = this.flyers.find((flyer) => { return flyer.mission == false})
 		if(!currentFlyer) { console.log('все драконы заняты'); return }
@@ -282,7 +289,7 @@ class FlyerManager {
 	}
 
 	getCurrentFlyer(id) {
-		const currentFlyer = this.flyers.find((flyer) => { return flyer.id == id })
+		const currentFlyer = this.flyers.find((flyer) => { return flyer.id === id })
 		return currentFlyer;
 	}
 	
@@ -311,14 +318,13 @@ class FlyerManager {
 	mergeFlyers(arr) {
 		const flyerForMerge = arr.map((element) => {
 			return this.getCurrentFlyer(element.dataset.id);
-		}) 
-
+		})
 		const type = flyerForMerge[0].type;
 		const level = flyerForMerge[0].level;
 
 		const isCanMerge = flyerForMerge.every((flyer) => 
-			flyer.type  == type &&
-			flyer.level == level
+			flyer.type  === type &&
+			flyer.level === level
 		)
 
 		if(!isCanMerge) { return }

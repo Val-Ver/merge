@@ -8,6 +8,7 @@
 	shopContainer = document.querySelector('.shop-container');
 	divInfoMessage = document.querySelector('.div-info-message');
 	infoContainer = document.querySelector('.info-container');
+	updateContainer = document.querySelector('.update-container');
 
 	constructor() {
 		this.shopHandler = new ShopManager(this);
@@ -30,6 +31,11 @@ console.error('сработал buyItem в GameOptions')
 		this.resourcesGold.decreaseGold(summ);
 	}
 //----------------------------------------------------------------------
+	
+
+	updateResourcesGold(scoreGold) {
+		this.resourcesGold.updateScoreGolg(scoreGold)
+	}
 
 	handleBuyItem(type, level, price) {
 		if(this.resourcesGold.scoreGold >= price) {
@@ -49,6 +55,24 @@ console.error('сработал buyItem в GameOptions')
 		}
 		btnExit.addEventListener('click', clickOnDoc);
 	}
+
+	// showUpdateContainer(item) {
+	// 	this.updateContainer.style.display = 'flex';
+	// 	this.addBtnInfoMessage();
+	// }
+	// addBtnUpdateGame() {
+	// 	const updateGame = (e) => {
+	// 		this.soldItem();
+	// 		this.infoPanel.style.display = 'none';
+	// 		document.querySelector('.game-options-container').style.display = 'none';
+	// 	}
+	// 	const continueGame = (e) => {
+	// 		this.infoPanel.style.display = 'none';
+	// 		document.querySelector('.game-options-container').style.display = 'none';
+	// 	}
+	// 	document.getElementById('btn-update').addEventListener('click', updateGame);
+	// 	document.getElementById('btn-no-update').addEventListener('click', continueGame);
+	// }
 
 	clickOnPlaceOnBoard() {
 		const clickOnBoard = (e) => {

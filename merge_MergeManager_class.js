@@ -100,12 +100,13 @@
 		if(this.itemsForMerge[0].breed) {
 			const typeFlyer = this.itemsForMerge[0].breed;
 			this.eventBus.emit(EVENTS.CMD_CREATE_FLYER, typeFlyer, numberNewItems, this.itemsForMerge[0].row, this.itemsForMerge[0].col);
+
 		} else {
 			this.manager.createItemForPlaceAfterMerge(type, level + 1, numberNewItems, this.centerMerge);
 		}
 
 		if(numberItemsKeepOriginal > 0) {
-			this.manager.createItemForPlaceAfterMerge(this.itemsForMerge[0].type, this.itemsForMerge[0].level, numberItemsKeepOriginal, this.centerMerge);
+			this.manager.createItemForPlaceAfterMerge(this.itemsForMerge[0].type, this.itemsForMerge[0].level, numberItemsKeepOriginal, this.centerMerge, this.itemsForMerge[0].breed);
 		}
 
 		const magicMerge = this.itemsForMerge[0].magicMerge;

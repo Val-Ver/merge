@@ -24,22 +24,23 @@
 	}
 
 	updateItemOnBoard(grid) {
-		this.itemOnBoard = [];
+		this.itemRegistry.itemOnBoard = [];
 		for(let row = 0; row < this.gameBoard.rows; row++) {
 			for(let col = 0; col < this.gameBoard.cols; col++) {
 				if(grid[row][col].item) {
 					const item = grid[row][col].item;
-					this.gameBoard.addItemInCell(item);
+					//this.gameBoard.addItemInCell(item);
 					this.itemRegistry.addItem(item);
 
-					this.eventBus.emit(EVENTS.EVENT_ADD_ITEM_ON_BOARD, itemGame);
-					this.eventBus.emit(EVENTS.CMD_RENDERING_PLACE_ITEM_ON_BOARD, item.element, item.row, item.col);
+					//this.eventBus.emit(EVENTS.EVENT_ADD_ITEM_ON_BOARD, item);
+
 					if(!this.fogOnBoard.isFogOnCell(row, col)) {
 						this.eventBus.emit(EVENTS.CMD_UPDATE_GIFT, item);
 					}
 				}
 			}
 		}
+		this.eventBus.emit(EVENTS.CMD_RENDERING_PLACE_ITEM_ON_BOARD, grid);
 	}
 
 	getCurrentItem(itemId) {
@@ -122,7 +123,7 @@
 		return itemGame
 	}
 
-	createItemForPlaceAfterMerge(type, level, numberItems = 1, centerMerge) {
+	createItemForPlaceAfterMerge(type, level, numberItems = 1, centerMerge, breed = null) {
 		const clearCellsCoordNearby = this.gameBoard.findCoordClearCellsNearbyAll(centerMerge.row, centerMerge.col, numberItems);
 
 		for(let i = 0; i < numberItems; i++) {
@@ -130,7 +131,7 @@
 			let col = clearCellsCoordNearby[i].col;
 
 			if(this.gameBoard.canAddItem(row, col)) {
-				const itemGame = new Item(type, level, row, col);
+				const itemGame = new Item(type, level, row, col, breed);
 				this.addItemOnBoard(itemGame);
 				this.eventBus.emit(EVENTS.CMD_RENDERING_SHOW_ITEM_ON_BOARD_AFTER_MERGE, itemGame, centerMerge.row, centerMerge.col, row, col);
 			}

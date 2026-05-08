@@ -73,8 +73,14 @@ class Game {
 	saveGame = new SaveData();
 
 	constructor() {
-		this.startGame(); // это надо
-		//this.saveGame.saveBeforeUnload(this.gameBoard.grid);// это надо
+		this.startGame()
+			.then( () => {// это надо
+				this.saveGame.saveBeforeUnload(
+					this.gameBoard.grid,
+					this.flyerManager,
+					this.gameOptions.resourcesGold
+				)   // это надо
+			})
 	}
 
 	async startGame() {
@@ -84,12 +90,15 @@ class Game {
 			this.gameBoard.updateGrid(this.saveGame.grid);
 			this.fogOnBoard.updateGrid(this.saveGame.grid);
 			this.itemPlacer.updateItemOnBoard(this.saveGame.grid);
+			this.flyerManager.updateFlyers(this.saveGame.flyers);
+			this.gameOptions.updateResourcesGold(this.saveGame.gold);
 		} else {
-			this.startNewGame();	
+			this.startNewGame();
+
 		}
 
-		//const count = document.body.querySelectorAll('*').length;
-		//console.log(count); 
+		// const count = document.body.querySelectorAll('*').length;
+		// console.log(count);
 
 		/*при старте рисует 8712 элементов... очень много (((( 
 		теперь 6704 получше, но все же много( 
@@ -107,7 +116,7 @@ class Game {
 	startNewGame() {
 		for(let i in FOG_ON_BOARD) {
 			const fog = FOG_ON_BOARD[i];
-			if(fog.layer == 0) {
+			if(fog.layer === 0) {
 				this.firstSetItemsOnClearBoard(fog.col, fog.col + fog.width-1, fog.row, fog.row + fog.height-1);
 				break;
 			}
@@ -208,7 +217,7 @@ class Game {
 		this.generateItemOnBoard(countItem, level, type, minX, maxX, minY, maxY);
 
 		this.generateItemOnBoard(3, 0, 'eggs', minX, maxX, minY, maxY, 'blackDragon');
-
+		this.generateItemOnBoard(6, 0, 'eggs', minX, maxX, minY, maxY, 'blackDragon');
 // this.generateItemOnBoard(1, 1, 'watermill', minX, maxX, minY, maxY);
 // this.generateItemOnBoard(1, 2, 'watermill', minX, maxX, minY, maxY);
 //this.generateItemOnBoard(1, 4, 'trees', minX, maxX, minY, maxY);

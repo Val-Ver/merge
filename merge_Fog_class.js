@@ -39,6 +39,7 @@
 
 	updateGrid(grid) {
 		this.grid = grid;
+
 		/*for(let row = 0; row < this.rows; row++) {
 			for(let col = 0; col < this.cols; col++) {
 				if(this.grid[row][col].fog.layer != 0) {
@@ -50,7 +51,7 @@
 	}
 
 	isFogOnCell(row, col) {
-		return this.grid[row][col].fog.layer != 0;
+		return this.grid[row][col].fog.layer !== 0;
 	}
 
 	addFog(layer, row, col) {

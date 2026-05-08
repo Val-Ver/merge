@@ -19,9 +19,9 @@
 			this.showPutItemOnBoard(currentElement, row, col);
 		})*/
 
-		this.eventBus.on(EVENTS.CMD_RENDERING_PLACE_ITEM_ON_BOARD, (currentElement, row, col) => {
-			this.placeItemOnBoardForBeginGame(currentElement, row, col);
-		})
+		// this.eventBus.on(EVENTS.CMD_RENDERING_PLACE_ITEM_ON_BOARD, (currentElement, row, col) => {
+		// 	this.placeItemOnBoardForBeginGame(currentElement, row, col);
+		// })
 
 		/*this.eventBus.on(EVENTS.CMD_RENDERING_SHOW_ITEM_ON_BOARD_AFTER_MERGE, (itemElement, fromRow, fromCol, row, col) => {
 			this.showPutItemOnBoardAfterMerge(itemElement, fromRow, fromCol, row, col);

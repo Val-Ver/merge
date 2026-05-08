@@ -19,6 +19,10 @@
 	constructor(assetManager) {
 		this.assetManager = assetManager;
 
+		this.eventBus.on(EVENTS.CMD_RENDERING_PLACE_ITEM_ON_BOARD, (grid) => {
+				this.createAllItemsOnBoard(grid)
+		})
+
 		this.eventBus.on(EVENTS.CMD_RENDERING_ITEM, (item, x, y) => {
 			this.createItem(item, x, y);
 		})
