@@ -1,8 +1,10 @@
 ﻿class ShopManager {
 	manager = null;
+	productsElement = null;
 	currentItemsSet = null;
 
 	dragManager = null;
+	dragManagerForShop = null;
 
 	gameOptionsContainer = null;
 	shopContainer = null;
@@ -18,10 +20,12 @@
 		this.gameOptionsContainer = manager.gameOptionsContainer;
 		this.shopContainer = manager.shopContainer;
 
-
 		this.renderer.createCellForShop();
+		this.productsElement = this.renderer.setProductForSave;
+		this.dragManagerForShop = new DragManagerForShop(this, this.productsElement);
+
 		this.addListenersOnBtnShop();
-		this.addListenersOnProduct();
+		// this.addListenersOnProduct();
 		this.addListenerBtnExitShop();
 		this.addListenerBtnBackShop();
 	}
@@ -44,6 +48,8 @@
 				this.currentItemsSet.style.display = 'none';
 			}
 			this.shop.style.display = 'grid';
+			this.productsElement.style.transform = `translate(0, 0)`;
+
 			if(this.dragManager) { this.dragManager.removeListenerMouseAndTouct() }
 	}
 
@@ -66,27 +72,15 @@
 		btnBack.addEventListener('click', exitBack);
 	}
 
-	addListenersOnProduct() {
-		const container = document.querySelectorAll('.cell-for-shop');
-		const choice = (e) => {
-			const elementsFromPoint = document.elementsFromPoint(e.clientX, e.clientY);
-			for(let i = 0; i < elementsFromPoint.length; i++) {
-				const cardItem = elementsFromPoint[i];
-				if(cardItem.dataset.name == 'product') { 
-					this.shop.style.display = 'none';
-					this.btnBack.style.display = 'block';
-					this.shopItem.style.display = 'grid';
+	addListenersOnProduct(type) {
+		this.shop.style.display = 'none';
+		this.btnBack.style.display = 'block';
+		this.shopItem.style.display = 'grid';
 
-					this.currentItemsSet = this.renderer.setItemsForSave[cardItem.dataset.type];
-					this.currentItemsSet.style.transform = `translate(0, 0)`;
-					this.currentItemsSet.style.display = 'grid';				
-					this.dragManager = new DragManagerForShop(this, this.currentItemsSet)
-					break;
-				}
-			}
-		}
-		container.forEach((card) => {
-			card.addEventListener('click', choice)
-		})
+		this.currentItemsSet = this.renderer.setItemsForSave[type];
+		this.currentItemsSet.style.transform = `translate(0, 0)`;
+		this.currentItemsSet.style.display = 'grid';
+
+		this.dragManager = new DragManagerForShop(this, this.currentItemsSet)
 	}
 }

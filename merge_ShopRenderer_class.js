@@ -2,7 +2,8 @@
 	shop = null;
 	shopItem = null;
 
-	setItemsForSave = {}
+	setProductForSave = null;
+	setItemsForSave = {};
 
 	constructor(shop, shopItem) {
 		this.shop = shop;
@@ -12,7 +13,12 @@
 	createCellForShop() {
 		const setItems = GAME_CONFIG.SHOP.SET_ITEM_FOR_SHOP;
 
-		this.shop.style.gridTemplateColumns = `repeat(${setItems.length}, ${100/setItems.length}%)`;
+		const containerProduct = document.createElement('div');
+		containerProduct.className = 'shop-product';
+		containerProduct.id = `shop-product`;
+
+		containerProduct.style.gridTemplateColumns = `repeat(${setItems.length}, ${100/setItems.length}%)`;
+
 		for(let i = 0; i < setItems.length; i++) {
 			const cell = document.createElement('div');
 			cell.className = 'cell-for-shop';
@@ -25,13 +31,17 @@
 			this.createCellItemForShop(setItems[i]);
 			cell.appendChild(picture);
 			cell.appendChild(name);
-			this.shop.appendChild(cell);
+			containerProduct.appendChild(cell);
 		}
+		this.shop.appendChild(containerProduct);
+		this.setProductForSave = containerProduct;
 	}
 
 	createPictureCard(pic) {
 		const picture = document.createElement('div');
-		picture.textContent = `${pic}`;
+		// picture.textContent = `${pic}`;
+		picture.style.backgroundImage = `url(${pic})`
+
 		picture.className = 'picture-card';
 		return picture;
 	}
@@ -51,9 +61,9 @@
 		const containerType = document.createElement('div');
 		containerType.className = 'shop-item-type';
 		containerType.id = `shop-item-${type}`;
-		containerType.style.gridTemplateColumns = `repeat(${setItems.maxLevel-1}, ${100/(setItems.maxLevel-1)}%)`;
+		containerType.style.gridTemplateColumns = `repeat(${maxLevel}, ${100/(maxLevel)}%)`;
 
-		for(let i = 1; i < maxLevel; i++) {
+		for(let i = 1; i <= maxLevel; i++) {
 			const cell = document.createElement('div');
 			cell.className = 'cell-for-shop';
 			cell.dataset.name = 'item';

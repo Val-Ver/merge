@@ -338,7 +338,7 @@ class BoardZoomStrategy extends BaseDragStrategy {
 
 class ShopPanoramaStrategy extends BaseDragStrategy {
 	currentItemsSet = null;
-	place = document.querySelector('.shop-item');
+	place = null;
 
 	boardStartX = 0;
 	boardStartY = 0;
@@ -365,7 +365,14 @@ class ShopPanoramaStrategy extends BaseDragStrategy {
 		let elementsFromPoint = document.elementsFromPoint(clientX, clientY);
 		for(let i = 0; i < elementsFromPoint.length; i++) {
 			this.currentElement = elementsFromPoint[i];
-			if(this.currentElement.dataset.name == 'item') {
+			if(this.currentElement.dataset.name === 'item') {
+				this.place = document.querySelector('.shop-item');
+				this.itemStartX = this.currentElement.getBoundingClientRect().left;
+				this.itemStartY = this.currentElement.getBoundingClientRect().top;
+				break;
+			}
+			if(this.currentElement.dataset.name === 'product') {
+				this.place = document.querySelector('.shop');
 				this.itemStartX = this.currentElement.getBoundingClientRect().left;
 				this.itemStartY = this.currentElement.getBoundingClientRect().top;
 				break;
@@ -397,16 +404,25 @@ class ShopPanoramaStrategy extends BaseDragStrategy {
 		for(let i = 0; i < elementsFromPoint.length; i++) {
 			let element = elementsFromPoint[i];
 
-			if(element.dataset.name == 'item'
-			&& element.dataset.level == this.currentElement.dataset.level) { 
+			if(element.dataset.name === 'item'
+			&& element.dataset.level === this.currentElement.dataset.level) {
 				const distance = Math.floor(Math.sqrt((this.itemStartX - element.getBoundingClientRect().left)**2 + 
 						(this.itemStartY - element.getBoundingClientRect().top)**2));
-				if(distance == 0) {
+				if(distance === 0) {
 					this.manager.manager.handleBuyItem(element.dataset.type, Number(element.dataset.level), Number(element.dataset.price));
 					this.manager.showStartShop();
 					this.manager.shopContainer.style.display = 'none';
 					break;
 				}	
+			}
+			if(element.dataset.name === 'product'
+			&& element.dataset.type === this.currentElement.dataset.type) {
+				const distance = Math.floor(Math.sqrt((this.itemStartX - element.getBoundingClientRect().left)**2 +
+					(this.itemStartY - element.getBoundingClientRect().top)**2));
+				if(distance === 0) {
+					this.manager.addListenersOnProduct(element.dataset.type);
+					break;
+				}
 			}
 		}
 	}
