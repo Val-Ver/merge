@@ -11,9 +11,11 @@
 	sizeCanvas = this.canvas.getBoundingClientRect();
 	ctx = this.canvas.getContext('2d');
 
-	renderer = new FlyerRendererCanvas();
+	renderer = null; //new FlyerRendererCanvas();
 
-	constructor() {}
+	constructor(assetManager) {
+		this.renderer = new FlyerRendererCanvas(assetManager);
+	}
 	
 	startPatrol(arrFlyers) {
 		let isAnimation = true;

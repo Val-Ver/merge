@@ -34,7 +34,6 @@
 					const item = grid[row][col].item;
 					//this.gameBoard.addItemInCell(item);
 					this.itemRegistry.addItem(item);
-console.log(item)
 					//this.eventBus.emit(EVENTS.EVENT_ADD_ITEM_ON_BOARD, item);
 
 					if(!this.fogOnBoard.isFogOnCell(row, col)) {

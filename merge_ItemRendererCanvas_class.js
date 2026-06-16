@@ -18,7 +18,8 @@
 
 	eventBus = EventBus.getInstance();
 
-	constructor() {
+	constructor(assetManager) {
+		this.assetManager = assetManager;
 		this.effectRenderer = new ItemEffectRenderer(this);
 		this.subscription();
 	}
@@ -51,6 +52,50 @@
 		})
 	}
 
+	createGiftOnItem(item, ctx = this.ctx) {
+		const distance = this.cell / item.giftOnItem.count;
+		const size = GAME_CONFIG.UI.SIZE_GIFT_ON_ITEM_OF_ITEM;
+		const sizeGift = this.cell * size;
+
+		const distanceGift = (distance - sizeGift) / 2
+
+		const x = item.coord.x + ((item.countHasGiftOnItem - 1) * distance) + distanceGift;
+		const y = item.coord.y + this.cell - sizeGift;
+
+		const itemX = x + sizeGift / 2;
+		const itemY = y + sizeGift / 2;
+
+		const pic = items[item.giftOnItem.type].set[item.giftOnItem.level].pic
+		const img = this.assetManager.getImage(pic);
+
+		if (img) {
+			ctx.drawImage(img, x, y, sizeGift, sizeGift);
+		} else {
+			ctx.font = "5px Times New Roman, monospace";
+			ctx.fillStyle = 'black';
+
+			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
+
+			ctx.fillText(`${pic}`, itemX, itemY);
+
+			ctx.strokeStyle = 'grey';
+			ctx.strokeRect(x, y, sizeGift, sizeGift);
+		}
+	}
+
+	removeGiftOnItem(item) {
+		this.ctx.clearRect(item.col * this.cell, item.row * this.cell, this.cell, this.cell);
+		this.createItem(item);
+	}
+
+	drawMoveItem(item, x, y) {
+		this.ctx.clearRect(item.col * this.cell, item.row * this.cell, this.cell, this.cell); //я бы перенесла
+
+		this.ctxDrag.clearRect(item.coord.x - 5, item.coord.y - 5, this.cell + 10, this.cell + 10);
+		this.createItem(item, x, y, this.ctxDrag);
+	}
+
 	createAllItemsOnBoard(grid) {
 		this.ctx.clearRect(0, 0, this.boardWidth, this.boardHeight);
 		for(let row = 0; row < this.rows; row++) {
@@ -66,15 +111,21 @@
 		const itemX = x  + this.cell / 2;
 		const itemY = y  + this.cell / 2;
 
-		ctx.font = "25px Times New Roman, monospace";
-		ctx.fillStyle = 'black';
+		const img = this.assetManager.getImage(item.pic);
+		if (img) {
+			ctx.drawImage(img, x, y, this.cell, this.cell);
+		} else {
+			// fallback: текст или пустота
+			ctx.font = "25px Times New Roman, monospace";
+			ctx.fillStyle = 'black';
 
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillText(`${item.pic}`, itemX, itemY);
+			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
+			ctx.fillText(`${item.pic}`, itemX, itemY);
 
-		ctx.strokeStyle = 'grey';
-		ctx.strokeRect(x, y, this.cell, this.cell);
+			ctx.strokeStyle = 'grey';
+			ctx.strokeRect(x, y, this.cell, this.cell);
+		}
 
 		if(item.countHasGiftOnItem > 0) {
 			let count = item.countHasGiftOnItem;
@@ -97,32 +148,7 @@
 		//нужно добавить анимацию
 	}
 
-	createGiftOnItem(item, ctx = this.ctx) {
-		const distance = this.cell / item.giftOnItem.count;
-		const size = GAME_CONFIG.UI.SIZE_GIFT_ON_ITEM_OF_ITEM;
-		const sizeGift = this.cell * size;
-		
-		const distanceGift = (distance - sizeGift) / 2
 
-		const x = item.coord.x + ((item.countHasGiftOnItem - 1) * distance) + distanceGift;
-		const y = item.coord.y + this.cell - sizeGift;
-
-		const itemX = x + sizeGift / 2;
-		const itemY = y + sizeGift / 2;
-
-		const pic = items[item.giftOnItem.type].set[item.giftOnItem.level].pic
-
-		ctx.font = "5px Times New Roman, monospace";
-		ctx.fillStyle = 'black';
-
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-
-		ctx.fillText(`${pic}`, itemX, itemY);
-		
-		ctx.strokeStyle = 'grey';
-		ctx.strokeRect(x, y, sizeGift, sizeGift);
-	}
 
 	removeGiftOnItem(item) {
 		this.ctx.clearRect(item.col * this.cell, item.row * this.cell, this.cell, this.cell);

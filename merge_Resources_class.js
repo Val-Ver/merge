@@ -14,6 +14,12 @@
 		})
 	}
 
+	updateScore(scoreGold, scoreWood, scoreCrystal) {
+		this.gold.updateScore(scoreGold);
+		this.wood.updateScore(scoreWood);
+		this.crystal.updateScore(scoreCrystal);
+	}
+
 	increaseResources(resource, summ) {
 		switch(resource) {
 			case "gold":    this.gold.increase(summ); break;
@@ -37,17 +43,10 @@ class ResourcesGold {
 	score = 0;
 
 	constructor() {
-		//this.saveBeforeUnload(); //это надо
-		this.updateScore();
-
 	}
 
-	updateScore() {
-		let gold2 = localStorage.getItem('merge_gold');
-		let gold3 = JSON.parse(gold2);
-		if(gold3 !== null) {
-			this.score = gold3;
-		}
+	updateScore(score) {
+		this.score = score;
 		this.elementScore.textContent = `${this.score}`;
 	}
 
@@ -60,13 +59,6 @@ class ResourcesGold {
 		this.score -= summ;
 		this.elementScore.textContent = `${this.score}`;
 	}
-
-	saveBeforeUnload() {	
-		window.addEventListener('beforeunload', () => {
-			let gold1 = JSON.stringify(this.score);
-			localStorage.setItem('merge_gold', gold1);
-		})
-	}
 }
 
 
@@ -75,16 +67,10 @@ class ResourcesWood {
 	score = 0;
 
 	constructor() {
-		//this.saveBeforeUnload(); //это надо
-		this.updateScore();
 	}
 
-	updateScore() {
-		let wood2 = localStorage.getItem('merge_wood');
-		let wood3 = JSON.parse(wood2);
-		if(wood3 !== null) {
-			this.score = wood3;
-		}
+	updateScore(score) {
+		this.score = score;
 		this.elementScore.textContent = `${this.score}`;
 	}
 
@@ -97,13 +83,6 @@ class ResourcesWood {
 		this.score -= summ;
 		this.elementScore.textContent = `${this.score}`;
 	}
-
-	saveBeforeUnload() {	
-		window.addEventListener('beforeunload', () => {
-			let wood1 = JSON.stringify(this.score);
-			localStorage.setItem('merge_wood', wood1);
-		})
-	}
 }
 
 class ResourcesCrystal {
@@ -111,16 +90,10 @@ class ResourcesCrystal {
 	score = 0;
 
 	constructor() {
-		//this.saveBeforeUnload(); //это надо
-		this.updateScore();
 	}
 
-	updateScore() {
-		let crystal2 = localStorage.getItem('merge_crystal');
-		let crystal3 = JSON.parse(crystal2);
-		if(crystal3 !== null) {
-			this.score = crystal3;
-		}
+	updateScore(score) {
+		this.score = score;
 		this.elementScore.textContent = `${this.score}`;
 	}
 
@@ -132,12 +105,5 @@ class ResourcesCrystal {
 	decrease(summ) {
 		this.score -= summ;
 		this.elementScore.textContent = `${this.score}`;
-	}
-
-	saveBeforeUnload() {	
-		window.addEventListener('beforeunload', () => {
-			let crystal1 = JSON.stringify(this.score);
-			localStorage.setItem('merge_crystal', crystal1);
-		})
 	}
 }

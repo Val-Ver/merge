@@ -1,5 +1,5 @@
 ﻿const GAME_CONFIG = {
-
+	VERSION_GAME: 2,
 	BOARD_SIZE: {
 		ROWS: 40, 
 		COLS: 60,

@@ -22,6 +22,10 @@
 		this.eventBus = EventBus.getInstance();
 	}
 
+	updateResources(scoreGold, scoreWood, scoreCrystal) {
+		this.resources.updateScore(scoreGold, scoreWood, scoreCrystal)
+	}
+
 	handleBuyItem(type, level, price, resource, breed = null) {
 
 		if(this.resources[resource].score >= price) {

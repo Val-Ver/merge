@@ -18,7 +18,8 @@
 	
 	eventBus = EventBus.getInstance();
 
-	constructor() {
+	constructor(assetManager) {
+		this.assetManager = assetManager
 		this.subscription();
 	}	
 
@@ -61,12 +62,19 @@
 		if(radiusShadow && heightShadow) {
 			this.createShadow(flyer, x, y, radiusShadow, heightShadow);
 		}
-		this.ctx.font = "10px Times New Roman, monospace";
-		this.ctx.fillStyle = 'white';
 
-		this.ctx.textAlign = "center";
-		this.ctx.textBaseline = "middle";
-		this.ctx.fillText(`${flyer.pic}`, centerX, centerY);
+		const img = this.assetManager.getImage(flyer.pic);
+		if (img) {
+			this.ctx.drawImage(img, x, y, this.cell, this.cell);
+		} else {
+			this.ctx.font = "10px Times New Roman, monospace";
+			this.ctx.fillStyle = 'white';
+
+			this.ctx.textAlign = "center";
+			this.ctx.textBaseline = "middle";
+			this.ctx.fillText(`${flyer.pic}`, centerX, centerY);
+		}
+
 
 		if(flyer.collectGift) {
 			this.collectGiftFromItem(flyer.collectGift, flyer.route.x, flyer.route.y);
@@ -102,20 +110,26 @@
 		const centerX = x + this.cell / 2;
 		const centerY = y + this.cell / 2 + this.cell / 4;
 
-		ctx.beginPath();
-		ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
-		ctx.strokeStyle = "rgba(255, 255, 255, 1)";
-	
-		ctx.arc(centerX, centerY, radius, 0, 2*pi, true);
-		ctx.stroke();
-		ctx.fill();
 
-		ctx.font = "10px Times New Roman, monospace";
-		ctx.fillStyle = "rgba(255, 255, 255, 1)";
+		const img = this.assetManager.getImage(gift.pic);
+		if (img) {
+			this.ctx.drawImage(img, centerX, centerY, this.cell/4, this.cell/4);
+		} else {
+			ctx.beginPath();
+			ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+			ctx.strokeStyle = "rgba(255, 255, 255, 1)";
 
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillText(`${gift.pic}`, centerX, centerY);
+			ctx.arc(centerX, centerY, radius, 0, 2 * pi, true);
+			ctx.stroke();
+			ctx.fill();
+
+			ctx.font = "10px Times New Roman, monospace";
+			ctx.fillStyle = "rgba(255, 255, 255, 1)";
+
+			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
+			ctx.fillText(`${gift.pic}`, centerX, centerY);
+		}
 	}
 
 	createLoaderForCollect(flyer, width) {

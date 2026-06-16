@@ -14,14 +14,18 @@
 
 	createFlyItem(type, top) {
 		const containerItem = document.querySelector('.fly-container');
-		const item = document.createElement('div');
+		const item = document.createElement('img');
 		item.className = 'fly-item';
 		item.dataset.name = 'fly-item';
 		item.dataset.type = `${type}`;
+		item.style.width = `${this.boardWidth/this.cols}px`;
+
 		const pic = type == 'flowers' ? items.flyItem.flowers.pic : items.flyItem.water.pic;
-		item.textContent = `${pic}`;
-		const color = type == 'flowers' ? 'yellow' : 'blue';
-		item.style.color = `${color}`;
+
+		item.src = `${pic}`;
+		item.style.backgroundColor = 'transparent';
+		item.draggable = false
+
 		item.style.left = '0';
 		item.style.top = `${top}px`;
 
@@ -47,7 +51,7 @@
 		return new Promise((resolve, reject) => {
 			const time = GAME_CONFIG.ANIMATIONS.TIME_PUT_FlY_ITEM;
 			element.style.transition = `left ${time}s ease-in-out, top ${time}s ease-in-out`
-			element.style.left = `${this.boardWidth/this.cols  * col + this.boardWidth/this.cols * 0.4}px`;
+			element.style.left = `${this.boardWidth/this.cols  * col + this.boardWidth/this.cols * 0.4 /*+ this.centerWidth*/}px`;
 			element.style.top  = `${this.boardHeight/this.rows * row + this.boardHeight/this.rows * 0.4}px`;
 
 			element.addEventListener('transitionend', (event) => {

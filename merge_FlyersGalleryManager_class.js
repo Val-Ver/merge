@@ -122,7 +122,9 @@
 
 	createPictureCard(pic) {
 		const picture = document.createElement('div');
-		picture.textContent = `${pic}`;
+		//picture.textContent = `${pic}`;
+		console.log(pic)
+		picture.style.backgroundImage = `url(${pic})`
 		picture.className = 'picture-card';
 		return picture;
 	}

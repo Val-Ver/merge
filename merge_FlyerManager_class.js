@@ -6,18 +6,18 @@
 		4: { timeCollect: 1 * 1000, chanceToItem: 0.8 },
 	},
 	blackDragon: { type: 'blackDragon', maxLevel: 4, set: {
-			1: { pic: ')black1(' },
-			2: { pic: ')black2(' },
-			3: { pic: ')black3(' },
-			4: { pic: ')black4(' },
-			},
+			1: { pic: 'image/flyers/black_dragon/black_dragon_1_level.png' },
+			2: { pic: 'image/flyers/black_dragon/black_dragon_2_level.png' },
+			3: { pic: 'image/flyers/black_dragon/black_dragon_3_level.png' },
+			4: { pic: 'image/flyers/black_dragon/black_dragon_4_level.png' },
+		}
 	},
 
 	redDragon: { type: 'redDragon', maxLevel: 4, set: {
-			1: { pic: ')red1(' },
-			2: { pic: ')red2(' },
-			3: { pic: ')red3(' },
-			4: { pic: ')red4(' },
+			1: { pic: 'image/flyers/red_dragon/red_dragon_1_level.png' },
+			2: { pic: 'image/flyers/red_dragon/red_dragon_2_level.png' },
+			3: { pic: 'image/flyers/red_dragon/red_dragon_3_level.png' },
+			4: { pic: 'image/flyers/red_dragon/red_dragon_4_level.png' },
 			},
 	},
 	hillsDragon: { type: 'hillsDragon', maxLevel: 4, set: {
@@ -30,7 +30,7 @@
 }
 
 class FlyerManager {
-	flyersAnimation = new FlyersAnimation();
+	flyersAnimation = null; //new FlyersAnimation();
 	flyerGalleryManager = null;
 
 	cell = GAME_CONFIG.BOARD_SIZE.CELL;
@@ -44,8 +44,10 @@ class FlyerManager {
 	flyers = [];
 	eventBus = EventBus.getInstance();
 	
-	constructor(board) {
+	constructor(board, assetManager) {
 		this.gameBoard = board;
+
+		this.flyersAnimation = new FlyersAnimation(assetManager);
 		this.flyerGalleryManager = new FlyerGalleryManager(this)
 		this.subscription();
 	}
@@ -59,6 +61,13 @@ class FlyerManager {
 
 		this.eventBus.on(EVENTS.CMD_CHANGE_DIRECTION_FLYER, (item) => {
 			this.directFlyerToItem(item);
+		})
+	}
+
+	updateFlyers(flyers) {
+		this.flyers = [];
+		flyers.forEach((flyer) => {
+			this.createFlyer(flyer.type, flyer.row, flyer.col, flyer.level);
 		})
 	}
 

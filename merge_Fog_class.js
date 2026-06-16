@@ -43,6 +43,7 @@
 	}
 
 	updateGrid(grid) {
+		this.grid = grid;
 		this.eventBus.emit(EVENTS.CMD_RENDERING_FOG, this.grid);
 	}
 

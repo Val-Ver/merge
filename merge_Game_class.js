@@ -36,7 +36,7 @@ class EventBus {
 		}
 	}
 	
-	of(event, fn) {
+	off(event, fn) {
 		if(!this.listeners[event] == null) { return }
 		this.listeners[event] = this.listeners[event].filter(f => f !== fn)
 	}
@@ -53,10 +53,11 @@ class Game {
 	fogOnBoard = new Fog(this.gameBoard.grid);
 
 	itemPlacer = new ItemPlacer(this.gameBoard, this.fogOnBoard);
+	assetManager = new AssetManager(items, flyers);
 
-	itemRendererCanvas = new ItemRendererCanvas();
+	itemRendererCanvas = new ItemRendererCanvas(this.assetManager);
 	magicWayRendererCanvas = new MagicWayRendererCanvas();
-	
+
 	giftFromItem = new GiftFromItem(this.itemPlacer);
 	giftOnItem = new GiftOnItem(this.itemPlacer);
 	giftFromClickOnItem = new GiftFromClickOnItem(this.itemPlacer);
@@ -67,7 +68,7 @@ class Game {
 	itemHandler = new ItemHandler(this.itemPlacer, this.mergeManager);
 
 	flyItemsManager = new FlyItemsManager(this.itemPlacer);
-	flyerManager = new FlyerManager(this.gameBoard);
+	flyerManager = new FlyerManager(this.gameBoard, this.assetManager);
 
 	dragManager = new DragManagerForGame(this.itemHandler, this.flyerManager);
 
@@ -75,20 +76,27 @@ class Game {
 	saveGame = new SaveData();
 
 	constructor() {
-		this.startGame(); // это надо
-		//this.saveGame.saveBeforeUnload(this.gameBoard.grid);// это надо
-		
-		//this.firstSetItemsForTest();
+		this.startGame()
+			.then( () => {// это надо
+				this.saveGame.saveBeforeUnload(
+					this.gameBoard.grid,
+					this.flyerManager,
+					this.gameOptions.resources
+				)   // это надо
+			})
 	}
 
-	startGame() {
+	async startGame() {
+		await this.assetManager.loadAll();
 		this.flyItemsManager.startFlyItem();
 		if(this.saveGame.hasSaveVersion()) {
 			this.gameBoard.updateGrid(this.saveGame.grid);
 			this.fogOnBoard.updateGrid(this.saveGame.grid);
 			this.itemPlacer.updateItemOnBoard(this.saveGame.grid);
+			this.flyerManager.updateFlyers(this.saveGame.flyers);
+			this.gameOptions.updateResources(this.saveGame.gold, this.saveGame.wood, this.saveGame.crystal);
 		} else {
-			this.startNewGame();	
+			this.startNewGame();
 		}
 
 		//const count = document.body.querySelectorAll('*').length;
@@ -116,7 +124,7 @@ class Game {
 	startNewGame() {
 		for(let i in FOG_ON_BOARD) {
 			const fog = FOG_ON_BOARD[i];
-			if(fog.layer == 0) {
+			if(fog.layer === 0) {
 				this.firstSetItemsOnClearBoard(fog.col, fog.col + fog.width-1, fog.row, fog.row + fog.height-1);
 				break;
 			}
@@ -202,26 +210,6 @@ class Game {
 				if(this.gameBoard.canAddItem(row, col)) {
 					const itemGame = this.itemPlacer.addItemToGameForBegin(type, level, row, col, breed);
 					place = true;	
-				} 
-			}
-		}
-	}
-
-	firstSetItemsForTest() {
-		const countItem = 2000;
-		const level = 1;
-		const type = 'flowers';
-
-		for(let i = 0; i < countItem; i++) {
-			let place = false;
-
-			while(!place) {
-				let row = Math.floor(Math.random() * this.gameBoard.rows);
-				let col = Math.floor(Math.random() * this.gameBoard.cols);
-
-				if(this.gameBoard.canAddItem(row, col)) {
-					const itemGame = this.itemPlacer.addItemToGameForBegin(type, level, row, col);
-					place = true;
 				} 
 			}
 		}
