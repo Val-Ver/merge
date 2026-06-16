@@ -54,16 +54,16 @@ html, body {
 	bottom: 10px;
 }
 
-@media (pointer: none), (pointer: coarse) {
+/*@media (pointer: none), (pointer: coarse) {
 	.shop-btn {
 		top: 90%;
 	}
-}
+}*/
+
 .game-btn-container {
 	position: absolute;
 	right: 10px;
 	top: 20px;
-
 }
 .game-options-container {
 	/*width: 600px; 
