@@ -110,7 +110,7 @@
 		const eggsOnBoard = []
 		for(let row = 0; row < this.rows; row++) {
 			for(let col = 0; col < this.cols; col++) {
-				if(this.gameBoard.grid[row][col].fog.layer == 0
+				if(this.gameBoard.grid[row][col].fog.layer === 0
 				&& this.gameBoard.grid[row][col].item
 				&& this.gameBoard.grid[row][col].item.type === 'eggs') {
 					eggsOnBoard.push(this.gameBoard.grid[row][col].item);
@@ -123,7 +123,6 @@
 	createPictureCard(pic) {
 		const picture = document.createElement('div');
 		//picture.textContent = `${pic}`;
-		console.log(pic)
 		picture.style.backgroundImage = `url(${pic})`
 		picture.className = 'picture-card';
 		return picture;

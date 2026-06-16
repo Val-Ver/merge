@@ -17,7 +17,6 @@
 
 	constructor() {
 		this.shopHandler = new ShopManager(this);
-		//this.saveGame = saveGame
 		this.addBtnInfoMessage();
 		this.clickOnPlaceOnBoard();
 		this.addBtnGameAgain();
@@ -34,8 +33,8 @@
 		}
 		btn.addEventListener('click', clickOnBtn);
 	}
-	handleBuyItem(type, level, price, resource, breed = null) {
 
+	handleBuyItem(type, level, price, resource, breed = null) {
 		if(this.resources[resource].score >= price) {
 			this.shopHandler.shopContainer.style.display = 'none';
 

@@ -1,8 +1,9 @@
 ﻿
 const EVENTS = {
 	CMD_CREATE_FLYER: 'cmd: createFlyer', 
-	CMD_CHANGE_DIRECTION_FLYER: 'cmd: changeDirectionFlyer', 
+	CMD_CHANGE_DIRECTION_FLYER: 'cmd: changeDirectionFlyer',
 
+	CMD_ADD_ITEM_IN_GAME: 'cmd: addItemInGAME',
 	CMD_ADD_ITEM_FROM_FLAYER: 'cmd: addItemFromFlayer',
 	CMD_REMOVE_ITEM: 'cmd: removeItem', //есть это после дракона
 

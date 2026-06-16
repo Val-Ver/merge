@@ -31,7 +31,11 @@
 		for(let row = 0; row < this.gameBoard.rows; row++) {
 			for(let col = 0; col < this.gameBoard.cols; col++) {
 				if(grid[row][col].item) {
-					const item = grid[row][col].item;
+					let item = grid[row][col].item;
+					if(item.type === undefined) {
+						grid[row][col].item = null;
+						continue;
+					}
 					//this.gameBoard.addItemInCell(item);
 					this.itemRegistry.addItem(item);
 					//this.eventBus.emit(EVENTS.EVENT_ADD_ITEM_ON_BOARD, item);
