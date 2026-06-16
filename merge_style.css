@@ -5,12 +5,22 @@
 	user-select: none;
 }
 
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+.game-container {
+	width: 100%;
+	height: 100%;
+}
+
 /* ------- стили для опций игры --------*/
 
 .asset-container {
 	position: absolute;
 	left: 10px;
-	top: 10px;
+	top: 20px;
 
 	min-width: 50px;
 	height: 20px;
@@ -21,13 +31,21 @@
 }
 
 .gold-counter {
-	color: yellow;
+	color: gold;
+}
+
+.wood-counter {
+	color: brown;
+}
+
+.crystal-counter {
+	color: cyan;
 }
 
 .shop-btn {
 	position: absolute;
 	left: 10px;
-	top: 570px;
+	bottom: 10px;
 }
 
 @media (pointer: none), (pointer: coarse) {
@@ -35,10 +53,18 @@
 		top: 90%;
 	}
 }
+.game-btn-container {
+	position: absolute;
+	right: 10px;
+	top: 20px;
 
+}
 .game-options-container {
-	width: 600px; /*временные размеры*/
+	/*width: 600px; 
 	height: 600px; /*временные размеры*/
+
+	width: 100%;
+	height: 100%;
 
 	position: absolute;
 	left: 0;
@@ -60,7 +86,7 @@
 	}
 }
 
-.shop-container, .info-container, .info-message {
+.shop-container, .info-container, .info-message-lacks, .info-message-buy {
 	border: 1px solid grey;
 	border-radius: 5px;
 	box-shadow:	inset 5px 5px 5px rgba(255, 255, 255, 0.8),
@@ -72,6 +98,8 @@
 .shop-container {
 	width: 560px;
 	height: 300px;
+
+	position: relative;
 
 	display: none;
 	flex-direction: column;
@@ -92,36 +120,45 @@
 	}
 }
 
-.shop, .shop-item, .shop-item-type {
+.shop, .shop-product, .shop-item, .shop-item-type, .shop-flyers, .type-flyers, .flyers-gallery, .flyers-gallery-type {
 	width: 500px;
-	height: 220px;
+	height: 200px;
 
 	display: grid;
 	grid-template-rows: 100%;
 	align-content: end;
 	align-content: center;
+	/*justify-items: center;*/
 }
 
 @media (pointer: none), (pointer: coarse) {
-	.shop, .shop-item, .shop-item-type {
+	.shop, .shop-product, .shop-item, .shop-item-type, .shop-flyers, .type-flyers, .flyers-gallery, .flyers-gallery-type {
 		width: 100%;;
 		height: 100%;;
 	}
 }
 
-.shop-item {
-	display: none;
+.shop,
+.shop-item, 
+.shop-flyers, 
+.flyers-gallery {
+	/*display: none;*/
 	overflow: hidden;
 	position: relative;
 	cursor: grab;
 }
 
-.shop-item:active {
+
+.shop-item:active,
+.type-flyers:active {
 	cursor: grabbing;
 }
 
-.shop-item-type {
-	display: none;
+.shop-product,
+.shop-item-type,
+.type-flyers,
+.flyers-gallery-type {
+	/*display: none;*/
 	width: auto;
 
 	position: absolute;
@@ -131,11 +168,21 @@
 	will-change: transform;
 }
 
+.shop-item,
+.shop-item-type,
+.shop-flyers,
+.type-flyers,
+.flyers-gallery,
+.flyers-gallery-type {
+	display: none;
+}
+
 #btn-back {
 	display: none;
 	position: absolute;
-	left: 500px;
-	top: 165px;
+	/*left: 500px;*/
+	top: 10px;
+	right: 30px;
 }
 
 @media (pointer: none), (pointer: coarse) {
@@ -226,21 +273,24 @@
 	display: none;
 	justify-content: center;
 	align-items: center;
-/*pointer-events:none;*/
+
+	/*position: absolute;
+	left: 50vw;
+	top: 50vh;
+	z-index: 100;*/
 }
 
-.info-message {
-	/*position: absolute;
-	left: 175px;
-	top: 230px;*/
-
+.info-message-lacks,
+.info-message-buy {
 	width: 250px;
 	height: 60px;
 
-	display: flex;
+	display: none;
 	justify-content: space-around;
 	align-items: center;
 }
+
+
 
 @media (pointer: none), (pointer: coarse) {
 	.info-message {
@@ -272,12 +322,18 @@ button:active {
 button:hover {
 	background: linear-gradient(to bottom, #cad0d3, #4a4d4f);	
 }
+.info-btn {
+	width: 25px;
+	height: auto;
+	aspect-ratio: 1;
+	border-radius: 50%;
+}
 
 /* ------- стили для самой игры --------*/
 
 .viewport-container {
-	width: 600px; /*временные размеры*/
-	height: 600px; /*временные размеры*/
+	width: 100%;
+	height: 100%;
 
 	overflow: hidden;
 	position: relative;
@@ -288,7 +344,6 @@ button:hover {
 	box-shadow: 	inset 1px 1px 2px rgba(0, 0, 0, 1),
 			0 0 0 3px #c7ced1,
 			4px 4px 6px rgba(0, 0, 0, 1);
-
 }
 
 @media (pointer: none), (pointer: coarse) {
@@ -312,173 +367,28 @@ button:hover {
 
 	/*transform-style: preserve-3d;
 	transform: rotateX(65deg) rotateY(0deg) rotateZ(50deg);*/
-
 }
 
-
 #fog-canvas, #item-canvas,
-#item-draging-canvas {
+#item-effect-canvas,
+#effect-canvas,
+.magic-way-canvas,
+#flyer-canvas,
+#dragging-canvas {
 	position: absolute;
 	left: 0;
 	top: 0;
 	pointer-events: none;
 	z-index: 1;
 }
-
-.board-container {
-	display: grid;
-	justify-content: center;
-	align-content: center;
-
-	background: green;
-	box-shadow: 10px 10px 15px 0px rgba(0, 0, 0, 0.5);
+#flyer-canvas {
+	z-index: 10;
 }
 
-.cell {
-	height: 100%;
-	aspect-ratio: 1;
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	border: 1px solid grey;
-	font-size: 10px;
-}
-
-.landscape {
-	background: grey;
-}
-
-.item, .flyer {
-	border: 1px solid grey;
-	aspect-ratio: 1;
-	position: absolute;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 30px;
-	text-shadow: 1px -1px 3px rgba(0, 0, 0, 0.5);
-
-	cursor: grab;
-	cursor: pointer;
-	user-select: none;
-	z-index: 1;
-	overflow: hidden;
-}
-
-.item::after {
-	content: var(--after-content, "");
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	transform: translate(1px, -1px);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: grey;
-	z-index: -10;
-	overflow: hidden;
-}
-.item:active {
-	box-shadow:  0px 5px 10px rgba(0, 0, 0, 0.5);
-}
-
-.flyer {
-	box-shadow:  5px 30px 25px rgba(0, 0, 0, 0.5);
-	font-size: 15px;
-	z-index: 100;
-}
-
-.highlight {
-	/*box-shadow: inset 1px 1px 10px rgba(255, 255, 255, 1);*/
-	/*box-shadow: inset 1px 1px 10px yellow;*/
-	/*box-shadow: inset 1px 1px 10px #c0bb21;*/
-	box-shadow: inset 0px 0px 10px #c0bb21;
-	/*z-index: 1;*/
-}
 .fly-item {
 	position: absolute;
 	z-index: 100;
 	cursor: pointer;
 }
 
-.fog {
-	position: absolute;
-	aspect-ratio: 1;
-	border: 1px solid grey;
-	/*background: rgba(166, 81, 236, 0.7);*/
-	background: rgba(166, 81, 236, 1);
-	z-index: 1;
-}
-
-.layer-fog,
-.merge-counter {
-	width: 50%;
-	aspect-ratio: 1;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	border: 1px solid white;
-	box-shadow: inset 0px 0px 5px white;
-	border-radius: 50%;
-
-	font-size: 10px;
-	color:  white;
-	/*z-index: 11;*/
-}
-
-.merge-counter {
-	position: absolute;
-	left: 0;
-	top: 0;
-}
-
-.div-for-gift {
-	position: absolute;
-	width: 100%;
-	aspect-ratio: 1;
-	display: grid;
-	justify-items: center;
-	align-items: end;
-	border: 1px solid grey;
-	/*z-index: 2;*/
-}
-
-.gift-on-item {
-	aspect-ratio: 1;
-	font-size: 6px;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	border: 1px solid grey;
-	/*z-index: 3;*/
-}
-
-.magic-effect {
-	position: absolute;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: rgba(255, 255, 255, 1);
-	z-index: 45;
-}
-
-.gift-on-flyer { 
-	position: absolute;
-	aspect-ratio: 1;
-	font-size: 12px;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	border: 1px solid white;
-	box-shadow: inset 0px 0px 5px white;
-	border-radius: 50%
-}

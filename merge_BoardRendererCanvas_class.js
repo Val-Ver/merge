@@ -5,7 +5,7 @@
 	cell = GAME_CONFIG.BOARD_SIZE.CELL;
 
 	boardWidth = GAME_CONFIG.BOARD_SIZE.BOARD_WIDTH;
-	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
+	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGHT;
 
 	canvas = document.getElementById("board-canvas");
 	sizeCanvas = this.canvas.getBoundingClientRect();

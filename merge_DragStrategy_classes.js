@@ -20,14 +20,10 @@
 
 class FlyerDragStrategy extends BaseDragStrategy {
 	manager = null;
-
-	currentElement = null;
 	currentFlyer = null;
 
 	offsetX = 0;
 	offsetY = 0;
-	elementStartX = 0;
-	elementStartY = 0;
 
 	itemsPref = [];
 
@@ -38,70 +34,59 @@ class FlyerDragStrategy extends BaseDragStrategy {
 		this.manager = dragManager;
 	}
 
-	start(clientX, clientY, element) {
+	start(clientX, clientY, flyer) {
 		this.isDraging = true;
-		this.currentElement = element;
+		this.currentFlyer = flyer;
 
-		this.currentFlyer = this.manager.getCurrentFlyer(this.currentElement.dataset.id);
-		if(this.currentFlyer.collectGift) { this.manager.putItemOnBoard(this.currentFlyer) }
+		if(this.currentFlyer.collectGift) { 
+			this.manager.putItemOnBoard(this.currentFlyer);
+		}
 
-		this.elementStartX = Number(this.currentElement.style.left.split('px')[0]);
-		this.elementStartY = Number(this.currentElement.style.top.split('px')[0]);
+		const flyerStartX = this.currentFlyer.route.x;
+		const flyerStartY = this.currentFlyer.route.y;
 
-		this.offsetX = clientX - this.elementStartX;
-		this.offsetY = clientY - this.elementStartY;
+		this.offsetX = clientX - flyerStartX;
+		this.offsetY = clientY - flyerStartY;
 	}
 
 	move(clientX, clientY) {
 		if(!this.isDraging) { return }
 
-		
-		if(this.currentFlyer.mission) { this.currentFlyer.mission = false }
+		if(this.currentFlyer.mission) { 
+			this.currentFlyer.mission = false;
+			
+		}
 		this.currentFlyer.isDraging = true;
+		this.currentFlyer.isCollect = false;
 
-		this.currentElement.style.zIndex = '100';
-
-		this.currentElement.style.left = (clientX - this.offsetX) +'px';
-		this.currentElement.style.top = (clientY - this.offsetY) +'px';
+		const x = clientX - this.offsetX;
+		const y = clientY - this.offsetY;
 
 		this.currentFlyer.route = { x: clientX - this.offsetX, y: clientY - this.offsetY }
-
 	}
 
 	end(clientX, clientY) {
 		this.isDraging = false;
-
-		this.currentFlyer = this.manager.getCurrentFlyer(this.currentElement.dataset.id);
 		this.currentFlyer.isDraging = false;
 	
-		let elementsFromPoint = document.elementsFromPoint(clientX, clientY);
+		const flyers = this.manager.flyers;
+		const coordCanvas = this.manager.findCoordForDrag(clientX, clientY)
+		const flyersForMerge = [];
 
-		const findFlyers = elementsFromPoint.filter((element) => {
-			return element.dataset.name == 'flyer';
-		})
+		for(let i = 0; i < flyers.length; i++) {
+			const flyer = flyers[i]
+			if(coordCanvas.x >= flyer.route.x && coordCanvas.x <= flyer.route.x + flyer.size.width
+			&& coordCanvas.y >= flyer.route.y && coordCanvas.y <= flyer.route.y + flyer.size.height) {
+				flyersForMerge.push(flyer);
+			}
+		}
 
-		if(findFlyers.length >= 3) {
-			this.manager.mergeFlyers(findFlyers);
+		if(flyersForMerge.length >= 3) {
+			this.manager.mergeFlyers(flyersForMerge);
 			return;
 		}
 
-		for(let i = 0; i < elementsFromPoint.length; i++) {
-			let element = elementsFromPoint[i];
-
-			if(element.dataset.name == 'fog'
-			|| element.id == 'board-canvas') {
-			//|| element.dataset.name == 'landscape'
-			//|| element.dataset.name == 'cell') { 
-				this.manager.startPatrulFlyerAfterDraging(this.currentFlyer)
-				break; 
-			}
-
-			if(element.dataset.name == 'item') {
-				this.manager.collectItemAfterDraging(this.currentFlyer)
-				break;
-			}
-		}
-		this.currentElement.style.zIndex = '';		
+		this.manager.handlerFlyer(this.currentFlyer);
 	}
 }
 
@@ -118,9 +103,6 @@ class FlyerCLickStrategy extends BaseDragStrategy {
 		//реализовала на mouseDown
 	}
 }
-
-
-
 
 
 
@@ -147,9 +129,6 @@ class ItemDragStrategy extends BaseDragStrategy {
 		this.isDragingItem = true;
 		this.currentElement = element;
 
-		//if(!this.manager.itemRegistry.getCurrentItem(this.currentElement.dataset.id)) { return }
-		//this.manager.itemRegistry.getCurrentItem(this.currentElement.dataset.id).isDraging = true;
-
 		this.elementStartX = this.currentElement.coord.x;
 		this.elementStartY = this.currentElement.coord.y;
 
@@ -157,6 +136,11 @@ class ItemDragStrategy extends BaseDragStrategy {
 		this.offsetY = clientY - this.elementStartY;
 
 		this.manager.itemPlacer.clearItemForDrag(this.currentElement.dataset.id);
+		this.manager.clearItemOnBoardForDrag(this.currentElement.item);
+		if(this.currentElement.item.animationId) { 
+			cancelAnimationFrame(this.currentElement.item.animationId);
+			this.currentElement.item.animationId = null;
+		}
 	}
 
 	move(clientX, clientY) {
@@ -173,19 +157,18 @@ class ItemDragStrategy extends BaseDragStrategy {
 		const boardCoord = this.manager.getCoordBoard(this.currentElement.element, clientX, clientY);
 		const row = boardCoord.row;
 		const col = boardCoord.col;
+		const grid = this.currentElement.grid;
 
-		/*const grid = this.currentElement.grid;
-		if(grid[row][col].fog.layer === 0 && grid[row][col].item) {
-// надо рисовать 
-			this.itemsPref = this.manager.preformHighlightingItems(this.currentElement.dataset.id, grid[row][col].item.id);
-			if(this.itemsPref.length > 1) {
-				this.manager.createMergeCounter(this.currentElement, this.itemsPref.length);
-			}
-			if(this.itemsPref.length > 1) {
-				this.manager.removeMergeCounter();
-				this.manager.removeHighlightingItems(this.itemsPref);
-			}
-		}*/
+		if(grid[row][col].fog.layer === 0 && !grid[row][col].fog.isVisible
+		&& grid[row][col].item
+		&& this.currentElement.item.type === grid[row][col].item.type
+		&& this.currentElement.item.level === grid[row][col].item.level
+		&& this.currentElement.item.breed === grid[row][col].item.breed) {
+			this.itemsPref = this.manager.preformHighlightingItems(this.currentElement.item, grid[row][col].item);
+		} else if(this.itemsPref.length > 1) {
+			this.manager.removeHighlightingItems(this.itemsPref);
+		}
+		 
 	}
 
 	end(clientX, clientY) {
@@ -225,7 +208,7 @@ class ItemCLickStrategy extends BaseDragStrategy {
 	}
 
 	end(clientX, clientY, element) {
-		this.manager.stayBackItemAfterClick(element.dataset.id);
+		this.manager.stayBackItemOnBoard(element.dataset.id);
 		this.manager.handleItem(element.dataset.id);
 	}
 }
@@ -239,6 +222,7 @@ class ItemLongCLickStrategy extends BaseDragStrategy {
 	}
 
 	end(clientX, clientY, element) {
+		this.manager.stayBackItemOnBoard(element.dataset.id);
 		this.manager.showInfoPanel(element.dataset.id);
 	}
 }
@@ -252,14 +236,13 @@ class ItemDblCLickStrategy extends BaseDragStrategy {
 	}
 
 	end(clientX, clientY, element) {
-		this.manager.stayBackItemAfterClick(element.dataset.id);
+		this.manager.stayBackItemOnBoard(element.dataset.id);
 		this.manager.itemCollsFlyer(element.dataset.id); 
 	}
 }
 
 class BoardPanoramaStrategy extends BaseDragStrategy {
 	viewport = document.querySelector('.viewport-container');
-	board = document.querySelector('.board-container');
 	container = document.querySelector('.container-for-panoram');
 
 	boardStartX = 0;
@@ -286,16 +269,21 @@ class BoardPanoramaStrategy extends BaseDragStrategy {
 		let coordX = clientX - this.boardStartX;
 		let coordY = clientY - this.boardStartY;
 		let indent = 10;
-				
-		const minX = (this.viewport.clientWidth - this.container.offsetWidth)/2 - indent;
-		const maxX = (this.container.offsetWidth - this.viewport.clientWidth)/2 + indent;
 
-		const minY = this.viewport.clientHeight - this.container.offsetHeight - indent;
+		const widthBoard = GAME_CONFIG.BOARD_SIZE.BOARD_WIDTH;	
+
+		const minX = (this.viewport.clientWidth - widthBoard)/2 - indent;
+		const maxX = (widthBoard - this.viewport.clientWidth)/2 + indent;
+
+		//const minX = (this.viewport.clientWidth - this.container.offsetWidth)/2 - indent;
+		//const maxX = (this.container.offsetWidth - this.viewport.clientWidth)/2 + indent;
+
+		const heightBoard = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGHT;
+		const minY = this.viewport.clientHeight - heightBoard - indent;
 		const maxY = 0 + indent;
 
 		this.boardTranslateX = Math.max(minX, Math.min(coordX, maxX))
 		this.boardTranslateY = Math.max(minY, Math.min(coordY, maxY))
-
 
 		this.container.style.transform = `translate(${this.boardTranslateX}px, ${this.boardTranslateY}px)`;
 	}
@@ -338,7 +326,7 @@ class BoardZoomStrategy extends BaseDragStrategy {
 
 class ShopPanoramaStrategy extends BaseDragStrategy {
 	currentItemsSet = null;
-	place = document.querySelector('.shop-item');
+	place = null;
 
 	boardStartX = 0;
 	boardStartY = 0;
@@ -365,7 +353,32 @@ class ShopPanoramaStrategy extends BaseDragStrategy {
 		let elementsFromPoint = document.elementsFromPoint(clientX, clientY);
 		for(let i = 0; i < elementsFromPoint.length; i++) {
 			this.currentElement = elementsFromPoint[i];
-			if(this.currentElement.dataset.name == 'item') {
+
+			if(this.currentElement.dataset.name === 'product') {
+				this.place = document.querySelector('.shop');
+
+				this.itemStartX = this.currentElement.getBoundingClientRect().left;
+				this.itemStartY = this.currentElement.getBoundingClientRect().top;
+				break;
+			}
+			if(this.currentElement.dataset.name === 'item') {
+				this.place = document.querySelector('.shop-item');
+
+				this.itemStartX = this.currentElement.getBoundingClientRect().left;
+				this.itemStartY = this.currentElement.getBoundingClientRect().top;
+				break;
+			}
+			if(this.currentElement.dataset.name === 'gallery') {
+				this.place = document.querySelector('.shop-flyers');
+
+				this.itemStartX = this.currentElement.getBoundingClientRect().left;
+				this.itemStartY = this.currentElement.getBoundingClientRect().top;
+				break;
+			}
+			if(this.currentElement.dataset.name === 'flyer' 
+			|| this.currentElement.dataset.name === 'egg') {
+				this.place = document.querySelector('.flyers-gallery');
+
 				this.itemStartX = this.currentElement.getBoundingClientRect().left;
 				this.itemStartY = this.currentElement.getBoundingClientRect().top;
 				break;
@@ -397,21 +410,45 @@ class ShopPanoramaStrategy extends BaseDragStrategy {
 		for(let i = 0; i < elementsFromPoint.length; i++) {
 			let element = elementsFromPoint[i];
 
+			if(element.dataset.name == 'product'
+			&& element.dataset.type == this.currentElement.dataset.type) { 
+				const distance = Math.floor(Math.sqrt((this.itemStartX - element.getBoundingClientRect().left)**2 + 
+						(this.itemStartY - element.getBoundingClientRect().top)**2));
+				if(distance == 0) {
+					this.manager.addListenersOnProduct(element.dataset.type);
+					break;
+				}	
+			}
+
 			if(element.dataset.name == 'item'
 			&& element.dataset.level == this.currentElement.dataset.level) { 
 				const distance = Math.floor(Math.sqrt((this.itemStartX - element.getBoundingClientRect().left)**2 + 
 						(this.itemStartY - element.getBoundingClientRect().top)**2));
 				if(distance == 0) {
-					this.manager.manager.handleBuyItem(element.dataset.type, Number(element.dataset.level), Number(element.dataset.price));
-					this.manager.showStartShop();
-					this.manager.shopContainer.style.display = 'none';
+					this.manager.manager.handleBuyItem(element.dataset.type, Number(element.dataset.level), Number(element.dataset.price), element.dataset.resource);
 					break;
 				}	
 			}
-		}
-	}
 
-	findCenterCellOfViewport() {
-		
+			if(element.dataset.name == 'gallery'
+			&& element.dataset.type == this.currentElement.dataset.type) { 
+				const distance = Math.floor(Math.sqrt((this.itemStartX - element.getBoundingClientRect().left)**2 + 
+						(this.itemStartY - element.getBoundingClientRect().top)**2));
+				if(distance == 0) {
+					this.manager.addListenersOnGallery(element.dataset.type);
+					break;
+				}	
+			}
+			if(element.dataset.name == 'egg'
+			&& element.dataset.level == this.currentElement.dataset.level) { 
+				const distance = Math.floor(Math.sqrt((this.itemStartX - element.getBoundingClientRect().left)**2 + 
+						(this.itemStartY - element.getBoundingClientRect().top)**2));
+				if(distance == 0) {
+					this.manager.manager.handleBuyItem(element.dataset.type, Number(element.dataset.level), Number(element.dataset.price), element.dataset.resource, element.dataset.breed);
+					break;
+				}	
+			}
+
+		}
 	}
 }

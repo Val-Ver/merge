@@ -20,14 +20,6 @@
 	saveBeforeUnload(grid) {
 		window.addEventListener('beforeunload', () => {
 			this.conservationGrid(grid);
-		});
-		window.addEventListener('pagehide', () => {
-			this.conservationGrid(grid);
-		})
-		document.addEventListener('visibilitychange', () => {
-			if (document.visibilityState === 'hidden') {
-				this.conservationGrid(grid);
-			}
 		})
 	}
 }

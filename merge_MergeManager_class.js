@@ -9,9 +9,7 @@
 		this.manager = manager;
 	}
 
-	preformHighlightingItems(curretnItemId, itemId) {
-		const currentItem = this.manager.getCurrentItem(curretnItemId);
-		const findItem = this.manager.getCurrentItem(itemId);
+	preformHighlightingItems(currentItem, findItem) {
 		let itemsPref = [];
 		itemsPref = this.findNeighborCells(currentItem, findItem.row, findItem.col);
 		if(itemsPref.length > 1) {
@@ -26,11 +24,12 @@
 		const findItem = this.manager.getCurrentItem(itemId);
 
 		this.itemsForMerge = this.findNeighborCells(currentItem, findItem.row, findItem.col);
+
 		if(this.itemsForMerge.length > 1) {
 			this.centerMerge = {row: findItem.row, col: findItem.col};
+			currentItem.outside = true;
 			this.itemsForMerge.push(currentItem);
-// надо нарисовать
-			//this.eventBus.emit(EVENTS.CMD_RENDERING_ADD_HIGHLIGHTING_ITEM, this.itemsForMerge);
+			this.eventBus.emit(EVENTS.CMD_RENDERING_ADD_HIGHLIGHTING_ITEM, this.itemsForMerge);
 			return true;
 		} 
 		return false;
@@ -73,6 +72,8 @@
 	async createNewLevelItem() { 
 		await this.manager.removeItemForMutable(this.itemsForMerge, this.centerMerge);
 
+		const setForNewItem = {}
+
 		let numberNewItems = 0;
 		let numberItemsKeepOriginal = 0;
 
@@ -100,22 +101,25 @@
 		if(this.itemsForMerge[0].breed) {
 			const typeFlyer = this.itemsForMerge[0].breed;
 			this.eventBus.emit(EVENTS.CMD_CREATE_FLYER, typeFlyer, numberNewItems, this.itemsForMerge[0].row, this.itemsForMerge[0].col);
-		} else {
-			this.manager.createItemForPlaceAfterMerge(type, level + 1, numberNewItems, this.centerMerge);
-		}
 
+		} else {
+			setForNewItem.newItem = { type: type, level: level + 1, breed: this.itemsForMerge[0].breed, count: numberNewItems }
+		}
+ 
 		if(numberItemsKeepOriginal > 0) {
-			this.manager.createItemForPlaceAfterMerge(this.itemsForMerge[0].type, this.itemsForMerge[0].level, numberItemsKeepOriginal, this.centerMerge);
+			setForNewItem.originItem = { type: this.itemsForMerge[0].type, level: this.itemsForMerge[0].level, breed: this.itemsForMerge[0].breed, count: numberItemsKeepOriginal}
 		}
 
 		const magicMerge = this.itemsForMerge[0].magicMerge;
 		if(magicMerge) { 
 			const countMagicMerge = Math.random() < GAME_CONFIG.MERGE_RULES.MAGIC_MERGE_CHANCE ? 1 : 0;
 			if(countMagicMerge > 0) {
-				this.manager.createItemForPlaceAfterMerge(magicMerge.type, magicMerge.level, countMagicMerge, this.centerMerge);
+				setForNewItem.magicMergeITem = { type: magicMerge.type, level: magicMerge.level, breed: null, count: countMagicMerge}
 			}
 		}
 
+		this.manager.createItemForPlaceAfterMerge(setForNewItem, this.centerMerge)
+		
 		if(type == 'flowers' || type == 'sphere' ) {
 			this.eventBus.emit(EVENTS.CMD_CLEAR_FOG_AFTER_MERGE, this.centerMerge, this.itemsForMerge[0].level, numberNewItems);
 		}

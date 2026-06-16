@@ -1,8 +1,6 @@
 ﻿window.addEventListener("load", main);
 
 function main() {
-	//window.MergeGame = window.MergeGAme || {}
-	//window.MergeGame.eventBus = new EventBus();
 	const game = new Game();
 }
 
@@ -38,7 +36,7 @@ class EventBus {
 		}
 	}
 	
-	off(event, fn) {
+	of(event, fn) {
 		if(!this.listeners[event] == null) { return }
 		this.listeners[event] = this.listeners[event].filter(f => f !== fn)
 	}
@@ -55,10 +53,15 @@ class Game {
 	fogOnBoard = new Fog(this.gameBoard.grid);
 
 	itemPlacer = new ItemPlacer(this.gameBoard, this.fogOnBoard);
-	itemRenderer = new ItemRenderer();
+
 	itemRendererCanvas = new ItemRendererCanvas();
+	magicWayRendererCanvas = new MagicWayRendererCanvas();
+	
 	giftFromItem = new GiftFromItem(this.itemPlacer);
 	giftOnItem = new GiftOnItem(this.itemPlacer);
+	giftFromClickOnItem = new GiftFromClickOnItem(this.itemPlacer);
+	giftFromItemForOneTime = new GiftFromItemForOneTime(this.itemPlacer);
+	giftFromClickOnItemForOneTime = new GiftFromClickOnItemForOneTime(this.itemPlacer);
 
 	mergeManager = new MergeManager(this.itemPlacer);
 	itemHandler = new ItemHandler(this.itemPlacer, this.mergeManager);
@@ -74,6 +77,8 @@ class Game {
 	constructor() {
 		this.startGame(); // это надо
 		//this.saveGame.saveBeforeUnload(this.gameBoard.grid);// это надо
+		
+		//this.firstSetItemsForTest();
 	}
 
 	startGame() {
@@ -98,7 +103,13 @@ class Game {
 
 		перенесла туман стало - 2249
 
-		частично перенесла предметы стало - 237
+		перенесла предметы стало - 237
+
+		что-то понаделала с магазином 267
+
+		перенесла драконов стало - 266
+
+		что-то еще понаделала с магазином 108
 		*/
 	}
 
@@ -112,7 +123,7 @@ class Game {
 			for(let row = fog.row; row < fog.row + fog.height; row++) {
 				for(let col = fog.col; col < fog.col + fog.width; col++) {
 					this.fogOnBoard.addFog(fog.layer, row, col);
-					this.createSetItemsUnderFogLevel(fog.layer, row, col);
+					this.createSetItemsUnderFogLevel(fog.parameterItem, row, col);
 				}
 			}
 		}
@@ -121,73 +132,30 @@ class Game {
 
 	createSetItemsUnderFogLevel(level, row, col) {
 		if(this.gameBoard.grid[row][col].landscape) { return }
-		let propertyItem  = {}
-		let levelItem = 0;
-		let type = '';
-		let breed = null;
-		switch(level) {
-			case  1: 
-			case  2:
-			case  3: propertyItem = this.getPropertyItem(1)
 
-				 levelItem = propertyItem.level;
-				 type = propertyItem.type;
-				 breed = propertyItem.breed;
-				 break;
-			case  4:
-			case  5:
-			case  6: propertyItem = this.getPropertyItem(2)
-
-				 levelItem = propertyItem.level;
-				 type = propertyItem.type;
-				 breed = propertyItem.breed;
-				 break;
-			case  7:
-			case  8:
-			case  9: propertyItem = this.getPropertyItem(3)
-
-				 levelItem = propertyItem.level;
-				 type = propertyItem.type;
-				 breed = propertyItem.breed;
-				 break;
-			case 10:
-			case 11:
-			case 12: propertyItem = this.getPropertyItem(4)
-
-				 levelItem = propertyItem.level;
-				 type = propertyItem.type;
-				 breed = propertyItem.breed;
-				 break;
-			case 13:
-			case 14:
-			case 15: propertyItem = this.getPropertyItem(5)
-
-				 levelItem = propertyItem.level;
-				 type = propertyItem.type;
-				 breed = propertyItem.breed;
-				 break;
-		}
-		const itemGame = this.itemPlacer.addItemToGameForBegin(type, levelItem, row, col, breed);
+		const parameterItem = this.getParameterItem(level)
+		const itemGame = this.itemPlacer.addItemToGameForBegin(parameterItem.type, parameterItem.level, row, col, parameterItem.breed);
 	}
 
-	getPropertyItem(value) {
-		const setPropertyItem = SET_ITEM_FOR_START_GAME[value]
-		let propertyItem = {};
+	getParameterItem(value) {
+		const setParameterItem = SET_ITEM_FOR_START_GAME[value]
+		let parameterItem = {};
 		const chance = Math.random();
 
 		let chanceSet = 0
-		for(let i = 0; i < setPropertyItem.length; i++) {
-			const set = setPropertyItem[i];
+		for(let i = 0; i < setParameterItem.length; i++) {
+			const set = setParameterItem[i];
 			chanceSet += set.chance;
 
 			if(chanceSet >= chance) {
-				propertyItem.type = set.type;
-				propertyItem.level = this.getRandomInt(set.levelMin, set.levelMax);
-				propertyItem.breed = null;
+				parameterItem.type = set.type;
+				parameterItem.level = this.getRandomInt(set.levelMin, set.levelMax);
+				parameterItem.breed = null;
+
 				if(set.breed) {
-					propertyItem.breed = set.breed[this.getRandomInt(0, set.breed.length-1)];
+					parameterItem.breed = set.breed[this.getRandomInt(0, set.breed.length-1)];
 				}
-				return propertyItem
+				return parameterItem
 			}
 		}
 
@@ -207,16 +175,20 @@ class Game {
 
 		this.generateItemOnBoard(3, 0, 'eggs', minX, maxX, minY, maxY, 'blackDragon');
 
+//this.generateItemOnBoard(5, 0, 'eggs', minX, maxX, minY, maxY, 'hillsDragon');
+//this.generateItemOnBoard(5, 0, 'eggs', minX, maxX, minY, maxY, 'redDragon');
+//this.generateItemOnBoard(1, 5, 'countryHouse', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(1, 5, 'flowers', minX, maxX, minY, maxY);
 //this.generateItemOnBoard(1, 1, 'watermill', minX, maxX, minY, maxY);
 //this.generateItemOnBoard(1, 2, 'watermill', minX, maxX, minY, maxY);
-//this.generateItemOnBoard(1, 4, 'trees', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(1, 4, 'oak', minX, maxX, minY, maxY);
 //this.generateItemOnBoard(1, 6, 'trees', minX, maxX, minY, maxY);
-//this.generateItemOnBoard(1, 8, 'trees', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(6, 8, 'trees', minX, maxX, minY, maxY);
 //this.generateItemOnBoard(1, 10, 'trees', minX, maxX, minY, maxY);
 //this.generateItemOnBoard(2, 6, 'fossil', minX, maxX, minY, maxY);
 //this.generateItemOnBoard(10, 10, 'sphere', minX, maxX, minY, maxY);	
 //this.generateItemOnBoard(3, 6, 'gold', minX, maxX, minY, maxY);		
-//this.generateItemOnBoard(3, 6, 'hills', minX, maxX, minY, maxY);
+//this.generateItemOnBoard(1, 10, 'hills', minX, maxX, minY, maxY);
 	}
 
 	generateItemOnBoard(countItem, level, type, minX, maxX, minY, maxY, breed) {
@@ -230,6 +202,26 @@ class Game {
 				if(this.gameBoard.canAddItem(row, col)) {
 					const itemGame = this.itemPlacer.addItemToGameForBegin(type, level, row, col, breed);
 					place = true;	
+				} 
+			}
+		}
+	}
+
+	firstSetItemsForTest() {
+		const countItem = 2000;
+		const level = 1;
+		const type = 'flowers';
+
+		for(let i = 0; i < countItem; i++) {
+			let place = false;
+
+			while(!place) {
+				let row = Math.floor(Math.random() * this.gameBoard.rows);
+				let col = Math.floor(Math.random() * this.gameBoard.cols);
+
+				if(this.gameBoard.canAddItem(row, col)) {
+					const itemGame = this.itemPlacer.addItemToGameForBegin(type, level, row, col);
+					place = true;
 				} 
 			}
 		}

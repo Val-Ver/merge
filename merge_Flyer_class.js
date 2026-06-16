@@ -6,25 +6,39 @@ class Flyer {
 	id = '';
 	maxLevel = 0; 
 	pic = null;
-	element = null;
+	timeCollect = null;
+	chanceToItem = 0;
 
 	patrolAnimatedId = null;
 	isPatrolling = false;
 	currentTarget = null;
-	currentProgress = 0;
+
+	progress = 0;
 
 	startPos = null;
 	tergetPos = null;
-	startTime= 0;
+	startTime = 0;
 	duration = 0;
 
 	collectGift = null;
 	mission = false;
+	toItem = null;
+	turnToItem = null;
 	direction = null;
+
 	route = {};
+	size = {width: GAME_CONFIG.BOARD_SIZE.CELL, height: GAME_CONFIG.BOARD_SIZE.CELL}
 	speed = GAME_CONFIG.ANIMATIONS.SPEED_FLYER;
 
+	isCollect = false;
+	startTimeCollect = null;
+	//startTimeCollectGift = { up: null, down: null };
 	isDraging = false;
+	isGoUp = true;
+	startTimeGoUp = { up: null, down: null };
+	shadow = {radius: null, height: null}
+	shadowStart = {radius: null, height: null};
+
 	eventBus = EventBus.getInstance();
 
 	constructor(manager, type, level) {
@@ -35,6 +49,8 @@ class Flyer {
 		this.id = this.generateId();
 		this.maxLevel = flyers[this.type].maxLevel;
 		this.pic = flyers[this.type].set[this.level].pic;
+		this.timeCollect = flyers.allFlyers[this.level].timeCollect;
+		this.chanceToItem = flyers.allFlyers[this.level].chanceToItem;
 	}
 
 	generateId() {
@@ -47,81 +63,39 @@ class Flyer {
 		return id;
 	}
 
-	stopPatrol() {
-		if(this.patrolAnimatedId !== null) {
-			cancelAnimationFrame(this.patrolAnimatedId);
-			this.patrolAnimatedId = null;
-		}
-		this.isPatrolling = false;
-	}
+	clearAll() {
+		this.mission = false;
+		this.toItem = null;
+		this.direction = null;
 
-	startPatrol() {
-		if(this.patrolAnimatedId !== null) { this.stopPatrol() }
-		this.isPatrolling = true;
-		this.patrolAnimatedId = requestAnimationFrame((timeStamp) => this.patrolStep(timeStamp));
-	}
-	
-	patrolStep(now) {
-		if(!this.isPatrolling || this.isDraging) {
-			this.patrolAnimatedId = requestAnimationFrame((ts) => this.patrolStep(ts));
-			this.startPos = null;
-			this.targetPos = null;
-			this.startTime = 0;
-			this.duration = 0;
-			return;
-		}
-
-		if(!this.currentTarget && !this.direction) {
-			this.chooseNewRandomTarget();
-		}
-
-		if(this.direction) {
-			this.setNewTarget(this.direction.x, this.direction.y);
-			this.direction = null;
-		}
-
-		if(this.startPos === null || this.targetPos === null) {
-			this.startPos = { x: this.route.x, y: this.route.y }
-			this.targetPos = { x: this.currentTarget.x, y: this.currentTarget.y }
-	
-			const distanceX = this.targetPos.x - this.startPos.x;
-			const distanceY = this.targetPos.y - this.startPos.y;
-			const distance = Math.sqrt(distanceX**2 + distanceY**2);
-			this.duration = distance === 0 ? 0 : (distance / this.speed) * 1000;
-			this.startTime = now;
-			this.currentProgress = 0;
-		}
-	
-		if(this.duration === 0) {
-			this.finishCurrentSegment();
-			this.patrolAnimatedId = requestAnimationFrame((ts) => this.patrolStep(ts));
-			return;
-		}
-
-		const elapsed = now - this.startTime;
-		let t = Math.min(1, elapsed / this.duration);
-		//t = 1 - Math.pow(1-t, 1.5);
-		const newX = this.startPos.x + (this.targetPos.x - this.startPos.x) * t;
-		const newY = this.startPos.y + (this.targetPos.y - this.startPos.y) * t;
-
-		this.eventBus.emit(EVENTS.CMD_RENDERING_UPDATE_COORD_FLYER, this.element, newX, newY);
-		this.route = { x: newX, y: newY };
-
-		if(t >= 1) {
-			if(this.collectGift) {
-				this.manager.putItemOnBoard(this);
-			} 
-			this.finishCurrentSegment();
-		}
-
-		this.patrolAnimatedId = requestAnimationFrame((ts) => this.patrolStep(ts));	
+		this.currentTarget = null;
+		this.startPos = null;
+		this.targetPos = null;
+		this.startTime = 0;
+		this.duration = 0;
+		this.speed = GAME_CONFIG.ANIMATIONS.SPEED_FLYER;
 	}
 
 	chooseNewRandomTarget() {
 		const coordStart = this.route;
-		const newCoord = this.manager.getRandomCoord(coordStart);
-		this.currentTarget = { x: newCoord.x, y: newCoord.y };
-		
+
+		if(this.turnToItem && !this.collectGift) {
+			this.toItem = this.turnToItem;
+			this.currentTarget = this.manager.flyerSideOfItem(this.toItem, coordStart);
+			this.turnToItem = null;
+		}
+				
+		const isDirectionToItem = this.currentTarget ? false : Math.random() < this.chanceToItem;
+		if(isDirectionToItem && !this.collectGift) {
+			const coordForFlyer = this.manager.findCoordItemsOnBoardForCollect(coordStart);
+			this.toItem = coordForFlyer?.coordItem ?? null;
+			this.currentTarget = coordForFlyer?.coordFlyer ?? null;
+		}
+
+		if(!this.currentTarget) {
+			const newCoord = this.manager.getRandomCoord(coordStart);
+			this.currentTarget = newCoord;//{ x: newCoord.x, y: newCoord.y };
+		}
 	}
 
 	setNewTarget(x, y) {
@@ -134,29 +108,36 @@ class Flyer {
 	
 	finishCurrentSegment() {
 		this.route = { x: this.targetPos.x, y: this.targetPos.y };
-		this.eventBus.emit(EVENTS.CMD_RENDERING_UPDATE_COORD_FLYER, this.element, this.route.x, this.route.y);
+		
 		this.startPos = null;
 		this.targetPos = null;
 		this.startTime = 0;
 		this.duration = 0;
 
-		/*const isTargetReached = (this.currentTarget && Math.abs(this.route.x - this.currentTarget.x) < 0.1 
-							    && Math.abs(this.route.y - this.currentTarget.y) < 0.1);*/
-
 		const isTargetReached = (this.currentTarget && this.route.x === this.currentTarget.x 
 							    && this.route.y === this.currentTarget.y);
 
 		if(isTargetReached) {
-			const boardCoord = this.manager.getCordBoard(this.route);
+			const boardCoord = this.toItem ? this.toItem : this.manager.getCordBoard(this.route)
+			if(this.toItem) {
+				this.isGoUp = true;
+				this.toItem = null;
+			}
+
+			this.startTimeGoUp = { up: null, down: null };
 
 			const item = this.manager.findItemOnBoard(boardCoord.row, boardCoord.col);
 			if(item && item.giftCollect && !this.collectGift) {
-				this.stopPatrol();
+
 				this.manager.collectGiftFromItem(this, item);
 			} else {
 				this.currentTarget = null;
+				if(this.mission) { 
+					this.mission = false;
+					this.speed = GAME_CONFIG.ANIMATIONS.SPEED_FLYER;
+				}
 				this.chooseNewRandomTarget();
-			}
+			}		
 		}
 	}
 }

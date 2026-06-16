@@ -55,7 +55,7 @@
 		let radius = 1;
 		let clearCellsCoordNearby = []; 
 
-		while(clearCellsCoordNearby.length < numberItems && radius < this.rows) {
+		while(clearCellsCoordNearby.length < numberItems && radius < this.cols) {
 			clearCellsCoordNearby = this.findCoordClearCellsNearby(row, col, radius);
 			radius += 1;
 		}
@@ -71,10 +71,12 @@
 
 	findCoordClearCellsNearby(row, col, radius = 1) {
 		const clearCells = [];
+		let radiusRow = radius
+		if(radius > this.rows) { radiusRow = this.rows }
 		if(this.canAddItem(row, col)) {
 			clearCells.push({row: row, col: col});
 		}
-		for(let i = -radius; i <= radius; i++) {
+		for(let i = -radiusRow; i <= radiusRow; i++) {
 			for(let j = -radius; j <= radius; j++) {
 				if(row + i == row && col + j == col) { continue }
 				if(row + i >= 0 && row + i < this.rows

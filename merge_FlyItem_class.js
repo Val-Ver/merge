@@ -3,7 +3,7 @@
 	cols = GAME_CONFIG.BOARD_SIZE.COLS;
 
 	boardWidth = GAME_CONFIG.BOARD_SIZE.BOARD_WIDTH;
-	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
+	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGHT;
 
 	centerWidth = (document.querySelector('.viewport-container')).clientWidth/2 -  this.boardWidth/2;
 
@@ -43,10 +43,11 @@
 	}
 
 	removeFlyItem(element, row, col) {
+
 		return new Promise((resolve, reject) => {
 			const time = GAME_CONFIG.ANIMATIONS.TIME_PUT_FlY_ITEM;
 			element.style.transition = `left ${time}s ease-in-out, top ${time}s ease-in-out`
-			element.style.left = `${this.boardWidth/this.cols  * col + this.boardWidth/this.cols * 0.4 /*+ this.centerWidth*/}px`;
+			element.style.left = `${this.boardWidth/this.cols  * col + this.boardWidth/this.cols * 0.4}px`;
 			element.style.top  = `${this.boardHeight/this.rows * row + this.boardHeight/this.rows * 0.4}px`;
 
 			element.addEventListener('transitionend', (event) => {
@@ -67,10 +68,6 @@
 
 				if(elementDiv.id == 'board-canvas') {
 					const boardCoord = this.manager.itemPlacer.getCoordBoard(elementDiv, e.clientX, e.clientY);
-
-				//if(elementDiv.dataset.name == 'cell' ||
-				//elementDiv.dataset.name == 'landscape') {
-					//const place = this.manager.findClearCellForFlyItem(elementDiv.dataset.row, elementDiv.dataset.col)//[0];
 
 					const place = this.manager.findClearCellForFlyItem(boardCoord.row, boardCoord.col);
 					this.removeFlyItem(element, place.row, place.col)

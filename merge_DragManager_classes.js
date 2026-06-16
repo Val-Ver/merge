@@ -77,7 +77,7 @@ class DragManagerForGame extends BaseDragManager {
 			let currentElement = elementsFromPoint[i];
 			if(currentElement.dataset.name == 'fly-item') { return null }
 
-			if(currentElement.dataset.name == 'flyer') {
+			/*if(currentElement.dataset.name == 'flyer') {
 				return {
 					strategy: this.strategies.flyer,
 					element: currentElement,
@@ -85,10 +85,32 @@ class DragManagerForGame extends BaseDragManager {
 					itemStartX: currentElement.getBoundingClientRect().left,
 					itemStartY: currentElement.getBoundingClientRect().top
 				}
-			}
+			}*/
 
 
 			if(currentElement.id == 'board-canvas') {
+				const flyers = this.flyerManager.flyers;
+				const coordCanvas = this.flyerManager.findCoordForDrag(clientX, clientY)
+
+				/*const rect = currentElement.getBoundingClientRect();
+				const scaleX = currentElement.width / rect.width;
+				const scaleY = currentElement.height / rect.height; // важно если есть масштаб
+				const canvasX = (clientX - rect.left) * scaleX;
+				const canvasY = (clientY - rect.top) * scaleY;*/
+
+				for(let i = 0; i < flyers.length; i++) {
+					const flyer = flyers[i]
+					if(coordCanvas.x >= flyer.route.x && coordCanvas.x <= flyer.route.x + flyer.size.width
+					&& coordCanvas.y >= flyer.route.y && coordCanvas.y <= flyer.route.y + flyer.size.height) {
+						return {
+							strategy: this.strategies.flyer,
+							element: flyer,
+							type: 'flyer',
+							itemStartX: flyer.route.x,
+							itemStartY: flyer.route.y
+						}					}
+				}
+	
 				const boardCoord = this.itemHandler.getCoordBoard(currentElement, clientX, clientY)
 				const row = boardCoord.row;
 				const col = boardCoord.col;
@@ -98,7 +120,7 @@ class DragManagerForGame extends BaseDragManager {
 
 				if(grid[row][col].landscape) {
 					name = 'landscape';
-				} else if(grid[row][col].fog.layer > 0) {
+				} else if(grid[row][col].fog.layer > 0 || grid[row][col].fog.isVisible) {
 					name = 'fog';
 				} else if(grid[row][col].item) { 
 					name = 'item';
@@ -172,8 +194,8 @@ class DragManagerForGame extends BaseDragManager {
 		if(this.strategyInfo.type === 'flyer') { 
 			const minDistance = 1;
 			const distance = Math.floor(Math.sqrt(
-					(this.strategyInfo.itemStartX - this.strategyInfo.element.getBoundingClientRect().left)**2 + 
-					(this.strategyInfo.itemStartY - this.strategyInfo.element.getBoundingClientRect().top)**2));
+					(this.strategyInfo.itemStartX - this.strategyInfo.element.route.x)**2 + 
+					(this.strategyInfo.itemStartY - this.strategyInfo.element.route.y)**2));
 
 			if(distance > minDistance) { return this.strategyInfo }
 

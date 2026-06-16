@@ -12,8 +12,11 @@
 	subscription() {
 		this.eventBus.on(EVENTS.CMD_GENERATE_GIFT, (item) => {
 			this.generateGiftFromItem(item);
-			
-			
+			this.transformedItem(item);		
+		})
+
+		this.eventBus.on(EVENTS.CMD_TRANSFORMED_ITEM, (item) => {
+			this.transformedItem(item);
 		})
 
 		this.eventBus.on(EVENTS.CMD_UPDATE_GIFT, (item) => {
@@ -28,6 +31,7 @@
 		this.eventBus.on(EVENTS.CMD_CLEAR_INTERVAL_CREATE_GIFT, (item) => {
 			this.clearIntervalCreateGift(item);
 		})
+
 		this.eventBus.on(EVENTS.CMD_CREATE_GIFT, (type, level, cellObj) => {
 			this.createGift(type, level, cellObj);
 		})
@@ -54,13 +58,11 @@
 
 	transformedItem(itemGame) {
 		if(!itemGame.transformed) { return }
-		//const itemGame = this.manager.addItemToGameForBegin(type, level, cellObj.row, cellObj.col);
-		const time = this.getTimeForTransformation(itemGame);
+		const time = itemGame.transformed.time;
 		
 		setTimeout(() => {
 			const itemAfterTime = this.manager.itemRegistry.getCurrentItem(itemGame.id);
 			if(itemAfterTime && itemAfterTime.transformed) {
-			//if(itemAfterTime && itemAfterTime.level == 0) {
 				if(itemAfterTime.isDraging) {
 					this.itemForTransformation = itemAfterTime;
 				} else {
@@ -70,20 +72,14 @@
 		}, time)
 	}
 
-	getTimeForTransformation(item) {
-		//if(!item.transformed) { return }
-		return item.transformed.time;
-	}
-
 	createTransformItem(item) {
 		if(!item.transformed) { return }
-		//if(item.level !== 0) { return }
+
 		const typeItem = item.transformed.type
 		const level = item.transformed.level
-		//const typeItem = item.type == 'water' ? "mushrooms" : item.type;
+
 		this.eventBus.emit(EVENTS.CMD_REMOVE_ITEM, item);
 		const itemGame = this.manager.addItemToGameForBegin(typeItem, level, item.row, item.col);
-		//const itemGame = this.manager.addItemToGameForBegin(typeItem, item.level + 1, item.row, item.col);
 	}
 
 	createTransformItemAfterDrag(item) { 

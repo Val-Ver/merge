@@ -2,12 +2,16 @@
 	game = null;
 	shopManager = null;
 	infoPanel = new InfoPanel();
-	resourcesGold = new ResourcesGold();
+	resources = new Resources();
 
 	gameOptionsContainer = document.querySelector('.game-options-container');
 	shopContainer = document.querySelector('.shop-container');
 	divInfoMessage = document.querySelector('.div-info-message');
+	infoMessageLacks = document.querySelector('.info-message-lacks');
+	infoMessageBuy = document.querySelector('.info-message-buy');
 	infoContainer = document.querySelector('.info-container');
+
+	clickOnBuy = null;
 
 	constructor() {
 		this.shopHandler = new ShopManager(this);
@@ -18,36 +22,66 @@
 		this.eventBus = EventBus.getInstance();
 	}
 
+	handleBuyItem(type, level, price, resource, breed = null) {
 
-//----------------------------------------------------------------------
-	sellItem(summ) {
-console.error('сработал sellItem в GameOptions')
-		this.resourcesGold.increaseGold(summ);
-	}
+		if(this.resources[resource].score >= price) {
+			this.shopHandler.shopContainer.style.display = 'none';
 
-	buyItem(summ) {
-console.error('сработал buyItem в GameOptions')
-		this.resourcesGold.decreaseGold(summ);
-	}
-//----------------------------------------------------------------------
-
-	handleBuyItem(type, level, price) {
-		if(this.resourcesGold.scoreGold >= price) {
-			this.resourcesGold.decreaseGold(price);
-			this.eventBus.emit(EVENTS.CMD_ADD_ITEM_IN_GAME, type, level);
-		} else {
 			this.gameOptionsContainer.style.display = 'flex';
 			this.divInfoMessage.style.display = 'flex';
+			this.infoMessageBuy.style.display = 'flex';
+
+			this.addBtnBuy().then((res) => {
+				if(res) {
+					this.eventBus.emit(EVENTS.CMD_DECREASE_RESOURCE, resource, price);
+					this.eventBus.emit(EVENTS.CMD_ADD_ITEM_IN_GAME, type, level, breed);
+				}
+				this.shopHandler.shopContainer.style.display = 'flex';
+				this.btnBuy.removeEventListener('click', this.clickOnBuy);
+				this.btnNo.removeEventListener('click', this.clickOnNo);
+			})
+		} else {
+			this.shopHandler.showStartShop();
+			this.shopHandler.shopContainer.style.display = 'none';
+
+			this.gameOptionsContainer.style.display = 'flex';
+			this.divInfoMessage.style.display = 'flex';
+			this.infoMessageLacks.style.display = 'flex';
 		}
 	}
 	
 	addBtnInfoMessage() {
 		const btnExit = document.getElementById('btn-exit-message');
-		const clickOnDoc = () => {
+		const clickOnExit = () => {
 			this.gameOptionsContainer.style.display = 'none';
 			this.divInfoMessage.style.display = 'none';
+			this.infoMessageLacks.style.display = 'none';
 		}
-		btnExit.addEventListener('click', clickOnDoc);
+		btnExit.addEventListener('click', clickOnExit);
+	}
+
+	addBtnBuy() {
+		return new Promise((resolve) => {
+			this.btnBuy = document.getElementById('btn-buy-message');
+			this.clickOnBuy = () => {
+				//this.gameOptionsContainer.style.display = 'none';
+				this.divInfoMessage.style.display = 'none';
+				this.infoMessageBuy.style.display = 'none';
+				resolve(true);
+
+			}
+			this.btnBuy.addEventListener('click', this.clickOnBuy);
+
+			this.btnNo = document.getElementById('btn-no-message');
+			this.clickOnNo = () => {
+				//this.gameOptionsContainer.style.display = 'none';
+				this.divInfoMessage.style.display = 'none';
+				this.infoMessageBuy.style.display = 'none';
+				resolve(false);
+
+			}
+			this.btnNo.addEventListener('click', this.clickOnNo);
+		})
 	}
 
 	clickOnPlaceOnBoard() {

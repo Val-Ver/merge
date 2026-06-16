@@ -3,7 +3,7 @@
 	cols = GAME_CONFIG.BOARD_SIZE.COLS;
 
 	boardWidth = GAME_CONFIG.BOARD_SIZE.BOARD_WIDTH;
-	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGTH;
+	boardHeight = GAME_CONFIG.BOARD_SIZE.BOARD_HEIGHT;
 
 	manager = null;
 	intervalCreateFlyItems = null;

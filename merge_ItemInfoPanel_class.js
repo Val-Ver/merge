@@ -20,7 +20,7 @@
 	}
 
 	showInfoPanel(item) {
-		if(!item || item.type === 'gold') { return }
+		if(!item || item.price) { return }
 		this.currentItem = item;
 		const price = this.currentItem.level !== 0 ? this.currentItem.level * GAME_CONFIG.SHOP.PRICE_ITEM : GAME_CONFIG.SHOP.MIN_PRICE_ITEM;
 		document.getElementById('text-for-sale').textContent = `Sell ${this.currentItem.type} for ${price} gold?`;
@@ -43,8 +43,13 @@
 	}
 	
 	soldItem() {
-		const price = this.currentItem.level !== 0 ? this.currentItem.level * GAME_CONFIG.SHOP.PRICE_ITEM : GAME_CONFIG.SHOP.MIN_PRICE_ITEM;
-		this.eventBus.emit(EVENTS.CMD_INCREASE_GOLD, price);
+		let price = 0; 
+		if(this.currentItem.price) {
+			price = this.currentItem.price;
+		} else {
+			price = this.currentItem.level !== 0 ? this.currentItem.level * GAME_CONFIG.SHOP.PRICE_ITEM : GAME_CONFIG.SHOP.MIN_PRICE_ITEM;
+		}
+		this.eventBus.emit(EVENTS.CMD_INCREASE_RESOURCE, 'gold', price);
 		this.eventBus.emit(EVENTS.CMD_REMOVE_ITEM, this.currentItem);
 		this.eventBus.emit(EVENTS.CMD_CLEAR_INTERVAL_CREATE_GIFT, this.currentItem);
 	}

@@ -21,25 +21,29 @@
 		this.eventBus.on(EVENTS.CMD_REMOVE_ITEM, (item) => {
 			this.removeItemFromGame(item);
 		})
+		this.eventBus.on(EVENTS.CMD_ADD_ITEM_IN_GAME, (type, level, breed) => {
+			this.handleOnShop(type, level, breed);
+		})
 	}
 
 	updateItemOnBoard(grid) {
-		this.itemOnBoard = [];
+		this.itemRegistry.itemOnBoard = [];
 		for(let row = 0; row < this.gameBoard.rows; row++) {
 			for(let col = 0; col < this.gameBoard.cols; col++) {
 				if(grid[row][col].item) {
 					const item = grid[row][col].item;
-					this.gameBoard.addItemInCell(item);
+					//this.gameBoard.addItemInCell(item);
 					this.itemRegistry.addItem(item);
+console.log(item)
+					//this.eventBus.emit(EVENTS.EVENT_ADD_ITEM_ON_BOARD, item);
 
-					this.eventBus.emit(EVENTS.EVENT_ADD_ITEM_ON_BOARD, itemGame);
-					this.eventBus.emit(EVENTS.CMD_RENDERING_PLACE_ITEM_ON_BOARD, item.element, item.row, item.col);
 					if(!this.fogOnBoard.isFogOnCell(row, col)) {
 						this.eventBus.emit(EVENTS.CMD_UPDATE_GIFT, item);
 					}
 				}
 			}
 		}
+		this.eventBus.emit(EVENTS.CMD_RENDERING_PLACE_ITEM_ON_BOARD, grid);
 	}
 
 	getCurrentItem(itemId) {
@@ -101,7 +105,7 @@
 	}
 
 	addItemOnBoard(itemGame) { 
-		if(this.itemRegistry.itemOnBoard.length == this.gameBoard.rows * this.gameBoard.cols) { 
+		if(this.itemRegistry.itemOnBoard.length === this.gameBoard.rows * this.gameBoard.cols) {
 			console.log('нет места'); //неверная проверка
 			return;
 		}
@@ -122,20 +126,33 @@
 		return itemGame
 	}
 
-	createItemForPlaceAfterMerge(type, level, numberItems = 1, centerMerge) {
-		const clearCellsCoordNearby = this.gameBoard.findCoordClearCellsNearbyAll(centerMerge.row, centerMerge.col, numberItems);
+	handleOnShop(type, level, breed) {
+		const centerCell = this.findCenterCell();
+		const clearCellsCoordNearby = this.gameBoard.findCoordClearCellsNearbyAll(centerCell.row, centerCell.col);
+		const item = this.addItemToGameForBegin(type, level, clearCellsCoordNearby[0].row, clearCellsCoordNearby[0].col, breed);
+	}
 
-		for(let i = 0; i < numberItems; i++) {
-			let row = clearCellsCoordNearby[i].row;
-			let col = clearCellsCoordNearby[i].col;
+	createItemForPlaceAfterMerge(setForItem, centerMerge) { 
+		let itemsForAddInGame = [];
+		for(let key in setForItem) {
+			const numberItems = setForItem[key].count;
+			const clearCellsCoordNearby = this.gameBoard.findCoordClearCellsNearbyAll(centerMerge.row, centerMerge.col, numberItems);
+			for(let i = 0; i < numberItems; i++) {
+				let row = clearCellsCoordNearby[i].row;
+				let col = clearCellsCoordNearby[i].col;
 
-			if(this.gameBoard.canAddItem(row, col)) {
-				const itemGame = new Item(type, level, row, col);
-				this.addItemOnBoard(itemGame);
-				this.eventBus.emit(EVENTS.CMD_RENDERING_SHOW_ITEM_ON_BOARD_AFTER_MERGE, itemGame, centerMerge.row, centerMerge.col, row, col);
+				if(this.gameBoard.canAddItem(row, col)) {
+					const itemGame = new Item(setForItem[key].type, setForItem[key].level, row, col, setForItem[key].breed);
+					this.addItemOnBoard(itemGame);
+					itemsForAddInGame.push(itemGame);
+				}
 			}
 		}
+		if(itemsForAddInGame.length > 0) {
+			this.eventBus.emit('afterMergeAddItem', centerMerge.row, centerMerge.col, itemsForAddInGame);
+		}
 	}
+
 
 	removeItemForMutable(itemsForMerge, centerMerge) { //async можно поставить перед методом, здесь работает и так, а вообще надо
 		itemsForMerge.forEach(item => {
@@ -145,24 +162,42 @@
 			this.eventBus.emit(EVENTS.CMD_CLEAR_ALL_fOG_IN_CELL, item.row, item.col);
 			this.eventBus.emit(EVENTS.CMD_CLEAR_INTERVAL_CREATE_GIFT, item)
 		})
- 		const promises = itemsForMerge 
-			.map((item) => {
-				return new Promise((resolve) => {
-					this.eventBus.emit(EVENTS.CMD_RENDERING_SHOW_BEFORE_REMOVE_ITEM, centerMerge, item, resolve);
-				})
-			})
-		return Promise.all(promises);
+		return new Promise((resolve) => {
+			this.eventBus.emit(EVENTS.CMD_RENDERING_SHOW_BEFORE_REMOVE_ITEM, centerMerge, itemsForMerge, resolve);
+		})
 	}
 
 	removeItemFromGame(item) {
+		item.timeOutCollsFlyer = null;
 		this.itemRegistry.removeItem(item.id);
 		this.gameBoard.clearItemInCell(item.row, item.col);
+		this.eventBus.emit(EVENTS.CMD_CLEAR_INTERVAL_CREATE_GIFT, item);
 
 		this.eventBus.emit(EVENTS.CMD_RENDERING_REMOVE_ITEM, item);
 	}
 
 	findCenterCell() {
-		return this.gameBoard.findCenterCell()
+		return this.gameBoard.findCenterCell();
+	}
+
+
+/*************************************************************************/
+// была раньше
+
+	createItemForPlaceAfterMerge1(type, level, numberItems = 1, centerMerge, breed = null) {
+		const clearCellsCoordNearby = this.gameBoard.findCoordClearCellsNearbyAll(centerMerge.row, centerMerge.col, numberItems);
+		let itemsForAddInGame = [];
+		for(let i = 0; i < numberItems; i++) {
+			let row = clearCellsCoordNearby[i].row;
+			let col = clearCellsCoordNearby[i].col;
+
+			if(this.gameBoard.canAddItem(row, col)) {
+				const itemGame = new Item(type, level, row, col, breed);
+				this.addItemOnBoard(itemGame);
+				itemsForAddInGame.push(itemGame);
+			}
+		}
+		this.eventBus.emit('afterMergeAddItem', centerMerge.row, centerMerge.col, itemsForAddInGame);
 	}
 
 }
