@@ -1,6 +1,7 @@
 ﻿class GameOptions {
-	game = null;
+	//game = null;
 	shopManager = null;
+	//saveGame = null;
 	infoPanel = new InfoPanel();
 	resources = new Resources();
 
@@ -12,20 +13,27 @@
 	infoContainer = document.querySelector('.info-container');
 
 	clickOnBuy = null;
+	eventBus = EventBus.getInstance();
 
 	constructor() {
 		this.shopHandler = new ShopManager(this);
-
+		//this.saveGame = saveGame
 		this.addBtnInfoMessage();
 		this.clickOnPlaceOnBoard();
-
-		this.eventBus = EventBus.getInstance();
+		this.addBtnGameAgain();
 	}
 
 	updateResources(scoreGold, scoreWood, scoreCrystal) {
 		this.resources.updateScore(scoreGold, scoreWood, scoreCrystal)
 	}
 
+	addBtnGameAgain() {
+		const btn = document.getElementById('btn-game-again');
+		const clickOnBtn = () => {
+			this.eventBus.emit(EVENTS.CMD_GAME_AGAIN);
+		}
+		btn.addEventListener('click', clickOnBtn);
+	}
 	handleBuyItem(type, level, price, resource, breed = null) {
 
 		if(this.resources[resource].score >= price) {

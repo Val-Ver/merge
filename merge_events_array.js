@@ -10,6 +10,7 @@ const EVENTS = {
 	CMD_DECREASE_RESOURCE: 'cmd: decreaseResource',
 
 	CMD_SHOW_MESSAGE_FOR_SALE: 'cmd: showMessageForSale', 
+	CMD_GAME_AGAIN: 'cmd: goToGameAgain',
 
 	CMD_CLEAR_FOG_AFTER_MERGE: 'cmd: clearFogBeforeMerge', 
 	CMD_CLEAR_FOG_AFTER_OPEN_SPHERE: 'cmd: clearFogAfterOpenPoverSphere', 

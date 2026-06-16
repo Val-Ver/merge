@@ -14,9 +14,13 @@
 	crystalKey = 'merge_crystal';
 
 	versionKey = 'merge_version';
+	eventBus = EventBus.getInstance();
 
 	constructor() {
 		this.ensureVersion();
+		this.eventBus.on(EVENTS.CMD_GAME_AGAIN, () => {
+			this.clearVersion()
+		})
 	}
 
 	ensureVersion() {
@@ -26,6 +30,11 @@
 			this.clearLocalStorage();
 			//нужно показать кнопку обновления со сбросом прогресса, событие
 		}
+	}
+
+	clearVersion() {
+		localStorage.removeItem(this.versionKey);
+		location.reload();
 	}
 
 	clearLocalStorage() {
@@ -90,7 +99,6 @@
 		localStorage.setItem(this.woodKey, woodData);
 
 		let crystal = resources.crystal.score;
-		console.log(crystal)
 		let crystalData = JSON.stringify(crystal);
 		localStorage.setItem(this.crystalKey, crystalData);
 	}

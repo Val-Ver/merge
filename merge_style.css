@@ -48,6 +48,12 @@ html, body {
 	bottom: 10px;
 }
 
+.game-btn {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+}
+
 @media (pointer: none), (pointer: coarse) {
 	.shop-btn {
 		top: 90%;
@@ -332,7 +338,9 @@ button:hover {
 	aspect-ratio: 1;
 	border-radius: 50%;
 }
-
+#btn-game-again{
+	width: 80px;
+}
 /* ------- стили для самой игры --------*/
 
 .viewport-container {
