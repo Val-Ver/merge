@@ -23,7 +23,7 @@
 		if(!item || item.price) { return }
 		this.currentItem = item;
 		const price = this.currentItem.level !== 0 ? this.currentItem.level * GAME_CONFIG.SHOP.PRICE_ITEM : GAME_CONFIG.SHOP.MIN_PRICE_ITEM;
-		document.getElementById('text-for-sale').textContent = `Sell ${this.currentItem.type} for ${price} gold?`;
+		document.getElementById('text-for-sale').textContent = `Sell ${this.currentItem.type} (${this.currentItem.level} level)\nfor ${price} gold?`;
 		document.querySelector('.game-options-container').style.display = 'flex';		
 		this.infoPanel.style.display = 'flex';
 	}

@@ -252,7 +252,7 @@ html, body {
 	left: 175px;
 	top: 530px;
 
-	width: 250px;
+	width: 300px;
 	height: 60px;
 
 	display: none;
@@ -271,10 +271,11 @@ html, body {
 }
 
 .info-btn {
-	width: 60%;
+	/*width: 60%;*/
 	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
+	gap: 10px;
 }
 
 .div-info-message {
@@ -289,7 +290,9 @@ html, body {
 	top: 50vh;
 	z-index: 100;*/
 }
-
+#text-for-sale {
+	/*white-space: pre-wrap;  !* или pre-line *!*/
+}
 .info-message-lacks,
 .info-message-buy {
 	width: 250px;
@@ -333,9 +336,9 @@ button:hover {
 	background: linear-gradient(to bottom, #cad0d3, #4a4d4f);	
 }
 .info-btn {
-	width: 25px;
+	/*width: 25px;*/
 	height: auto;
-	aspect-ratio: 1;
+	/*aspect-ratio: 1;*/
 	border-radius: 50%;
 }
 #btn-game-again{
