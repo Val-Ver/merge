@@ -34,6 +34,7 @@
 		this.addListenersOnBtnShop();
 		this.addListenerBtnExitShop();
 		this.addListenerBtnBackShop();
+
 	}
 
 	addListenersOnBtnShop() {

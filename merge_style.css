@@ -341,6 +341,12 @@ button:hover {
 	/*aspect-ratio: 1;*/
 	border-radius: 50%;
 }
+#btn-flyer-gallery {
+	width: 25px;
+	height: auto;
+	aspect-ratio: 1;
+	border-radius: 50%;
+}
 #btn-game-again{
 	width: 80px;
 }

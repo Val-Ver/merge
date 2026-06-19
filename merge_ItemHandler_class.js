@@ -59,7 +59,7 @@
 	handleItem(id) {
 		const item = this.itemRegistry.getCurrentItem(id);
 		
-		if(item.countHasGiftOnItem && item.countHasGiftOnItem != 0) {
+		if(item.countHasGiftOnItem && item.countHasGiftOnItem !== 0) {
 			this.eventBus.emit(EVENTS.CMD_CREATE_GIFT_BEFORE_CLICK, item);
 			return;
 		}

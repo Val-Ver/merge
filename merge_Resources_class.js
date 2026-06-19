@@ -75,7 +75,7 @@ class ResourcesWood {
 	}
 
 	increase(summ) {
-		this.scoreWood += summ; 
+		this.score += summ;
 		this.elementScore.textContent = `${this.score}`;
 	}
 	
