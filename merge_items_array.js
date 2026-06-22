@@ -102,7 +102,7 @@
 			},
 	},
 
-	flowers: { type: "flowers", maxLevel: 10, set: {
+	flowers: { type: "flowers", maxLevel: 20, set: {
 			0:  { level:  0, pic:  'image/items/flowers/flower_0_level.png' , transformed: { type: 'flowers', level: 1, time: 1 * 60 * 1000 } },
 			1:  { level:  1, pic:  'image/items/flowers/flower_1_level.png' },
 			2:  { level:  2, pic:  'image/items/flowers/flower_2_level.png', giftCollect: { type: 'sphere', level: 1 } },
